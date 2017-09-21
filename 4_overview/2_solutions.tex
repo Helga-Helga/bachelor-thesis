@@ -1,0 +1,44 @@
+\section{Существующие решения.}
+
+\subsection{Итеративный алгоритм ближайших точек}
+
+Итеративный алгоритм ближайших точек (Iterative Closest Points, ICP) \cite{icp}
+состоит из двух чередующихся операций.
+Инициализируется алгоритм единичной матрицей $R = I$
+и нулевым вектором смещения $ \vec{b} = \vec{0}$.
+Первая итерация состоит в поиске разметри с фиксированной трансформацией
+\begin{equation}
+ \sum \limits_{ \vec{s} \in S}
+ \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 \to \min \limits_{k}.
+\end{equation}
+На следующей итерации происходит поиск поворота и смещения при текущей разметке
+\begin{equation}
+ \sum \limits_{ \vec{s} \in S}
+ \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 \to \min \limits_{R, \vec{b}}.
+\end{equation}
+Эти два шага повторяются, пока не будет достигнут желаемый результат,
+то есть пока расстояние между двумя облаками точек не будет сведено к минимуму.
+
+\subsection{Итеративный алгоритм ближайших точек с нормалями}
+
+Отличием данного алгоритма (Normal ICP) \cite{nicp} является то,
+что он рассматривает каждую точку вместе с локальными особенностями поверхности
+\begin{equation}
+  E \left( k, R, b \right) =
+  \sum \limits_{ \vec{s} \in S}
+  \alpha_{point} \cdot \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 +
+  \alpha_{plane} \cdot
+    \left|
+      \vec{n}_s^T \cdot \left( \vec{k}_s - R \cdot \vec{s} - \vec{b} \right)
+    \right|
+  \to \min \limits_{k, R, b},
+\end{equation}
+где $ \alpha_{point}$ и $ \alpha_{plane}$~---~константы,
+а $ \vec{n}_s$~---~нормаль к точке $ \vec{s}$ на исходном облаке.
+Для улучшения работы алгоритма убираются
+\begin{enumerate}
+  \item вершины,
+        нормали которых слишком отличаются от нормалей ближайших соседей из целевого облака;
+  \item вершины, которые находятся далеко от соседей из целевого облака;
+  \item вершины, которые находятся на краю объектов.
+\end{enumerate}
