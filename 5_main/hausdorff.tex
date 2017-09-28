@@ -117,3 +117,56 @@
 Таким образом $ \varepsilon $ в данном случае~---~это расстояние между точками $A$ и $B$,
 которое равно $ \varepsilon = 1.5 - \left( -2 \right) = 3.5$.
 Поэтому $H \left( E, D \right) = 3.5$.
+
+\section{Случайные величины}
+
+Имеем вероятностное пространство $ \left( \Omega, \mathcal{F}, \mathbb{P} \right) $,
+где $ \Omega = \mathbb{R}^n, \, \mathcal{F} = \mathcal{B} \left( \mathbb{R}^n \right) $~---~
+борелевская $ \sigma$-алгебра на $ \mathbb{R}^n, \, \mathbb{P}$~---~
+вероятностная мера на $ \mathcal{F}$.
+
+Есть два определения случайной величины:
+\begin{enumerate}
+  \item функция $ \xi \, : \, \Omega \to \mathbb{R}$ называется случайной величиной, если
+  \begin{equation*}
+    \forall \Delta \in \mathcal{B} \left( \mathbb{R} \right) \, : \qquad
+    \xi^{-1} \left( \Delta \right) =
+    \left\{ \omega \, : \qquad \xi \left( \omega \right) \in \Delta \right\} \in \mathcal{F};
+  \end{equation*}
+  \item функция $ \xi \, : \, \Omega \to \mathbb{R}$ называется случайной величиной, если
+  \begin{equation*}
+    \forall c \in \mathbb{R} \, : \qquad
+    \left\{ \omega \, : \qquad \xi \left( \omega \right) \leq c \right\} =
+    \xi^{-1} \left( \left( -\infty, c \right] \right) \in \mathcal{F}.
+  \end{equation*}
+\end{enumerate}
+
+Хотим проверить,
+является ли расстояние Хаусдорфа
+\begin{equation*}
+  \gamma =
+  H \left( AE + \vec{b} + \vec{ \xi }, F \right) =
+  H \left( \xi \left( E \right), F \right)
+\end{equation*}
+случайной величиной, где $ \xi $~---~
+случайное отображение из $ \mathbb{R}^n$ в $ \mathbb{R}^n$.
+
+По определению \ref{eq:hausdorff:distance}
+$ \gamma =
+  \inf \limits_n \left\{
+    \varepsilon_n \, : \qquad
+    \xi \left( E \right) + \varepsilon_n \subset F, \,
+    F + \varepsilon_n \subset \xi \left( E \right) \right\} $.
+
+Чтобы это проверить, нужно выяснить, является ли случайной величиной число $ \varepsilon_n > 0$.
+Если получится, то
+\begin{equation*}
+  \forall c \in \mathbb{R}: \qquad
+  \left\{ \omega \, : \qquad \inf \limits_n \varepsilon_n \left( \omega \right) \leq c \right\} =
+  \bigcup \limits_{n = 1}^{ \infty }
+    \left\{ \omega \, : \qquad \varepsilon_n \left( \omega \right) \leq c \right\}.
+\end{equation*}
+Каждое множество, которые стоит под знаком объединения, по определению,
+принадлежит $ \sigma $-алгебре $ \mathcal{F}$,
+и их счётное объединение принадлежит $ \sigma $-алгебре $ \mathcal{F}$,
+так как она замкнута относительно счётной операции объединения.
