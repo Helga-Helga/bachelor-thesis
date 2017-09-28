@@ -11,67 +11,31 @@
   неравенство треугольника.
 \end{enumerate}
 
-Метрическое пространство называется полным,
-если любая фундаментальная последовательность его точек имеет предел в этом пространстве.
-
-Множество $X$ точек метрического пространства $ \left( S, d \right) $ называется компактным,
-если из любого его открытого покрытия можно выделить конечное число множеств,
-которые тоже покрывают множество $X$.
-
-Метрическое пространство $S$ называется сепарабельным,
-если для любого $x \in S$ и любого $ \varepsilon > 0$ имеется такой элемент $x_s \in S$,
-что $d \left( x, x_s \right) \leq \varepsilon $.
-
-\section{Хаусдорфова мера}
-
-Классическая процедура оценки площади плоской фигуры
-заключается в аппроксимации множества $S$ маленькими кубиками, объёмы которых суммируются.
-Хаусдорф же заменяет квадраты шарами.
-
-Если $S$ является поверхностью,
-то её площадь можно оценить складывая площади $ \pi \rho^2$ каждого шара.
-В более общем виде вместо $ \pi \rho^2$ используется пробная функция $h \left( \rho \right) $.
-В таком случае можно сказать, что мера конечного покрытия множества $S$
-шарами радиуса $ \rho_m$ равна $ \sum \limits_{m \in M} h \left( \rho_m \right) $,
-где $M$~---~множество индексов.
-Для более экономного покрытия рассматривается покрытие шарами, радиус которых меньше $ \rho $,
-и образуется точная нижняя грань
-\begin{equation}\label{eq:inf}
-  \inf \limits_{ \rho_m < \rho } \sum \limits_{m \in M} h \left( \rho_m \right).
-\end{equation}
-
-При $ \rho \to 0$ условие на радиусы шаров становится слишком жёстким,
-и выражение \ref{eq:inf} возрастает.
-У него есть предел
+Метрическое пространство $ \left( S, d \right) $ называется сепарабельным,
+если существует не более чем счётное множества $ \Gamma \subset S \, : $
 \begin{equation*}
-  \lim \limits_{ \rho \to 0}
-  \inf \limits_{ \rho_m < \rho } \sum \limits_{m \in M} h \left( \rho_m \right).
+  \forall x \in S \qquad
+  \forall \varepsilon > 0 \qquad
+  \exists y \in \Gamma\, : \qquad
+  d \left( x, y \right) < \varepsilon.
 \end{equation*}
-Он определяет $h$-меру множества $S$ \cite{mandelbrot}.
 
-Пример такой меры --- логарифмическая $h$-мера при
-\begin{equation*}
-  h \left( \rho \right) =
-  \frac{1}{ln \left| \rho \right| }.
-\end{equation*}
-Если же $h \left( \rho \right) = \gamma \left( d \right) \rho^2$, где введена функция,
-соответствующая протяжённости шара единичного радиуса
-\begin{equation*}
-  \gamma \left( d \right) =
-  \frac{\left[ \Gamma \left( \frac{1}{2} \right) \right]^d}{ \Gamma \left( 1 + \frac{d}{2} \right) },
-\end{equation*}
-то $h$-мера называется $d$-мерной.
+Метрическое пространство $ \left( S, d \right) $ --- полное,
+если в нём любая фундаментальная последовательность сходится.
+
+Примером полного сепарабельного метрического пространства есть $ \mathbb{R}^n$
+с евклидовым расстоянием.
 
 \section{Расстояние Хаусдорфа}
 
 Расстояние Хаусдорфа определяется на множестве
-всех непустых компактных подмножеств пространства $ \mathbb{R}^n$.
+всех непустых замкнутых подмножеств пространства $ \mathbb{R}^n$.
 
-Пусть $E$ и $F$~---~непустые компактные подмножества $ \mathbb{R}^n$.
+Пусть $E$ и $F$~---~непустые замкнутые подмножества $ \mathbb{R}^n$.
 Расстояние Хаусдорфа между $E$ и $F$ определяется как
 \begin{equation}\label{eq:hausdorff:distance}
   H \left( E, F \right) =
-  \min \left\{ \varepsilon > 0 \; | \; E \subset F + \varepsilon, \, F = E + \varepsilon \right\},
+  \inf \left\{ \varepsilon > 0 \; | \; E \subset F + \varepsilon, \, F = E + \varepsilon \right\},
 \end{equation}
 где $E + \varepsilon $~---~объединение замкнутых шаров
 с центром в точке $x$ радиуса $ \varepsilon $
@@ -79,6 +43,41 @@
   E + \varepsilon =
   \bigcup \limits_{x \in E} \left\{ \overline{B}_{ \varepsilon } \left( x \right) \right\}.
 \end{equation*}
+
+Докажем асиомы метрики, чтобы проверить, что расстояние Хаусдорфа $H \left( E, F \right) $,
+заданое формулой \ref{eq:hausdorff:distance}~---~
+это действительно расстояние между двумя замкнутыми множествами в $ \mathbb{R}^n$.
+
+\begin{enumerate}
+  \item $H \left( E, F \right) \geq 0$.
+  Это следует из определения \ref{eq:hausdorff:distance},
+  так как точная нижняя грань величины $ \varepsilon > 0$ неотрицательна.
+  \item $H \left( E, F \right) = 0$ тогда и только тогда, когда $E = F$.
+  Если $E = F$, то $E \subset F$ и $F \subset E$, то есть $H \left( E, F \right) = \varepsilon = 0$.
+  С другой стороны, если $H \left( E, F \right) = 0$, то $ \varepsilon = 0$,
+  то есть опять $E \subset F$ и $F \subset E$.
+  Получаем, что $E = F$.
+  \item $H \left( E, F \right) \leq H \left( E, F \right) + H \left( F, G \right) $
+  для любых замкнутых множеств $E, F, G$ из $ \mathbb{R}^n$.
+  Запишем правую часть по определению \ref{eq:hausdorff:distance}
+  \begin{gather*}
+    H \left( E, F \right) + H \left( F, G \right) = \\
+    = inf \left\{
+      \varepsilon_1 > 0 \, : \qquad E + \varepsilon_1 \subset F, \, F + \varepsilon_1 \subset E
+    \right\} + \\
+    + inf \left\{
+      \varepsilon_2 > 0 \, : \qquad F + \varepsilon_2 \subset G, \, G + \varepsilon_2 \subset F
+    \right\}.
+  \end{gather*}
+  Сумма инфимумов равна инфимуму суммы.
+  Объединяя два множества, получаем
+  \begin{equation*}
+    E + \varepsilon_1 \subset F \subset F + \varepsilon_2 \subset G, \,
+    G + \varepsilon_2 \subset F \subset F + \varepsilon_1 \subset E.
+  \end{equation*}
+  Собирая первые и последние части выражений, видим,
+  что $E + \varepsilon \subset G$ и $G + \varepsilon \subset E$, а это левая часть неравенства.
+\end{enumerate}
 
 \subsection{Пример}
 
