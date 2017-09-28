@@ -63,10 +63,10 @@
   \begin{gather*}
     H \left( E, F \right) + H \left( F, G \right) = \\
     = inf \left\{
-      \varepsilon_1 > 0 \, : \qquad E + \varepsilon_1 \subset F, \, F + \varepsilon_1 \subset E
+      \varepsilon_1 > 0 \; \middle| \; E + \varepsilon_1 \subset F, \, F + \varepsilon_1 \subset E
     \right\} + \\
     + inf \left\{
-      \varepsilon_2 > 0 \, : \qquad F + \varepsilon_2 \subset G, \, G + \varepsilon_2 \subset F
+      \varepsilon_2 > 0 \; \middle| \; F + \varepsilon_2 \subset G, \, G + \varepsilon_2 \subset F
     \right\}.
   \end{gather*}
   Сумма инфимумов равна инфимуму суммы.
@@ -131,12 +131,12 @@
   \begin{equation*}
     \forall \Delta \in \mathcal{B} \left( \mathbb{R} \right) \, : \qquad
     \xi^{-1} \left( \Delta \right) =
-    \left\{ \omega \, : \qquad \xi \left( \omega \right) \in \Delta \right\} \in \mathcal{F};
+    \left\{ \omega \; \middle| \; \xi \left( \omega \right) \in \Delta \right\} \in \mathcal{F};
   \end{equation*}
   \item функция $ \xi \, : \, \Omega \to \mathbb{R}$ называется случайной величиной, если
   \begin{equation*}
     \forall c \in \mathbb{R} \, : \qquad
-    \left\{ \omega \, : \qquad \xi \left( \omega \right) \leq c \right\} =
+    \left\{ \omega \; \middle| \; \xi \left( \omega \right) \leq c \right\} =
     \xi^{-1} \left( \left( -\infty, c \right] \right) \in \mathcal{F}.
   \end{equation*}
 \end{enumerate}
@@ -154,7 +154,7 @@
 По определению \ref{eq:hausdorff:distance}
 $ \gamma =
   \inf \limits_n \left\{
-    \varepsilon_n \, : \qquad
+    \varepsilon_n \; \middle| \;
     \xi \left( E \right) + \varepsilon_n \subset F, \,
     F + \varepsilon_n \subset \xi \left( E \right) \right\} $.
 
@@ -162,9 +162,9 @@ $ \gamma =
 Если получится, то
 \begin{equation*}
   \forall c \in \mathbb{R}: \qquad
-  \left\{ \omega \, : \qquad \inf \limits_n \varepsilon_n \left( \omega \right) \leq c \right\} =
+  \left\{ \omega \; \middle| \; \inf \limits_n \varepsilon_n \left( \omega \right) \leq c \right\} =
   \bigcup \limits_{n = 1}^{ \infty }
-    \left\{ \omega \, : \qquad \varepsilon_n \left( \omega \right) \leq c \right\}.
+    \left\{ \omega \; \middle| \; \varepsilon_n \left( \omega \right) \leq c \right\}.
 \end{equation*}
 Каждое множество, которые стоит под знаком объединения, по определению,
 принадлежит $ \sigma $-алгебре $ \mathcal{F}$,
