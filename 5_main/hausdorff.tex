@@ -38,48 +38,68 @@
 \end{equation}
 где $E + \varepsilon $~---~объединение замкнутых шаров
 с радиусом $ \varepsilon $ и центром в точке $x \in E$
-\begin{equation*}
+\begin{equation*}\label{eq:set:expansion}
   E + \varepsilon =
   \bigcup \limits_{x \in E} \left\{ \overline{B}_{ \varepsilon } \left( x \right) \right\}.
 \end{equation*}
 
-Докажем асиомы метрики для расстояния Хаусдорфа $H \left( E, F \right) $,
+Проверим асиомы метрики для расстояния Хаусдорфа $H \left( E, F \right) $,
 заданного формулой \eqref{eq:hausdorff:distance}.
 
 \begin{enumerate}
   \item $H \left( E, F \right) \geq 0$.
   Это следует из определения \eqref{eq:hausdorff:distance},
-  так как точная нижняя грань величины $ \varepsilon > 0$ неотрицательна.
+  так как точная нижняя грань величины $ \varepsilon \geq 0$ неотрицательна.
   \item $H \left( E, F \right) = 0$ тогда и только тогда, когда $E = F$.
-  Если $E = F$, то $E \subset F$ и $F \subset E$, то есть $H \left( E, F \right) = \varepsilon = 0$.
-  С другой стороны, если $H \left( E, F \right) = 0$, то $ \varepsilon = 0$,
-  то есть опять $E \subset F$ и $F \subset E$.
-  Получаем, что $E = F$.
+  Последнее равенство равносильно двум условиям: $E \subset F$ и $F \subset E$.
+  Это можно записать через элементы множеств:
+  если $x \in E$, то $x \in F$, и если $x \in F$, то $x \in E$.
+
+  Пусть $x \in E$ и $ \forall \varepsilon > 0$ выполняется $F + \varepsilon \supset E$,
+  то есть $x \in F + \varepsilon $.
+  Воспользуемся определением \eqref{eq:set:expansion}
+  $$x \in
+    \bigcup \limits_{y \in F} \overline{B}_{ \varepsilon } \left( y \right).$$
+  Если $x$ принадлежит объединению множеств, то он принадлежит хотя бы одному из этих множеств.
+  Значит, найдётся такой $y_{ \varepsilon } \in F$,
+  что $x \in \overline{B}_{ \varepsilon } \left( y_{ \varepsilon } \right) $,
+  то есть $d \left( y_{ \varepsilon }, x \right) < \varepsilon $.
+  Это выполнено при любом $ \varepsilon > 0$, следовательно,
+  $x$ либо лежит в $F$, либо является его предельной точкой.
+  Но $F$ --- замкнутое множество, откуда следует, что $x \in F$.
+
+  Вторая часть доказывается аналогично.
+
+  С другой стороны, если $E = F$, то $E \subset F$ и $F \subset E$,
+  значит $ \varepsilon = 0$ и $H \left( E, F \right) = 0$.
+  \item $H \left( E, F \right) = H \left( F, E \right) $
+  следует из симметричности определения расстояния Хаусдорфа.
   \item $H \left( E, F \right) \leq H \left( E, F \right) + H \left( F, G \right) $
   для любых замкнутых множеств $E, F, G$ из $ \mathbb{R}^n$.
-  Запишем правую часть по определению \eqref{eq:hausdorff:distance}
-  \begin{gather*}
-    H \left( E, F \right) + H \left( F, G \right) = \\
-    = \inf \left\{
-      \varepsilon_1 \geq 0 \; \middle| \;
-      E + \varepsilon_1 \subset F, \, F + \varepsilon_1 \subset E
-    \right\} + \\
-    + \inf \left\{
-      \varepsilon_2 \geq 0 \; \middle| \;
-      F + \varepsilon_2 \subset G, \, G + \varepsilon_2 \subset F
-    \right\}.
-  \end{gather*}
-  Сумма инфимумов равна инфимуму суммы.
-  Объединяя два множества, получаем
+  Нужно проверить, выполняется ли следуеющее следствие
   \begin{equation*}
-    \begin{cases}
-      E + \varepsilon_1 \subset F \subset F + \varepsilon_2 \subset G, \\
-      G + \varepsilon_2 \subset F \subset F + \varepsilon_1 \subset E.
-    \end{cases}
+    \left. \begin{aligned}
+      \varepsilon_{E, G} \geq H \left( E, G \right), \\
+      \varepsilon_{G, F} \geq H \left( G, F \right)
+    \end{aligned} \right \rbrace \overset{?}{\Rightarrow}
+    E \subset F + \varepsilon_{G, F} + \varepsilon_{G, E}.
   \end{equation*}
-  Собирая первые и последние части выражений, видим,
-  что $E + \varepsilon \subset G$ и $G + \varepsilon \subset E$,
-  то есть неравенство треугольника выполняется.
+
+  Используем те же действия, что и при проверке второго условия.
+  Для первой стоки системы получаем, что из того,
+  что $x \in E$ и $G + \varepsilon_{E, G} \subset E$, следует что $x \in G$.
+  Аналогично, для второй стоки получаем, что из того,
+  что $x \in G$ и $F + \varepsilon_{G, F} \subset G$ следует, что $x \in F$.
+  Таким образом, получаем цепочку включённых друг в друга множеств
+  \begin{equation*}
+    x \in
+    E \subset
+    G + \varepsilon_{E, G} \subset
+    G \subset
+    F + \varepsilon_{G, F} \subset
+    F + \varepsilon_{G, F} + \varepsilon_{E, G},
+  \end{equation*}
+  что и нужно было показать, то есть неравенство треугольника справделиво.
 \end{enumerate}
 Аксиомы метрики выполняются, значит, расстояние Хаусдорфа ---
 метрика на замкнутых множествах из $ \mathbb{R}^n$.
