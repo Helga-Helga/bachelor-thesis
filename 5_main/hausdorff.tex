@@ -63,8 +63,8 @@
   Если $x$ принадлежит объединению множеств, то он принадлежит хотя бы одному из этих множеств.
   Значит, найдётся такой $y_{ \varepsilon } \in F$,
   что $x \in \overline{B}_{ \varepsilon } \left( y_{ \varepsilon } \right) $,
-  то есть $d \left( y_{ \varepsilon }, x \right) < \varepsilon $.
-  Это выполнено при любом $ \varepsilon > 0$, следовательно,
+  то есть $d \left( y_{ \varepsilon }, x \right) \leq \varepsilon $.
+  Это выполнено при любом $ \varepsilon \geq 0$, следовательно,
   $x$ либо лежит в $F$, либо является его предельной точкой.
   Но $F$ --- замкнутое множество, откуда следует, что $x \in F$.
 
@@ -77,7 +77,7 @@
   \item $H \left( E, F \right) \leq H \left( E, F \right) + H \left( F, G \right) $
   для любых замкнутых множеств $E, F, G$ из $ \mathbb{R}^n$.
   Нужно проверить, выполняется ли следуеющее следствие
-  \begin{equation*}
+  \begin{equation*}\label{eq:triangle}
     \left. \begin{aligned}
       \varepsilon_{E, G} \geq H \left( E, G \right), \\
       \varepsilon_{G, F} \geq H \left( G, F \right)
@@ -87,19 +87,14 @@
 
   Используем те же действия, что и при проверке второго условия.
   Для первой стоки системы получаем, что из того,
-  что $x \in E$ и $G + \varepsilon_{E, G} \subset E$, следует что $x \in G$.
-  Аналогично, для второй стоки получаем, что из того,
-  что $x \in G$ и $F + \varepsilon_{G, F} \subset G$ следует, что $x \in F$.
-  Таким образом, получаем цепочку включённых друг в друга множеств
-  \begin{equation*}
-    x \in
-    E \subset
-    G + \varepsilon_{E, G} \subset
-    G \subset
-    F + \varepsilon_{G, F} \subset
-    F + \varepsilon_{G, F} + \varepsilon_{E, G},
-  \end{equation*}
-  что и нужно было показать, то есть неравенство треугольника справделиво.
+  что $x \in E$ и $G + \varepsilon_{E, G} \supset E$, следует что $x \in G$.
+  Используя условие из второй строки, получаем, что при этом $F + \varepsilon_{G, F} \supset G$,
+  то есть $x \in F + \varepsilon_{G, F}$, следовательно,
+  при $ \varepsilon_{E, G} \geq 0$ выполняется и
+  $x \in F + \varepsilon_{G, F} + \varepsilon_{E, G}$.
+  Вспоминая, что изначально $x$ лежал в множестве $E$, видим,
+  что следствие \eqref{eq:triangle} выполняется,
+  то есть неравенство треугольника справделиво.
 \end{enumerate}
 Аксиомы метрики выполняются, значит, расстояние Хаусдорфа ---
 метрика на замкнутых множествах из $ \mathbb{R}^n$.
