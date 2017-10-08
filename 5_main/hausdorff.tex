@@ -99,7 +99,7 @@
 Аксиомы метрики выполняются, значит, расстояние Хаусдорфа ---
 метрика на замкнутых множествах из $ \mathbb{R}^n$.
 
-\subsection{Пример}
+\subsection{Пример 1}
 
 Найдём расстояние Хаусдорфа между двумя эллипсами (рис.~\ref{fig:hausdorff:example}) \cite{crownover}
 \begin{gather*}
@@ -138,6 +138,21 @@
 В данном случае $ \varepsilon $~---~это расстояние между точками $A$ и $B$,
 которое равно $ \varepsilon = 1.5 - \left( -2 \right) = 3.5$.
 Поэтому $H \left( E, D \right) = 3.5$.
+
+\subsection{Пример 2}
+
+Пусть $ \left( X, d \right) $~---~ метрическое пространство, $Y \subseteq X$ и $ \varepsilon > 0$.
+Подмножество $S \subseteq X$ называется $ \varepsilon $-сетью для $Y$,
+если для каждого $y \in Y$ найдётся такой $s \in S$, что $d \left( y, s \right) < \varepsilon $.
+Если $Y = X$, то $S$ называется $ \varepsilon $-сетью в $X$.
+
+Пусть $ \left( X, d \right) $~---~компактное метрическое пространство.
+В $X$ возьмём конечную $ \varepsilon $-сеть.
+Это значит, что
+$ \left( \forall x \in X \right) \, \left( \exists s \in S \right) \, :
+  \qquad d \left( x, s \right) < \varepsilon $.
+Тогда расстояние Хаусдорфа между компактом $X$ и $ \varepsilon $-сетью равно
+$H \left( X, S \right) = \varepsilon $.
 
 \section{Случайные величины}
 
