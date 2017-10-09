@@ -12,25 +12,140 @@
 которая сопоставляет каждой точке из исходного множества точку из целевого множества.
 
 Задача состоит в таком выборе матрицы $R$ и вектора $ \vec{b}$,
-при которых расстояние между множествами $ \vec{k}_s$ и $T$ было бы наименьшим.
+при которых расстояние между множествами $ \vec{k}_s$ и $R \cdot \vec{s} + \vec{b}$
+было бы наименьшим.
 В том случае, когда $S$ и $T$ --- конечны,
-можно воспользоваться обычным методом наименьших квадратов.
+можно воспользоваться обычным методом наименьших квадратов
 
-Воспользовавшись методом максимального правдоподобия, получаем оптимизационую задачу
-\begin{equation}
-  P \left(k, R, \vec{b} \right) =
-    \prod \limits_{ \vec{s} \in S}
-      \frac{1}{ \sqrt{2 \pi \sigma^2}} \cdot
-      e^{- \frac{ \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2}{2 \sigma^2}}
-    \to \max \limits_{k, R, \vec{b}}.
-\end{equation}
-После логарифмирования,
-умножения на константу и отбрасывания постоянных слагаемых и множителей получаем задачу минимизации
 \begin{equation}
  E \left( k, R, b \right) =
- \sum \limits_{ \vec{s} \in S}
- \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 \to \min \limits_{k, R, b}.
+ \sum \limits_{s \in S}
+ \left( \vec{k}_s - R \cdot \vec{s} - \vec{b} \right)^2 \to \min \limits_{k, R, b}.
 \end{equation}
+
+Сумма квадратов отклонений между векторами --- это то же самое,
+что сумма квадратов отклонений между проекциями по каждой координате.
+Найдём, чему равна проекция произведения матрицы $R$ на вектор $s$ на все координаты
+\begin{equation*}
+  R \cdot \vec{s} =
+  \begin{bmatrix}
+    r_{xx} & r_{xy} & r_{xz} \\
+    r_{yx} & r_{yy} & r_{yz} \\
+    r_{zx} & r_{zy} & r_{zz}
+  \end{bmatrix} \cdot
+  \begin{bmatrix}
+    s_x \\
+    s_y \\
+    s_z
+  \end{bmatrix} =
+  \begin{bmatrix}
+    r_{xx} \cdot s_x + r_{xy} \cdot s_y + r_{xz} \cdot s_z \\
+    r_{yx} \cdot s_x + r_{yy} \cdot s_y + r_{yz} \cdot s_z \\
+    r_{zx} \cdot s_x + r_{zy} \cdot s_y + r_{zz} \cdot s_z
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \vec{r}_x \cdot \vec{s} \\
+    \vec{r}_y \cdot \vec{s} \\
+    \vec{r_z} \cdot \vec{s}
+  \end{bmatrix}.
+\end{equation*}
+Тогда можем записать проекции суммы квадратов отклонений на все координаты
+\begin{gather*}
+  \begin{cases}
+    E_x = \sum \limits_{s \in S} \left( \vec{r}_x \cdot \vec{s} + b_x - k_{s_x} \right)^2 \to \min, \\
+    E_y = \sum \limits_{s \in S} \left( \vec{r}_y \cdot \vec{s} + b_y - k_{s_y} \right)^2 \to \min, \\
+    E_z = \sum \limits_{s \in S} \left( \vec{r}_z \cdot \vec{s} + b_z - k_{s_z} \right)^2 \to \min,
+  \end{cases}
+\end{gather*}
+где $ \vec{r_x} \cdot \vec{s}$ --- проекция $R \cdot \vec{s}$ на ось $x$.
+
+Имеем линейную функциию, которая возводится в квадрат.
+Это выпуклая фунция.
+Значит, можно взять частные производные по $r_i$ и $x_i$ для всех $i \in \left\{ x, y, z \right\} $
+и приравнять их к нулю.
+Получим 4 уравнения для каждой координаты.
+Запишем для $E_x$, для остальных --- аналогично
+\begin{gather*}
+  \begin{cases}
+    \frac{ \partial E_x}{ \partial b_x} =
+    \sum \limits_{s \in S} 2 \left( \vec{r_x} \cdot \vec{s} + b_x - k_{s_x} \right ) = 0, \\
+    \frac{ \partial E_x}{ \partial r_{xx}} =
+    \sum \limits_{s \in S}
+      2 \left( \vec{r_x} \cdot \vec{s} + b_x - k_{s_x} \right ) \cdot s_x = 0, \\
+    \frac{ \partial E_x}{ \partial r_{xy}} =
+    \sum \limits_{s \in S}
+      2 \left( \vec{r_x} \cdot \vec{s} + b_x - k_{s_x} \right ) \cdot s_y = 0, \\
+    \frac{ \partial E_x}{ \partial r_{xz}} =
+    \sum \limits_{s \in S} 2 \left( \vec{r_x} \cdot \vec{s} + b_x - k_{s_x} \right ) \cdot s_z = 0.
+  \end{cases}
+\end{gather*}
+
+Решаем первое уравнение относительно $b_x$.
+Получаем
+\begin{equation*}
+  \sum \limits_{s \in S} b_x =
+  \sum \limits_{s \in S} \left(k_{s_x} - \vec{r_x} \cdot \vec{s} \right ).
+\end{equation*}
+Слева получили сумму одинаковых слагаемых
+\begin{equation*}
+  \left| S \right| \cdot b_x + \vec{r}_x \sum \limits_{s \in S} \vec{s} =
+  \sum \limits_{s \in S} k_{s_x}.
+\end{equation*}
+Распишем скалярное произведение
+\begin{equation*}
+  \left| S \right| \cdot b_x + \sum \limits_{s \in S} r_{xx} \cdot s_x +
+  \sum \limits_{s \in S} r_{xy} \cdot s_y + \sum \limits_{s \in S} r_{xz} \cdot s_z  =
+  \sum \limits_{s \in S} k_{s_x}.
+\end{equation*}
+
+Решаем остальные уравнения относительно $r_{xi}$ для $i \in \left\{ x, y, z \right\} $.
+Видим, что для разных $i$ производная по $r_{xi}$ одинаковая,
+потому находим решение для $r_{xx}$, а для остальных решение будет аналогичным
+\begin{equation*}
+  \vec{r}_x \sum \limits_{s \in S} \vec{s} \cdot s_x =
+  \sum \limits_{s \in S} \left( k_{s_x} - b_x \right) \cdot s_x.
+\end{equation*}
+Распишем скалярное произведение
+\begin{equation*}
+  r_{xx} \sum \limits_{s \in S} s_x^2 + \sum \limits_{s \in S} b_x \cdot s_x =
+  \sum \limits_{s \in S} k_{s_x} \cdot s_x.
+\end{equation*}
+Получаем систему уравнений
+\begin{equation*}
+  \begin{cases}
+    \left| S \right| \cdot b_x + \sum \limits_{s \in S} r_{xx} \cdot s_x +
+    \sum \limits_{s \in S} r_{xy} \cdot s_y + \sum \limits_{s \in S} r_{xz} \cdot s_z  =
+    \sum \limits_{s \in S} k_{s_x}, \\
+    r_{xx} \sum \limits_{s \in S} s_x^2 + \sum \limits_{s \in S} b_x \cdot s_x =
+    \sum \limits_{s \in S} k_{s_x} \cdot s_x, \\
+    r_{xy} \sum \limits_{s \in S} s_y \cdot s_x + \sum \limits_{s \in S} b_x \cdot s_x =
+    \sum \limits_{s \in S} k_{s_x} \cdot s_y, \\
+    r_{xz} \sum \limits_{s \in S} s_z \cdot s_x + \sum \limits_{s \in S} b_x \cdot s_x =
+    \sum \limits_{s \in S} k_{s_x} \cdot s_z.
+  \end{cases}
+\end{equation*}
+Запишем её в матричном виде
+\begin{equation*}
+  \begin{bmatrix}
+    \left| S \right| & \sum \limits_{s \in S} s_x & \sum \limits_{s \in S} s_y & \sum \limits_{s \in S} s_z \\
+    \sum \limits_{s \in S} s_x & \sum \limits_{s \in S} s_x^2 & 0 & 0 \\
+    \sum \limits_{s \in S} s_x & 0 & \sum \limits_{s \in S} s_y \cdot s_x & 0 \\
+    \sum \limits_{s \in S} s_x & 0 & 0 & \sum \limits_{s \in S} s_z \cdot s_x
+  \end{bmatrix}
+  \begin{bmatrix}
+    b_x \\
+    r_{xx} \\
+    r_{xy} \\
+    r_{xz}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \sum \limits_{s\in S} k_{s_x} \\
+    \sum \limits_{s\in S} k_{s_x} \cdot s_x \\
+    \sum \limits_{s\in S} k_{s_x} \cdot s_y \\
+    \sum \limits_{s\in S} k_{s_x} \cdot s_z
+  \end{bmatrix}.
+\end{equation*}
+
 Два множества зачастую не имеют взаимно-однозначного отображения.
 Это может приводить к тому,
 что два отрезка, расположенные под прямым углом в одном облаке точек,

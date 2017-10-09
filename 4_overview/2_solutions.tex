@@ -8,12 +8,12 @@
 и нулевым вектором смещения $ \vec{b} = \vec{0}$.
 Первая итерация состоит в поиске разметки с фиксированной трансформацией
 \begin{equation}
- \sum \limits_{ \vec{s} \in S}
+ \sum \limits_{s \in S}
  \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 \to \min \limits_{k}.
 \end{equation}
 На следующей итерации происходит поиск поворота и смещения при текущей разметке
 \begin{equation}
- \sum \limits_{ \vec{s} \in S}
+ \sum \limits_{s \in S}
  \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 \to \min \limits_{R, \vec{b}}.
 \end{equation}
 Эти два шага повторяются, пока не будет достигнут желаемый результат,
@@ -25,7 +25,7 @@
 что он рассматривает каждую точку вместе с локальными особенностями поверхности
 \begin{equation}
   E \left( k, R, b \right) =
-  \sum \limits_{ \vec{s} \in S}
+  \sum \limits_{s \in S}
   \alpha_{point} \cdot \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 +
   \alpha_{plane} \cdot
     \left|
