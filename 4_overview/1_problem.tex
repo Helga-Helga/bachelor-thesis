@@ -1,4 +1,4 @@
-\section{Постановка задачи.}
+  \section{Постановка задачи.}
 Есть два облака точек: исходное $S$ (sourсe) и целевое $T$ (target).
 К точкам исходного множества $ \vec{s} \in S$ применили поворот $R \in \mathbb{R}^{3 \times 3}$
 и перемещение $ \vec{b} \in \mathbb{R}^3$,
@@ -24,7 +24,13 @@
 \end{equation}
 
 Сумма квадратов отклонений между векторами --- это то же самое,
-что сумма квадратов отклонений между проекциями по каждой координате.
+что сумма квадратов отклонений между проекциями по каждой координате
+\begin{equation*}
+  E \left( k, R, b \right) =
+    E_x \left( k, R, b \right) + E_y \left( k, R,b \right) + E_z \left( k, R, z \right) \to
+    \min \limits_{k, R, b}.
+\end{equation*}
+
 Найдём, чему равна проекция произведения матрицы $R$ на вектор $s$ на все координаты
 \begin{equation*}
   R \cdot \vec{s} =
@@ -46,18 +52,35 @@
   \begin{bmatrix}
     \vec{r}_x \cdot \vec{s} \\
     \vec{r}_y \cdot \vec{s} \\
-    \vec{r_z} \cdot \vec{s}
-  \end{bmatrix}.
+    \vec{r}_z \cdot \vec{s}
+  \end{bmatrix},
 \end{equation*}
-Тогда можем записать проекции суммы квадратов отклонений на все координаты
+где первая строка получившегося вектора --- проекция $R \cdot \vec{s}$ на ось $x$,
+вторая строка --- проекция на ось $y$, третья --- на ось $z$.
+
+Распишем сумму квадратов отклонений через проекции
+\begin{gather*}
+  E \left( k, R, b \right) =
+  \sum \limits_{s \in S} \left(
+    \vec{r}_x \cdot \vec{s} + \vec{r}_y \cdot \vec{s} + \vec{r}_z \cdot \vec{s} +
+    b_x + b_y + b_z - k_{s_x} - k_{s_y} - k_{s_z} \right)^2 = \\
+  = \sum \limits_{s \in S} \left[
+    \left( \vec{r}_x \cdot \vec{s} + b_x - k_{s_x} \right) +
+    \left( \vec{r}_y \cdot \vec{s} + b_y - k_{s_y} \right) +
+    \left( \vec{r}_z \cdot \vec{s} + b_z - k_{s_z} \right) \right]^2 = \\
+  = \sum \limits_{s \in S} \left( \vec{r}_x \cdot \vec{s} + b_x - k_{s_x} \right)^2 +
+  \sum \limits_{s \in S} \left( \vec{r}_y \cdot \vec{s} + b_y - k_{s_y} \right)^2 +
+  \sum \limits_{s \in S} \left( \vec{r}_z \cdot \vec{s} + b_z - k_{s_z} \right)^2.
+\end{gather*}
+Множество параметров, которые входят в каждую из трёх сумм, разные.
+Тогда можем минимизировать проекции суммы квадратов отклонений на все координаты отдельно
 \begin{gather*}
   \begin{cases}
     E_x = \sum \limits_{s \in S} \left( \vec{r}_x \cdot \vec{s} + b_x - k_{s_x} \right)^2 \to \min, \\
     E_y = \sum \limits_{s \in S} \left( \vec{r}_y \cdot \vec{s} + b_y - k_{s_y} \right)^2 \to \min, \\
-    E_z = \sum \limits_{s \in S} \left( \vec{r}_z \cdot \vec{s} + b_z - k_{s_z} \right)^2 \to \min,
+    E_z = \sum \limits_{s \in S} \left( \vec{r}_z \cdot \vec{s} + b_z - k_{s_z} \right)^2 \to \min.
   \end{cases}
 \end{gather*}
-где $ \vec{r_x} \cdot \vec{s}$ --- проекция $R \cdot \vec{s}$ на ось $x$.
 
 Имеем линейную функциию, которая возводится в квадрат.
 Это выпуклая фунция.
@@ -107,7 +130,8 @@
 \end{equation*}
 Распишем скалярное произведение
 \begin{equation*}
-  r_{xx} \sum \limits_{s \in S} s_x^2 + \sum \limits_{s \in S} b_x \cdot s_x =
+  \sum \limits_{s \in S} r_{xx} \cdot s_x^2 + \sum \limits_{s \in S} r_{xy} \cdot s_x \cdot s_y +
+  \sum \limits_{s \in S} r_{xz} \cdot s_x \cdot s_z + \sum \limits_{s \in S} b_x \cdot s_x =
   \sum \limits_{s \in S} k_{s_x} \cdot s_x.
 \end{equation*}
 Получаем систему уравнений
@@ -116,11 +140,15 @@
     \left| S \right| \cdot b_x + \sum \limits_{s \in S} r_{xx} \cdot s_x +
     \sum \limits_{s \in S} r_{xy} \cdot s_y + \sum \limits_{s \in S} r_{xz} \cdot s_z  =
     \sum \limits_{s \in S} k_{s_x}, \\
-    r_{xx} \sum \limits_{s \in S} s_x^2 + \sum \limits_{s \in S} b_x \cdot s_x =
+    \sum \limits_{s \in S} r_{xx} \cdot s_x^2 + \sum \limits_{s \in S} r_{xy} \cdot s_x \cdot s_y +
+    \sum \limits_{s \in S} r_{xz} \cdot s_x \cdot s_z + \sum \limits_{s \in S} b_x \cdot s_x =
     \sum \limits_{s \in S} k_{s_x} \cdot s_x, \\
-    r_{xy} \sum \limits_{s \in S} s_y \cdot s_x + \sum \limits_{s \in S} b_x \cdot s_x =
+    \sum \limits_{s \in S} r_{xx} \cdot s_x \cdot s_y + \sum \limits_{s \in S} r_{xy} \cdot s_y^2 +
+    \sum \limits_{s \in S} r_{xz} \cdot s_y \cdot s_z + \sum \limits_{s \in S} b_x \cdot s_y =
     \sum \limits_{s \in S} k_{s_x} \cdot s_y, \\
-    r_{xz} \sum \limits_{s \in S} s_z \cdot s_x + \sum \limits_{s \in S} b_x \cdot s_x =
+    \sum \limits_{s \in S} r_{xx} \cdot s_x \cdot s_z +
+    \sum \limits_{s \in S} r_{xy} \cdot s_y \cdot s_z +
+    \sum \limits_{s \in S} r_{xz} \cdot s_z^2 + \sum \limits_{s \in S} b_x \cdot s_z =
     \sum \limits_{s \in S} k_{s_x} \cdot s_z.
   \end{cases}
 \end{equation*}
@@ -128,9 +156,9 @@
 \begin{equation*}
   \begin{bmatrix}
     \left| S \right| & \sum \limits_{s \in S} s_x & \sum \limits_{s \in S} s_y & \sum \limits_{s \in S} s_z \\
-    \sum \limits_{s \in S} s_x & \sum \limits_{s \in S} s_x^2 & 0 & 0 \\
-    \sum \limits_{s \in S} s_x & 0 & \sum \limits_{s \in S} s_y \cdot s_x & 0 \\
-    \sum \limits_{s \in S} s_x & 0 & 0 & \sum \limits_{s \in S} s_z \cdot s_x
+    \sum \limits_{s \in S} s_x & \sum \limits_{s \in S} s_x^2 & \sum \limits_{s \in S} s_x \cdot s_y & \sum \limits_{s \in S} s_x \cdot s_z \\
+    \sum \limits_{s \in S} s_y & \sum \limits_{s \in S} s_x \cdot s_y & \sum \limits_{s \in S} s_y^2 & \sum \limits_{s \in S} s_y \cdot s_z \\
+    \sum \limits_{s \in S} s_z & \sum \limits_{s \in S} s_x \cdot s_z & \sum \limits_{s \in S} s_y \cdot s_z & \sum \limits_{s \in S} s_z^2
   \end{bmatrix}
   \begin{bmatrix}
     b_x \\
@@ -139,12 +167,137 @@
     r_{xz}
   \end{bmatrix} =
   \begin{bmatrix}
-    \sum \limits_{s\in S} k_{s_x} \\
-    \sum \limits_{s\in S} k_{s_x} \cdot s_x \\
-    \sum \limits_{s\in S} k_{s_x} \cdot s_y \\
-    \sum \limits_{s\in S} k_{s_x} \cdot s_z
+    \sum \limits_{s \in S} k_{s_x} \\
+    \sum \limits_{s \in S} k_{s_x} \cdot s_x \\
+    \sum \limits_{s \in S} k_{s_x} \cdot s_y \\
+    \sum \limits_{s \in S} k_{s_x} \cdot s_z
   \end{bmatrix}.
 \end{equation*}
+Введём обозначения:
+\begin{gather*}
+  \sum \limits_{s \in S} s_i = S_i, \qquad i \in \left\{x, y, z \right\}, \\
+  \sum \limits_{s \in S} s_i s_j = S_{ij}, \qquad i, j \in \left\{ x, y, z \right\}, \\
+  \sum \limits_{s \in S} k_{s_x} = k, \\
+  \sum \limits_{s \in S} k_{s_x} \cdot s_i = k_i, \qquad i \in \left\{ x, y, z \right\}.
+\end{gather*}
+Уравнение приняло следующий вид
+\begin{equation*}
+  \begin{bmatrix}
+    \left| S \right| & S_x & S_y & S_z \\
+    S_x & S_{xx} & S_{xy} & S_{xz} \\
+    S_y & S_{xy} & S_{yy} & S_{yz} \\
+    S_z & S_{xz} & S_{yz} & S_{zz}
+  \end{bmatrix}
+  \begin{bmatrix}
+    b_x \\
+    r_{xx} \\
+    r_{xy} \\
+    r_{xz}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    k \\
+    k_x \\
+    k_y \\
+    k_z
+  \end{bmatrix}.
+\end{equation*}
+Используем метод Крамера для решения системы линейных уранений.
+Определитель $ \Delta $
+\begin{gather*}
+  \Delta =
+  \left| S \right| \cdot S_{xx} \cdot S_{yy} \cdot S_{zz} -
+  \sum \limits_{i \in \left\{ x, y, z \right\} } L_i +
+  2 \cdot \left| S \right| \cdot S_{xy} \cdot S_{xz} \cdot S_{yz} - \\
+  - \sum \limits_{i, j, k \in \left\{ x, y, z \right\} } L_{ijk} +
+  2 \sum \limits_{i, j \in \left\{ x, y, z \right\} } L_{ij},
+\end{gather*}
+где введены обозначения при $i, j, k \in \left\{ x, y, z \right\}, \, i \neq j \neq k$
+\begin{gather*}
+  L_i = S_{jk} \cdot \left( \left| S \right| \cdot S_{ii} - S_i^2 \right), \\
+  L_{ij} = S_i \cdot S_j \cdot \left( S_{ij} \cdot S_k - S_{ik} \cdot S_{jk} \right), \\
+  L_{ijk} = S_i^2 \cdot S_{jj} \cdot S_{kk}.
+\end{gather*}
+Определитель $ \Delta_{b}$
+\begin{gather*}
+  \Delta_b =
+  k \cdot S_{xx} \cdot S_{yy} \cdot S_{zz} - \sum \limits_{i \in \left\{ x, y, z \right\} } L_i^b +
+  2 \cdot S_{xy} \cdot S_{xz} \cdot S_{yz} -
+  \sum \limits_{i, j, k \in \left\{ x, y, z \right\} } L_{ijk}^b + \\
+  + \sum \limits_{i, j \in \left\{ x, y, z \right\} } L_{ij}^b +
+  \sum \limits_{i, j \in \left\{ x, y, z \right\} } \left( L_{ij}^b \right)',
+\end{gather*}
+где введены обозначения
+\begin{gather*}
+  L_{ij}^b = S_{ij}^2 \cdot S_{k} \cdot k_k, \\
+  L_{ijk}^b = S_i \cdot S_{jj} \cdot S_{kk}, \\
+  \left( L_{ij}^b \right)' = \left(
+  S_i \cdot k_j + S_k \cdot k_i \right) \cdot \left( S_{ij} \cdot S_{kk} -
+  S_{jk} \cdot S_{ik} \right)
+\end{gather*}
+при $i, j, k \in \left\{ x, y, z \right\}, \, i \neq j \neq k$.
+Определитель $ \Delta_{xx}$
+\begin{gather*}
+  \Delta_{xx} =
+  -k \cdot S_x \cdot S_{yy} \cdot S_{zz} + k \cdot S_x \cdot S_{yz}^2 +
+  k \cdot S_y \cdot S_{xy} \cdot S_{zz} - k \cdot S_y \cdot_{xz} \cdot S_{yz} - \\
+  - k \cdot S_z \cdot S_{xy} \cdot S_{yz} + k \cdot S_{z} \cdot S_{xz} \cdot S_{yy} +
+  k_x \cdot \left| S \right| \cdot S_{yy} \cdot S_{zz} -
+  k_x \cdot \left| S \right| \cdot S_{yz}^2 - \\
+  - k_x \cdot S_y^2 \cdot S_{zz} + 2 \cdot k_x \cdot S_y \cdot S_z \cdot S_{yz} -
+  k_x \cdot S_z^2 \cdot S_{yy} - k_y \cdot \left| S \right| \cdot S_{yz} \cdot S_{zz} + \\
+  + k_y \cdot \left| S \right| \cdot S_{xz} \cdot S_{yz} + k_y \cdot S_x \cdot S_y \cdot S_{zz} -
+  k_y \cdot S_x \cdot S_y \cdot S_{yz} - k_y \cdot S_y \cdot S_z \cdot S_{xz} + \\
+  + k_y \cdot S_z^2 \cdot S_{xy} + k_z \cdot \left| S \right| \cdot S_{xy} \cdot S_{yz} -
+  k_z \cdot \left| S \right| \cdot S_{xz} \cdot S_{yy} - k_z \cdot S_x \cdot S_y \cdot S_{yz} + \\
+  + k_z \cdot S_x \cdot S_z \cdot S_{yy} + k_z \cdot S_y^2 \cdot S_{xz} -
+  k_z \cdot S_y \cdot S_z \cdot S_{xy}.
+\end{gather*}
+Определитель $ \Delta_{xy}$
+\begin{gather*}
+  \Delta_{xy} =
+  k \cdot S_x \cdot S_{xy} \cdot S_{zz} - k \cdot S_x \cdot S_{xz} \cdot S_{yz} -
+  k \cdot S_y \cdot S_{xx} \cdot S_{zz} + k \cdot S_y \cdot S_{xz}^2 + \\
+  + k \cdot S_z \cdot S_{xx} \cdot S_{yz} - k \cdot S_z \cdot S_{xy} \cdot S_{xz} -
+  k_x \cdot \left| S \right| \cdot S_{xy} \cdot S_{zz} +
+  k_x \cdot \left| S \right| \cdot S_{xz} \cdot S_{yz} + \\
+  + k_x \cdot S_x \cdot S_y \cdot S_{zz} - k_x \cdot S_x \cdot S_z \cdot S_{yz} -
+  k_x \cdot S_y \cdot S_z \cdot S_{xz} + k_x \cdot S_z^2 \cdot S_{xy} + \\
+  + k_y \cdot \left| S \right| \cdot S_{xx} \cdot S_{zz} -
+  k_y \cdot \left| S \right| \cdot S_{xz}^2 - k_y \cdot S_x^2 \cdot S_{zz} +
+  2 \cdot k_y \cdot S_x \cdot S_z \cdot S_{xz} - \\
+  - k_y \cdot S_x \cdot S_z \cdot S_{xz} - k_y \cdot S_z^2 \cdot S_{xx} -
+  k_z \cdot \left| S \right| \cdot S_{xx} \cdot S_{yz} +
+  k_z \cdot \left| S \right| \cdot S_{xy} \cdot S_{xz} + \\
+  + k_z \cdot S_x^2 \cdot S_{yz} - k_z \cdot S_x \cdot S_y \cdot S_{xz} -
+  k_z \cdot S_x \cdot S_z \cdot S_{xy} + k_z \cdot S_y \cdot S_z \cdot S_{xx}.
+\end{gather*}
+Определитель $ \Delta_{xz}$
+\begin{gather*}
+  \Delta_{xz} =
+  -k \cdot S_x \cdot S_{xy} \cdot S_{yz} + k \cdot S_x \cdot S_{xz} \cdot S_{yy} +
+  k \cdot S_y \cdot S_{xx} \cdot S_{yz} - \\
+  - k \cdot S_y \cdot S_{xy} \cdot S_{xz} - k \cdot S_z \cdot S_{xx} \cdot S_{yy} +
+  k \cdot S_z \cdot S_{xy}^2 + S_x \cdot \left| S \right| \cdot S_{xy} \cdot S_{yz} - \\
+  - k_x \cdot \left| S \right| \cdot S_{xz} \cdot S_{yy} - k_x \cdot S_x \cdot S_y \cdot S_{yz} +
+  k_x \cdot S_x \cdot S_y \cdot S_{yy} + k_x \cdot S_y^2 \cdot S_{xz} - \\
+  - k_x \cdot S_y \cdot S_z \cdot S_{xy} - k_y \cdot \left| S \right| \cdot S_{xx} \cdot S_{yz} +
+  k_y \cdot \left| S \right| \cdot S_{xy} \cdot S_{xz} + k_y \cdot S_x^2 \cdot S_{yz} - \\
+  - k_y \cdot S_x \cdot S_y \cdot S_{xz} - k_y \cdot S_x \cdot S_z \cdot S_{xy} +
+  k_y \cdot S_y \cdot S_z \cdot S_{xx} +
+  k_z \cdot \left| S \right| \cdot S_{xx} \cdot S_{yy} - \\
+  - k_z \cdot \left| S \right| \cdot S_{xy}^2 - k_z \cdot S_x^2 \cdot S_{yy} +
+  2 \cdot k_z \cdot S_x \cdot S_y \cdot S_{xy} - k_z \cdot S_y^2 \cdot S_{xx}.
+\end{gather*}
+Известно, что решениями есть следующие выражения
+\begin{equation*}
+  b_x = \frac{ \Delta_b}{ \Delta }, \,
+  r_{xx} = \frac{ \Delta_{xx}}{ \Delta }, \,
+  r_{xy} = \frac{ \Delta_{xy}}{ \Delta }, \,
+  r_{xz} = \frac{ \Delta_{xz}}{ \Delta }.
+\end{equation*}
+
+Остальные проекции находим аналогичным образом,
+приравняв частные производные от $E_x$ и $E_y$ к нулю.
 
 Два множества зачастую не имеют взаимно-однозначного отображения.
 Это может приводить к тому,
