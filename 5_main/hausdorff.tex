@@ -142,18 +142,37 @@
 
 \subsection{Пример 2}
 
-Пусть $ \left( X, d \right) $~---~ метрическое пространство, $Y \subseteq X$ и $ \varepsilon > 0$.
-Подмножество $S \subseteq X$ называется $ \varepsilon $-сетью для $Y$,
-если для каждого $y \in Y$ найдётся такой $s \in S$, что $d \left( y, s \right) < \varepsilon $.
-Если $Y = X$, то $S$ называется $ \varepsilon $-сетью в $X$.
+Пусть $ \left( X, d \right) $~---~ метрическое пространство и $A \subset X$.
+Пусть $ \varepsilon > 0$ задано.
+Множество $C$ --- $ \varepsilon $-сеть для множества $A$,
+если для каждого $x \in A$ найдётся такой $y \in C$, что $d \left( x, y \right) < \varepsilon $ или
+$$ \bigcup \limits_{y \in C} B \left( y, \varepsilon \right) \supset A.$$
+Тогда расстояние Хаусдорфа между множеством $A$ и $ \varepsilon $-сетью $C$ на нём равно
+$H \left( C, A \right) = \varepsilon $.
 
-Пусть $ \left( X, d \right) $~---~компактное метрическое пространство.
-В $X$ возьмём конечную $ \varepsilon $-сеть.
-Это значит, что
-$ \left( \forall x \in X \right) \, \left( \exists s \in S \right) \, :
-  \qquad d \left( x, s \right) < \varepsilon $.
-Тогда расстояние Хаусдорфа между компактом $X$ и $ \varepsilon $-сетью равно
-$H \left( X, S \right) = \varepsilon $.
+Покажем это.
+Найдём расстояне Хаусдорфа
+\begin{equation*}
+  H \left( C, A \right) =
+  \inf \left\{
+    \varepsilon \geq 0 \; \middle| \; C + \varepsilon \supset A, \, A + \varepsilon \supset C
+  \right\}.
+\end{equation*}
+По определению
+\begin{equation*}
+  C + \varepsilon =
+  \bigcup \limits_{y \in C} \overline{B} \left( y, \varepsilon \right) \supset
+  \bigcup \limits_{y \in C} B \left( y, \varepsilon \right) \supset
+  A.
+\end{equation*}
+С другой стороны,
+\begin{equation*}
+  A + \varepsilon =
+  \bigcup \limits_{x \in A} \overline{B} \left( x, \varepsilon \right) \supset
+  A \supset C.
+\end{equation*}
+Получили, что $C + \varepsilon \supset A$ и $A + \varepsilon \supset C$,
+то есть $H \left( C, A \right) = \varepsilon$.
 
 \section{Случайные величины}
 
