@@ -4,26 +4,261 @@
 
 Итеративный алгоритм ближайших точек (Iterative Closest Points, ICP) \cite{icp}
 состоит из двух чередующихся операций.
-Инициализируется алгоритм единичной матрицей $R = I$
+Инициализируется алгоритм единичной матрицей поворота $R = I$
 и нулевым вектором смещения $ \vec{b} = \vec{0}$.
-Первая итерация состоит в поиске разметки с фиксированной трансформацией
-\begin{equation}
+Первая итерация состоит в поиске такой разметки $k \, : \, S \to T$, чтобы
+\begin{equation*}
  \sum \limits_{s \in S}
- \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 \to \min \limits_{k}.
-\end{equation}
-На следующей итерации происходит поиск поворота и смещения при текущей разметке
-\begin{equation}
+  \left \Vert R \cdot \vec{s} + \vec{b} - \vec{k}_s \right \Vert^2 \to
+  \min \limits_{k},
+\end{equation*}
+где $R$ и $ \vec{b}$ фиксированы.
+Функция $k$~---~это множество упорядоченных пар $ \left( s, t \right) \in S \times T$, таких,
+что пары существуют для всех элементов множества $S$, и, если первые элементы пар совпадают,
+то совпадают и вторые элементы.
+Тогда можем искать такой набор $ \left\{ \vec{k_s} \; \middle| \; \vec{s} \in S \right\} $, чтобы
+\begin{equation*}
+  \sum \limits_{s \in S} \left \Vert R \vec{s} + \vec{b} - \vec{k_s} \right \Vert^2 \to
+  \min \limits_{k_s}.
+\end{equation*}
+Запишем сумму явно (пусть множество $S$ содержит $n$ точек)
+\begin{equation*}
+  \left \Vert R \cdot \vec{s}_1 + \vec{b} - \vec{k}_{s_1} \right \Vert^2 +
+  \left \Vert R \cdot \vec{s}_2 + \vec{b} - \vec{k}_{s_2} \right \Vert^2 + \dotsc +
+  \left \Vert
+    R \cdot \vec{s}_n + \vec{b} - \vec{k}_{s_n}
+  \right \Vert^2 \to
+  \min \limits_{k_{s_1}, k_{s_2}, \dotsc, k_{s_n} \in T}.
+\end{equation*}
+Параметры, которые входят в каждое слагаемое, независимы, так что
+\begin{align*}
+  \left\{ \begin{array}{ccc}
+    \left \Vert R \cdot \vec{s}_1 + \vec{b} - \vec{k}_{s_1} \right \Vert^2
+    \to \min \limits_{k_{s_1} \in T}, \\
+    \left \Vert R \cdot \vec{s}_2 + \vec{b} - \vec{k}_{s_2} \right \Vert^2 \to
+    \min \limits_{k_{s_2} \in T}, \\
+    \vdots \\
+    \left \Vert
+      R \cdot \vec{s}_n + \vec{b} - \vec{k}_{s_n}
+    \right \Vert^2 \to
+    \min \limits_{k_{s_n} \in T}.
+  \end{array} \right.
+\end{align*}
+Таким образом, для каждой точки $ \vec{s} \in S$ находим точку $ \vec{t} \in T$ такую,
+чтобы расстояние между множеством $R \cdot \vec{s} + \vec{b}$ и множеством $T$ было наименьшим
+\begin{equation*}
+  d \left( R \cdot \vec{s} - \vec{b}, \vec{t} \right) =
+  \min \limits_{t_i \in T} d \left( R \vec{s} - \vec{b}, \vec{t_i} \right).
+\end{equation*}
+
+На следующей итерации происходит поиск поворота $R$ и смещения $ \vec{b}$ при текущей разметке
+$ \left\{ \vec{k}_s \; \middle| \; \vec{s} \in S \right\} $
+\begin{equation*}
  \sum \limits_{s \in S}
- \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 \to \min \limits_{R, \vec{b}}.
+  \left \Vert R \cdot \vec{s} + \vec{b} - \vec{k}_s \right \Vert^2
+ \to \min \limits_{R, b}.
+\end{equation*}
+При этом матрица $R \in SO \left( 3 \right) $,
+то есть ортогональна матрица размерности $3 \times 3$ с определителем $+1$,
+которая в качестве линейного преобразования действует как поворот.
+
+Вычислим смещение $ \vec{b}$.
+Пусть $R$~---~фиксирована, обозначим
+\begin{equation*}
+  E \left( \vec{b} \right) =
+  \sum \limits_{s \in S} \left \Vert R \cdot \vec{s} + \vec{b} - \vec{k}_s \right \Vert^2.
+\end{equation*}
+Можем найти оптимальное смещение, взяв производную $E$ по $ \vec{b}$ и приравняв к нулю
+\begin{equation}\label{eq:derivative}
+  0 =
+  \frac{dE}{d \vec{b}} =
+  \sum \limits_{s \in S} 2 \left( R \cdot \vec{s} + \vec{b} - \vec{k}_s \right) =
+  2 \vec{b} \cdot \left| S \right| +
+  2 R \sum \limits_{s \in S} \vec{s} -
+  2 \sum \limits_{s \in S} \vec{k}_s.
 \end{equation}
+Обозначим
+\begin{equation*}
+  \overline{s} = \frac{ \sum \limits_{s \in S} \vec{s}}{ \left| S \right| }, \,
+  \overline{k}_s = \frac{ \sum \limits_{s \in S} \vec{k}_s}{ \left| S \right| }.
+\end{equation*}
+Перепишем \eqref{eq:derivative} в терминах введённых обозначений
+\begin{equation*}
+  \vec{b} =
+  \overline{k}_s - R \cdot \overline{s}.
+\end{equation*}
+Подставим найденный вектор $ \vec{b}$ в функцию $E$
+\begin{gather*}
+  \sum \limits_{s \in S} \left \Vert R \cdot \vec{s} + \vec{b} - \vec{k}_s \right \Vert^2 =
+  \sum \limits_{s \in S}
+    \left \Vert
+      R \cdot \vec{s} + \overline{k}_s - R \cdot \overline{s} - \vec{k}_s
+    \right \Vert^2 = \\
+  = \sum \limits_{s \in S}
+    \left \Vert
+      R \cdot \left( \vec{s} - \overline{s} \right) - \left( \vec{k}_s - \overline{k}_s \right)
+    \right \Vert^2.
+\end{gather*}
+Таким образом, вычисляем поворот $R$, переформулируя задачу так, чтобы смещение было равно нулю
+\begin{equation*}
+  \vec{x}_s = \vec{s} - \overline{s}, \,
+  \vec{y}_s = \vec{k}_s - \overline{k}_s.
+\end{equation*}
+Ищем оптимальный поворот $R$ такой, что
+\begin{equation}\label{eq:R}
+  R =
+  \arg \min \limits_{R \in SO \left( 3 \right) }
+    \sum \limits_{s \in S} \left \Vert R \cdot \vec{x}_s - \vec{y}_s \right \Vert^2.
+\end{equation}
+Упростим выражение, которое пытаемся минимизировать в \eqref{eq:R}
+\begin{gather*}
+  \left \Vert R \cdot \vec{x}_s - \vec{y}_s \right \Vert^2 =
+  \left( R \cdot \vec{x}_s - \vec{y}_s \right)^T \left( R \cdot \vec{x}_s - \vec{y}_s \right) =
+  \left( \vec{x}_s^T \cdot R^T - \vec{y}_s^T \right)
+  \left( R \cdot \vec{x}_s - \vec{y}_s \right) = \\
+  = \vec{x}_s^T \cdot R^T \cdot R \cdot \vec{x}_s - \vec{y}_s^T \cdot R \cdot \vec{x}_s -
+  \vec{x}_s^T \cdot R^T \cdot \vec{y}_s + \vec{y}_s^T \cdot \vec{y}_s = \\
+  = \vec{x}_s^T \cdot \vec{x_s} - \vec{y}_s^T \cdot R \cdot \vec{x}_s -
+  \vec{x}_s^T \cdot R^T \cdot \vec{y}_s + \vec{y}_s^T \cdot \vec{y}_s.
+\end{gather*}
+Использовали то, что для матрицы поворота $R^T \cdot R = I$ --- единичная матрица.
+
+Заметим, что $ \vec{x}_s^T \cdot R^t \cdot \vec{y}_s $ --- это скаляр:
+$ \vec{x}_s^T$ имеет размерность $1 \times 3, \, R^T$ имеет размерность $3 \times 3$ и
+$ \vec{y}_s$ --- $3 \times 1$.
+Для любого скаляра $a = a^T$, поэтому
+\begin{equation*}
+  \vec{x}_s^T \cdot R^T \cdot \vec{y}_s =
+  \left( \vec{x}_s^T \cdot R^T \cdot \vec{y}_s \right)^T =
+  \vec{y}_s^T \cdot R \cdot \vec{x}_s.
+\end{equation*}
+Имеем
+\begin{equation*}
+  \left \Vert R \cdot \vec{x}_s - \vec{y}_s \right \Vert^2 =
+  \vec{x}_s^T \cdot \vec{x}_s - 2 \vec{y}_s^T \cdot R \cdot \vec{x}_s + \vec{y}_s^T \cdot \vec{y}_s.
+\end{equation*}
+Подставим полученное выражение в \eqref{eq:R}
+\begin{gather*}
+  \arg \min \limits_{R \in SO \left( 3 \right) }
+    \sum \limits_{s \in S} \left \Vert R \cdot \vec{x}_s - \vec{y}_s \right \Vert^2 = \\
+  = \arg \min \limits_{R \in SO \left( 3 \right) }
+    \sum \limits_{s \in S}
+      \left(
+        \vec{x}_s^T \cdot \vec{x}_s - 2 \vec{y}_s^T \cdot R \cdot \vec{x}_s +
+        \vec{y}_s^T \cdot \vec{y}_s
+      \right) = \\
+  = \arg \min \limits_{R \in SO \left( 3 \right) }
+    \left(
+      \sum \limits_{s \in S} \vec{x}_s^T \cdot \vec{x}_s -
+      2 \sum \limits_{s \in S} \vec{y}_s^T \cdot R \cdot \vec{x}_s +
+      \sum \limits_{s \in S} \vec{y}_s \cdot \vec{y}_s
+    \right) = \\
+  = \arg \min \limits_{s \in S}
+    \left( -2 \sum \limits_{s \in S} \vec{y}_s^T \cdot R \cdot \vec{x}_s \right).
+\end{gather*}
+Отбросили суммы $ \vec{x}_s^T \cdot \vec{x}_s$ и $ \vec{y}_s^T \cdot \vec{y}_s$ по всем $s \in S$,
+потому что эти выражения не зависят от $R$ и не влияют на минимизацию.
+То же самое справедливо для константы, на которую, поэтому
+\begin{equation*}
+   \arg \min \limits_{R \in SO \left( 3 \right) }
+    \left( -2 \sum \limits_{s \in S} \vec{y}_s^T \cdot R \cdot \vec{x}_s \right) =
+   \arg \max \limits_{R \in SO \left( 3 \right) }
+    \sum \limits_{R \in SO \left( 3 \right) } \vec{y}_s^T \cdot R \cdot \vec{x}_s.
+\end{equation*}
+Заметим, что
+\begin{equation*}
+  \sum \limits_{s \in S} \vec{y}_s^T \cdot R \cdot \vec{x}_s =
+  tr \left( Y^T \cdot R \cdot X \right),
+\end{equation*}
+где $X$ и $Y$ --- это матрицы $3 \times \left| S \right| = 3 \times n$ со столбцами $ \vec{x}_s$ и
+$ \vec{y}_s$ соответсвенно
+\begin{gather*}
+  Y^T \cdot R \cdot X =
+  \begin{bmatrix}
+    \vec{y}_1^T \\
+    \vec{y}_2^T \\
+    \vdots \\
+    \vec{y}_n^T
+  \end{bmatrix} \cdot R \cdot
+  \begin{bmatrix}
+    \vec{x}_1 & \vec{x}_2 & \dotsc & \vec{x}_n
+  \end{bmatrix}.
+\end{gather*}
+След квадратной матрицы равен сумме её диагональных элементов.
+Ищем такой поворот,
+который будет давать максимум выражению $tr \left( Y^T \cdot R \cdot X \right) $.
+След матрицы имеет свойство
+\begin{equation*}
+  tr \left( A \cdot B \right) =
+  tr \left( B \cdot A \right)
+\end{equation*}
+для любых матриц $A, \, B$ совместимых размерностей.
+Поэтому
+\begin{equation*}
+  tr \left( Y^T \cdot R \cdot X \right) =
+  tr \left( Y^T \cdot \left( R \cdot X \right) \right) =
+  tr \left( R \cdot X \cdot Y^T \right).
+\end{equation*}
+Обозначим $S = X \cdot Y^T$ --- матрица размерности $3 \times 3$.
+Возьмём сингулярное разложение матрицы $S$
+\begin{equation*}
+  S = U \cdot \Sigma \cdot V^T,
+\end{equation*}
+где $U$ и $V$ --- унитарные матрицы размерности $3 \times 3$, а $ \Sigma $ ---
+диагональная матрица размерности $3 \times 3$ с неотрицательными элементами.
+Подставим разложение в след
+\begin{equation*}
+  tr \left( R \cdot X \cdot Y^T \right) =
+  tr \left( R \cdot S \right) =
+  tr \left( R \cdot U \cdot \Sigma \cdot V^T \right) =
+  tr \left( \Sigma \cdot V^T \cdot R \cdot U \right).
+\end{equation*}
+Заметим, что $V, \, R$ и $U$ --- ортогональные матрицы, поэтому $M = V^T \cdot R \cdot U$ ---
+также ортогональная.
+Это означаает, что $ \vec{m}_j^T \cdot \vec{m}_j = 1$ для каждого столбца $ \vec{m}_j$ матрицы $M$.
+Следовательно, все элементы $m_{ij}$ матрицы $M$ не превосходят единицы
+\begin{equation*}
+  1 =
+  \vec{m}_j^T \cdot \vec{m}_j =
+  \sum \limits_{i = 1}^3 m_{ij}^2 \Rightarrow
+  m_{ij}^2 \leq 1 \Rightarrow
+  \left| m_{ij} \right| \leq 1.
+\end{equation*}
+Вспомним, что $ \Sigma $ ---
+диагональная матрица с неотрицательными элементами $ \sigma_1, \sigma_2, \sigma_3 \geq 0$.
+Поэтому
+\begin{equation*}
+  tr \left( \Sigma \cdot M \right) =
+  \begin{bmatrix}
+    \sigma_1 & 0 & 0 \\
+    0 & \sigma_2 & 0 \\
+    0 & 0 & \sigma_3
+  \end{bmatrix} \cdot
+  \begin{bmatrix}
+    m_{11} & m_{12} & m_{13} \\
+    m_{21} & m_{22} & m_{23} \\
+    m_{31} & m_{32} & m_{33}
+  \end{bmatrix} =
+  \sum \limits_{i = 1}^3 \sigma_i \cdot m_{ii} \leq
+  \sum \limits_{i = 1}^3 \sigma_i.
+\end{equation*}
+Поэтому след максимизируется при $m_{ii} = 1 \qquad \forall i \in \left\{ 1, 2, 3 \right\} $.
+Так как $M$ --- ортогональная матрица, то она должна быть единичной \cite{svd}
+\begin{equation*}
+  I = M = V^T \cdot R \cdot U \Rightarrow
+  V = R \cdot U \Rightarrow
+  R = V \cdot U^T.
+\end{equation*}
+
 Эти два шага повторяются, пока не будет достигнут желаемый результат,
-то есть пока расстояние между двумя облаками точек не будет сведено к минимуму.
+то есть пока расстояние между двумя множествами $ \vec{k}_s$ и $R \cdot \vec{s} + \vec{b}$ для всех
+$ \vec{s} \in S$ не будет сведено к минимуму.
 
 \subsection{Итеративный алгоритм ближайших точек с нормалями}
 
 Отличием данного алгоритма (Normal ICP) \cite{nicp} является то,
 что он рассматривает каждую точку вместе с локальными особенностями поверхности
-\begin{equation}
+\begin{equation*}
   E \left( k, R, b \right) =
   \sum \limits_{s \in S}
   \alpha_{point} \cdot \left \Vert \vec{k}_s - R \cdot \vec{s} - \vec{b} \right \Vert^2 +
@@ -32,7 +267,7 @@
       \vec{n}_s^T \cdot \left( \vec{k}_s - R \cdot \vec{s} - \vec{b} \right)
     \right|
   \to \min \limits_{k, R, b},
-\end{equation}
+\end{equation*}
 где $ \alpha_{point}$ и $ \alpha_{plane}$~---~константы,
 а $ \vec{n}_s$~---~нормаль к точке $ \vec{s}$ на исходном облаке.
 Для улучшения работы алгоритма убираются
