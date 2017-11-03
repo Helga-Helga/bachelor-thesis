@@ -76,9 +76,12 @@
 Тогда можем минимизировать проекции суммы квадратов отклонений на все координаты отдельно
 \begin{gather*}
   \begin{cases}
-    E_x = \sum \limits_{s \in S} \left( \vec{r}_x \cdot \vec{s} + b_x - k_{s_x} \right)^2 \to \min, \\
-    E_y = \sum \limits_{s \in S} \left( \vec{r}_y \cdot \vec{s} + b_y - k_{s_y} \right)^2 \to \min, \\
-    E_z = \sum \limits_{s \in S} \left( \vec{r}_z \cdot \vec{s} + b_z - k_{s_z} \right)^2 \to \min.
+    E_x = \sum \limits_{s \in S} \left( \vec{r}_x \cdot \vec{s} + b_x - k_{s_x} \right)^2 \to
+    \min \limits_{r_x, b_x}, \\
+    E_y = \sum \limits_{s \in S} \left( \vec{r}_y \cdot \vec{s} + b_y - k_{s_y} \right)^2 \to
+    \min \limits_{r_y, b_y}, \\
+    E_z = \sum \limits_{s \in S} \left( \vec{r}_z \cdot \vec{s} + b_z - k_{s_z} \right)^2 \to
+    \min \limits_{r_z, b_z}.
   \end{cases}
 \end{gather*}
 
