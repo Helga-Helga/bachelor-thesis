@@ -63,12 +63,13 @@ $ \left\{ \vec{k}_s \; \middle| \; \vec{s} \in S \right\} $
 которая в качестве линейного преобразования действует как поворот.
 
 Вычислим смещение $ \vec{b}$.
-Пусть $R$~---~фиксирована, обозначим
+Пусть $R$~---~фиксирована.
+Минимизируем
 \begin{equation*}
   E \left( \vec{b} \right) =
   \sum \limits_{s \in S} \left \Vert R \cdot \vec{s} + \vec{b} - \vec{k}_s \right \Vert^2.
 \end{equation*}
-Можем найти оптимальное смещение, взяв производную $E$ по $ \vec{b}$ и приравняв к нулю
+Можем найти оптимальное смещение, взяв производную от $E$ по $ \vec{b}$ и приравняв её к нулю
 \begin{equation}\label{eq:derivative}
   0 =
   \frac{dE}{d \vec{b}} =
@@ -99,18 +100,20 @@ $ \left\{ \vec{k}_s \; \middle| \; \vec{s} \in S \right\} $
       R \cdot \left( \vec{s} - \overline{s} \right) - \left( \vec{k}_s - \overline{k}_s \right)
     \right \Vert^2.
 \end{gather*}
-Таким образом, вычисляем поворот $R$, переформулируя задачу так, чтобы смещение было равно нулю
+Таким образом, ищем оптимальный поворот $R$, переформулируя задачу так,
+чтобы смещение было равно нулю.
+Пусть
 \begin{equation*}
   \vec{x}_s = \vec{s} - \overline{s}, \,
-  \vec{y}_s = \vec{k}_s - \overline{k}_s.
+  \vec{y}_s = \vec{k}_s - \overline{k}_s,
 \end{equation*}
-Ищем оптимальный поворот $R$ такой, что
+тогда
 \begin{equation}\label{eq:R}
   R =
   \arg \min \limits_{R \in SO \left( 3 \right) }
     \sum \limits_{s \in S} \left \Vert R \cdot \vec{x}_s - \vec{y}_s \right \Vert^2.
 \end{equation}
-Упростим выражение, которое пытаемся минимизировать в \eqref{eq:R}
+Упростим выражение, которое минимизируем в \eqref{eq:R}
 \begin{gather*}
   \left \Vert R \cdot \vec{x}_s - \vec{y}_s \right \Vert^2 =
   \left( R \cdot \vec{x}_s - \vec{y}_s \right)^T \left( R \cdot \vec{x}_s - \vec{y}_s \right) =
@@ -121,7 +124,7 @@ $ \left\{ \vec{k}_s \; \middle| \; \vec{s} \in S \right\} $
   = \vec{x}_s^T \cdot \vec{x_s} - \vec{y}_s^T \cdot R \cdot \vec{x}_s -
   \vec{x}_s^T \cdot R^T \cdot \vec{y}_s + \vec{y}_s^T \cdot \vec{y}_s.
 \end{gather*}
-Использовали то, что для матрицы поворота $R^T \cdot R = I$ --- единичная матрица.
+Использовали ортогональность матрицы $R$, то есть что $R^T \cdot R = I$~---~единичная матрица.
 
 Заметим, что $ \vec{x}_s^T \cdot R^t \cdot \vec{y}_s $ --- это скаляр:
 $ \vec{x}_s^T$ имеет размерность $1 \times 3, \, R^T$ имеет размерность $3 \times 3$ и
@@ -139,9 +142,8 @@ $ \vec{y}_s$ --- $3 \times 1$.
 \end{equation*}
 Подставим полученное выражение в \eqref{eq:R}
 \begin{gather*}
+  R =
   \arg \min \limits_{R \in SO \left( 3 \right) }
-    \sum \limits_{s \in S} \left \Vert R \cdot \vec{x}_s - \vec{y}_s \right \Vert^2 = \\
-  = \arg \min \limits_{R \in SO \left( 3 \right) }
     \sum \limits_{s \in S}
       \left(
         \vec{x}_s^T \cdot \vec{x}_s - 2 \vec{y}_s^T \cdot R \cdot \vec{x}_s +
@@ -153,17 +155,16 @@ $ \vec{y}_s$ --- $3 \times 1$.
       2 \sum \limits_{s \in S} \vec{y}_s^T \cdot R \cdot \vec{x}_s +
       \sum \limits_{s \in S} \vec{y}_s \cdot \vec{y}_s
     \right) = \\
-  = \arg \min \limits_{s \in S}
+  = \arg \min \limits_{R \in SO \left( 3 \right) }
     \left( -2 \sum \limits_{s \in S} \vec{y}_s^T \cdot R \cdot \vec{x}_s \right).
 \end{gather*}
 Отбросили суммы $ \vec{x}_s^T \cdot \vec{x}_s$ и $ \vec{y}_s^T \cdot \vec{y}_s$ по всем $s \in S$,
 потому что эти выражения не зависят от $R$ и не влияют на минимизацию.
-То же самое справедливо для константы, на которую, поэтому
+То же самое справедливо для константы, на которую умножается сумма, поэтому
 \begin{equation*}
-   \arg \min \limits_{R \in SO \left( 3 \right) }
-    \left( -2 \sum \limits_{s \in S} \vec{y}_s^T \cdot R \cdot \vec{x}_s \right) =
+   R =
    \arg \max \limits_{R \in SO \left( 3 \right) }
-    \sum \limits_{R \in SO \left( 3 \right) } \vec{y}_s^T \cdot R \cdot \vec{x}_s.
+    \sum \limits_{s \in S} \vec{y}_s^T \cdot R \cdot \vec{x}_s.
 \end{equation*}
 Заметим, что
 \begin{equation*}
@@ -185,14 +186,14 @@ $ \vec{y}_s$ соответсвенно
   \end{bmatrix}.
 \end{gather*}
 След квадратной матрицы равен сумме её диагональных элементов.
-Ищем такой поворот,
-который будет давать максимум выражению $tr \left( Y^T \cdot R \cdot X \right) $.
+Ищем такую матрицу $R$,
+которая будет максимизировать выражение $tr \left( Y^T \cdot R \cdot X \right) $.
 След матрицы имеет свойство
 \begin{equation*}
   tr \left( A \cdot B \right) =
   tr \left( B \cdot A \right)
 \end{equation*}
-для любых матриц $A, \, B$ совместимых размерностей.
+для любых матриц $A$ и $B$ совместимых размерностей.
 Поэтому
 \begin{equation*}
   tr \left( Y^T \cdot R \cdot X \right) =
@@ -229,6 +230,7 @@ $ \vec{y}_s$ соответсвенно
 Поэтому
 \begin{equation*}
   tr \left( \Sigma \cdot M \right) =
+  tr \left(
   \begin{bmatrix}
     \sigma_1 & 0 & 0 \\
     0 & \sigma_2 & 0 \\
@@ -238,7 +240,8 @@ $ \vec{y}_s$ соответсвенно
     m_{11} & m_{12} & m_{13} \\
     m_{21} & m_{22} & m_{23} \\
     m_{31} & m_{32} & m_{33}
-  \end{bmatrix} =
+  \end{bmatrix}
+  \right) =
   \sum \limits_{i = 1}^3 \sigma_i \cdot m_{ii} \leq
   \sum \limits_{i = 1}^3 \sigma_i.
 \end{equation*}
