@@ -188,13 +188,41 @@ $ \vec{y}_s$ соответсвенно
 След квадратной матрицы равен сумме её диагональных элементов.
 Ищем такую матрицу $R$,
 которая будет максимизировать выражение $tr \left( Y^T \cdot R \cdot X \right) $.
-След матрицы имеет свойство
+След матрицы имеет свойство \cite{trace:fukugana}
 \begin{equation*}
   tr \left( A \cdot B \right) =
   tr \left( B \cdot A \right)
 \end{equation*}
 для любых матриц $A$ и $B$ совместимых размерностей.
-Поэтому
+
+Приведём доказательство этого свойства.
+Пусть матрица $A$ имеет размерность $n \times m$, а матрица $B$~---~$m \times n$.
+Тогда матрица $C = A \cdot B$~---~матрица размерности $n \times n$ состоит из элементов
+\begin{equation*}
+  c_{ij} =
+  \sum \limits_{r = 1}^m a_{ir} \cdot b_{rj}.
+\end{equation*}
+Аналогично, матрица $D = B \cdot A$ имеет размерность $m \times m$ и состоит из элементов
+\begin{equation*}
+  d_{ij} =
+  \sum \limits_{r = 1}^n b_{ir} \cdot a_{rj}.
+\end{equation*}
+Диагональные элементы матриц $C$ и $D$ имеют вид
+\begin{equation*}
+  c_{ii} = \sum \limits_{r = 1}^m a_{ir} \cdot b_{ri}, \,
+  d_{ii} = \sum \limits_{r = 1}^n b_{ir} \cdot a_{ri}.
+\end{equation*}
+Запишем след для произведений
+\begin{gather*}
+  tr \left( A \cdot B \right) = tr \left( C \right) = \sum \limits_{i = 1}^n c_{ii} =
+  \sum \limits_{i = 1}^n \sum \limits_{r = 1}^m a_{ir} \cdot b_{ri}, \\
+  tr \left( B \cdot A \right) = tr \left( D \right) = \sum \limits_{i = 1}^m d_{ii} =
+  \sum \limits_{i = 1}^m \sum \limits_{r = 1}^n b_{ir} \cdot a_{ri}.
+\end{gather*}
+Получившиеся двойные суммы одинаковы с точностью до переименования индексов суммирования.
+Это означает, что $tr \left( A \cdot B \right) = tr \left( B \cdot A \right) $.
+
+Таким образом,
 \begin{equation*}
   tr \left( Y^T \cdot R \cdot X \right) =
   tr \left( Y^T \cdot \left( R \cdot X \right) \right) =
