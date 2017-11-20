@@ -229,12 +229,12 @@ $ \vec{y}_s$ соответсвенно
   tr \left( R \cdot X \cdot Y^T \right).
 \end{equation*}
 Обозначим $S = X \cdot Y^T$ --- матрица размерности $3 \times 3$.
-Возьмём сингулярное разложение матрицы $S$
+Возьмём сингулярное разложение \cite{golub:svd} матрицы $S$
 \begin{equation*}
   S = U \cdot \Sigma \cdot V^T,
 \end{equation*}
-где $U$ и $V$ --- унитарные матрицы размерности $3 \times 3$, а $ \Sigma $ ---
-диагональная матрица размерности $3 \times 3$ с неотрицательными элементами.
+где $U \in \mathbb{R}^{3 \times 3}$ и $V \in \mathbb{R}^{3 \times 3}$ --- ортогональные матрицы,
+а $ \Sigma \in \mathbb{R}^{3 \times 3}$ --- диагональная матрица с неотрицательными элементами.
 Подставим разложение в след
 \begin{equation*}
   tr \left( R \cdot X \cdot Y^T \right) =
@@ -242,8 +242,8 @@ $ \vec{y}_s$ соответсвенно
   tr \left( R \cdot U \cdot \Sigma \cdot V^T \right) =
   tr \left( \Sigma \cdot V^T \cdot R \cdot U \right).
 \end{equation*}
-Заметим, что $V, \, R$ и $U$ --- ортогональные матрицы, поэтому $M = V^T \cdot R \cdot U$ ---
-также ортогональная.
+Заметим, что $V, \, R$ и $U$ --- ортогональные матрицы,
+поэтому матрица $M = V^T \cdot R \cdot U$ --- также ортогональная.
 Это означаает, что $ \vec{m}_j^T \cdot \vec{m}_j = 1$ для каждого столбца $ \vec{m}_j$ матрицы $M$.
 Следовательно, все элементы $m_{ij}$ матрицы $M$ не превосходят единицы
 \begin{equation*}
