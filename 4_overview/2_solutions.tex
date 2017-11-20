@@ -84,10 +84,10 @@ $ \left\{ \vec{k}_s \; \middle| \; \vec{s} \in S \right\} $
   \overline{k}_s = \frac{ \sum \limits_{s \in S} \vec{k}_s}{ \left| S \right| }.
 \end{equation*}
 Перепишем \eqref{eq:derivative} в терминах введённых обозначений
-\begin{equation*}
+\begin{equation}\label{eq:translation}
   \vec{b} =
   \overline{k}_s - R \cdot \overline{s}.
-\end{equation*}
+\end{equation}
 Подставим найденный вектор $ \vec{b}$ в функцию $E$
 \begin{gather*}
   \sum \limits_{s \in S} \left \Vert R \cdot \vec{s} + \vec{b} - \vec{k}_s \right \Vert^2 =
@@ -234,7 +234,8 @@ $ \vec{y}_s$ соответсвенно
   S = U \cdot \Sigma \cdot V^T,
 \end{equation*}
 где $U \in \mathbb{R}^{3 \times 3}$ и $V \in \mathbb{R}^{3 \times 3}$ --- ортогональные матрицы,
-а $ \Sigma \in \mathbb{R}^{3 \times 3}$ --- диагональная матрица с неотрицательными элементами.
+а $ \Sigma \in \mathbb{R}^{3 \times 3}$ --- диагональная матрица с неотрицательными элементами,
+причём $ \sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
 Подставим разложение в след
 \begin{equation*}
   tr \left( R \cdot X \cdot Y^T \right) =
@@ -254,7 +255,7 @@ $ \vec{y}_s$ соответсвенно
   \left| m_{ij} \right| \leq 1.
 \end{equation*}
 Вспомним, что $ \Sigma $ ---
-диагональная матрица с неотрицательными элементами $ \sigma_1, \sigma_2, \sigma_3 \geq 0$.
+диагональная матрица с неотрицательными элементами $ \sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
 Поэтому
 \begin{equation*}
   tr \left( \Sigma \cdot M \right) =
@@ -274,12 +275,75 @@ $ \vec{y}_s$ соответсвенно
   \sum \limits_{i = 1}^3 \sigma_i.
 \end{equation*}
 Поэтому след максимизируется при $m_{ii} = 1 \qquad \forall i \in \left\{ 1, 2, 3 \right\} $.
-Так как $M$ --- ортогональная матрица, то она должна быть единичной \cite{svd}
+Так как $M$ --- ортогональная матрица, то она должна быть единичной
 \begin{equation*}
   I = M = V^T \cdot R \cdot U \Rightarrow
   V = R \cdot U \Rightarrow
   R = V \cdot U^T.
 \end{equation*}
+
+Заметим, что сейчас $R$ --- это ортогональная матрица, но при этом возможны две ситуации:
+когда $det R = det \left( V \cdot U^T \right) = 1$,
+то есть матрица $R$ действует как поворот, и $det R = det \left( V \cdot U^T \right) = -1$,
+то есть матрица $R$ действует как поворот и отражение.
+Предположим, что $det \left( V \cdot U^T \right) = -1$.
+Это эквивалентно тому, что $detM = -1$.
+Ищем такую матрицу $M$,
+которая максимизирует выражение
+\begin{equation*}
+  tr \left( \Sigma \cdot M \right) =
+  \sigma_1 \cdot m_{11} + \sigma_2 \cdot m_{22} + \sigma_3 \cdot m_{33}.
+\end{equation*}
+Рассматриваем переменные $ \left( m_{11}, m_{22}, m_{33} \right) $.
+Это множество всех диагоналей ортогональной матрицы порядка 3.
+Альфред Хорн доказал \cite{horn:diagonal:rotation},
+что вектор $ \left( d_1, \dotsc, d_n \right) $ ---
+это диагональ матрицы поворота порядка $n$ тогда и только тогда,
+когда он лежит в выпуклой оболочке точек $ \left( \pm 1, \dotsc, \pm 1 \right) $,
+где чётное число значений (в том числе 0) равно $-1$.
+Для нашего случая эта теорема принимает вид: $M$ --- матрица поворота тогда и только тогда,
+когда её диагональ $ \left( m_{11}, m_{22}, m_{33} \right) $ лежит в выпуклой оболочке точек
+$ \left( \pm 1, \pm 1, \pm 1 \right) $, где чётное число координат (в том числе 0) равно $-1$.
+Матрица $M$ --- матрица поворота и отражения,
+потому для неё оптимальная диагональ имеет вид $ \left( 1, 1, -1 \right) $,
+когда нечётное число значений равно $-1$, соответственно,
+\begin{equation*}
+  tr \left( \Sigma \cdot M \right) = \sigma_1 + \sigma_2 - \sigma_3.
+\end{equation*}
+Это значение больше любого другого вектора из $ \left( \pm 1, \pm 1, \pm 1 \right) $
+за исключением $ \left( 1, 1, 1 \right) $,
+потому что $ \sigma_3$ --- это наименьшее сингулярное значение.
+
+Таким образом, если $det \left( V \cdot U^T \right) = -1$, то
+\begin{equation*}
+  M =
+  V^T \cdot R \cdot U =
+  \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & -1
+  \end{bmatrix} \Rightarrow
+  R =
+  V \cdot
+  \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & -1
+  \end{bmatrix} \cdot U^T.
+\end{equation*}
+
+Таким образом, искомая матрица поворота $R$ имеет вид  \cite{svd}
+\begin{equation*}
+  R =
+  V \cdot
+  \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & det \left( V \cdot U^T \right)
+  \end{bmatrix} \cdot U^T,
+\end{equation*}
+а оптимальный вектор сдвига вычисляется по формуле \eqref{eq:translation}
+
 
 Эти два шага повторяются, пока не будет достигнут желаемый результат,
 то есть пока расстояние между двумя множествами $ \vec{k}_s$ и $R \cdot \vec{s} + \vec{b}$ для всех
