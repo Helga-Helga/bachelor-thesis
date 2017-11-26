@@ -380,8 +380,167 @@ $ \left( \pm 1, \pm 1, \pm 1 \right) $, где чётное число коор�
   \label{fig:triangles}
 \end{figure}
 
-Множества представляют собой два идентичных треугольника, отличающихся поворотом и смещением.
-Множество $T$ изображено пунктиром, а множество $S$ --- сплошной линией.
+Множества представляют собой два идентичных треугольника,
+отличающихся углом поворота $ \pi $ и смещением
+\begin{equation*}
+  \vec{b} =
+  \begin{bmatrix}
+    \frac{ \sqrt{2}}{2} \\
+    \frac{ \sqrt{2}}{2}
+  \end{bmatrix}
+\end{equation*}
+Множество $T$ изображено пунктиром.
+Это треугольник с вершинами
+$ \left( 0, 0 \right), \left( 0, 1 \right) $ и $ \left( 1, 0 \right) $.
+Множество $S = R \cdot \vec{t} + \vec{b}$~---~сплошной линией,
+где $ \vec{t}$~---~точки множетсва $T$,
+а матрица поворота
+\begin{equation}
+  R =
+  \begin{bmatrix}
+    \cos \theta & -\sin \theta \\
+    \sin \theta & \cos \theta
+  \end{bmatrix} =
+  \begin{bmatrix}
+    -1 & 0 \\
+    0 & -1
+  \end{bmatrix}.
+\end{equation}
+Таким образом, множества $T$ и $S$ имеют вид
+\begin{equation*}
+  T =
+  \begin{bmatrix}
+    0 & 0 & 1 \\
+    0 & 1 & 0
+  \end{bmatrix}, \,
+  S =
+  \begin{bmatrix}
+    \frac{ \sqrt{2}}{2} & \frac{ \sqrt{2}}{2} & \frac{ \sqrt{2}}{2} - 1 \\
+    \frac{ \sqrt{2}}{2} & \frac{ \sqrt{2}}{2} - 1 & \frac{ \sqrt{2}}{2}
+  \end{bmatrix}.
+\end{equation*}
+
+Считаем расстояния от каждой точки из множества $S$ до каждой точки из множества $T$
+\begin{gather*}
+  d \left( \vec{s}_1, \vec{t}_1 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 0 \right)^2} = 1, \\
+  d \left( \vec{s}_1, \vec{t}_2 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 \right)^2} \approx 0.77, \\
+  d \left( \vec{s}_1, \vec{t}_3 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 0 \right)^2} \approx 0.77, \\
+  d \left( \vec{s}_2, \vec{t}_1 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 - 0 \right)^2} \approx 0.77, \\
+  d \left( \vec{s}_2, \vec{t}_2 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 - 1 \right)^2} \approx 1.47, \\
+  d \left( \vec{s}_2, \vec{t}_3 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 - 0 \right)^2} \approx 0.41, \\
+  d \left( \vec{s}_3, \vec{t}_1 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 0 \right)^2} \approx 0.77, \\
+  d \left( \vec{s}_3, \vec{t}_2 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 \right)^2} \approx 0.41, \\
+  d \left( \vec{s}_3, \vec{t}_3 \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 - 1 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 0 \right)^2} \approx 1.47.
+\end{gather*}
+
+Выбираем минимальные расстояния для каждой точки $ \vec{s} \in S$.
+Таким образом, разметка имеет вид
+\begin{equation*}
+  \vec{k}_{s_1} = \vec{t_2}, \,
+  \vec{k}_{s_2} = \vec{t_3}, \,
+  \vec{k}_{s_3} = \vec{t_2}.
+\end{equation*}
+
+Находим
+\begin{gather*}
+  \overline{s} = \frac{1}{3}
+  \begin{bmatrix}
+    \frac{ \sqrt{2}}{2} + \frac{ \sqrt{2}}{2} + \frac{ \sqrt{2}}{2} - 1 \\
+    \frac{ \sqrt{2}}{2} + \frac{ \sqrt{2}}{2} - 1 + \frac{ \sqrt{2}}{2}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    0.37 \\
+    0.37
+  \end{bmatrix}, \\
+  \overline{k}_s = \frac{1}{3}
+  \begin{bmatrix}
+    0 + 1 + 0 \\
+    1 + 0 + 1
+  \end{bmatrix} =
+  \begin{bmatrix}
+    0.33 \\
+    0.67
+  \end{bmatrix}.
+\end{gather*}
+Находим матрицы
+\begin{gather*}
+  \tilde{S} =
+  \begin{bmatrix}
+    \frac{ \sqrt{2}}{2} - \frac{ \sqrt{2}{2}} + \frac{1}{3} & \frac{ \sqrt{2}}{2} - \frac{ \sqrt{2}}{2} + \frac{1}{3} & \frac{ \sqrt{2}}{2} - 1 - \frac{ \sqrt{2}}{2} + \frac{1}{3} \\
+    \frac{ \sqrt{2}}{2} - \frac{ \sqrt{2}}{2} + \frac{1}{3} & \frac{ \sqrt{2}}{2} - 1 - \frac{ \sqrt{2}}{2} + \frac{1}{3} & \frac{ \sqrt{2}}{2} - \frac{ \sqrt{2}}{2} + \frac{1}{3}
+  \end{bmatrix} \approx \\
+  \approx \begin{bmatrix}
+    0.33 & 0.33 & -0.67 \\
+    0.33 & -0.67 & 0.33
+  \end{bmatrix}, \\
+  \tilde{K}_s =
+  \begin{bmatrix}
+    0 - \frac{1}{3} & 1 - \frac{1}{3} & 0 - \frac{1}{3} \\
+    1 - \frac{2}{3} & 0 - \frac{2}{3} & 1 - \frac{2}{3}
+  \end{bmatrix} \approx
+  \begin{bmatrix}
+    -0.33 & 0.67 & -0.33 \\
+    0.33 & -0.67 & 0.33
+  \end{bmatrix}.
+\end{gather*}
+Вычисляем матрицу $X$ и берём от неё сигнулярное разложение
+\begin{gather*}
+  X = \tilde{S} \cdot \tilde{K}_s^T =
+  \begin{bmatrix}
+    0.33 & -0.33 \\
+    -0.67 & 0.67
+  \end{bmatrix} = \\
+  = \begin{bmatrix}
+    -0.4472136 & 0.89442719 \\
+    0.89442719 & 0.4472136
+  \end{bmatrix} \cdot
+  \begin{bmatrix}
+    1.05409255 & 0 \\
+    0 & 0
+  \end{bmatrix} \cdot
+  \begin{bmatrix}
+    -0.70710678 & -0.70710678 \\
+    -0.70710678 & -0.70710678
+  \end{bmatrix} =
+  U \cdot \Sigma \cdot V^T.
+\end{gather*}
+Вычисляем матрицу поворота
+\begin{equation*}
+  R = V \cdot U^T
+  \begin{bmatrix}
+    0.9486833 & -0.31622777 \\
+    0.31622777 & 0.9486833
+  \end{bmatrix}.
+\end{equation*}
+Определитель этой матрицы равен единице, поэтому $R$~---~матрица поворота.
+Находим смещение
+\begin{equation*}
+  \vec{b} =
+  \overline{k}_s - R \cdot \overline{s} =
+  \begin{bmatrix}
+    0.09693825 \\
+    0.1938765
+  \end{bmatrix}.
+\end{equation*}
+Находим новое множество $S$
+\begin{equation*}
+  S =
+  \begin{bmatrix}
+    0.54 & 0.86 & -0.4 \\
+    1.09 & 0.14 & 0.77
+  \end{bmatrix}.
+\end{equation*}
+Новая разметка совпадает со старой, значит, можем завершить вычисления.
+Полученные взаимные размещения множеств изображены на рисунке \ref{fig:triangles_result}
+
+
+\begin{figure}[h]
+  \centering
+  \includestandalone[mode=buildnew]{../tikz/triangles_result}
+  \caption{Результат ICP для треугольников}
+  \label{fig:triangles_result}
+\end{figure}
+
 Правильным результатом были бы такие поворот и смещение,
 когда все соответствующие точки двух треугольников имели бы одинаковое положение.
 Из-за того, что ближайшие точки не являются соответствующими, глобальный минимум не достигается.
