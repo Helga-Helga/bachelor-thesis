@@ -254,13 +254,20 @@ $ \tilde{k}_s$~---~$3 \times 1$.
 где $U \in \mathbb{R}^{3 \times 3}$ и $V \in \mathbb{R}^{3 \times 3}$~---~ортогональные матрицы,
 а $ \Sigma \in \mathbb{R}^{3 \times 3}$~---~диагональная матрица с неотрицательными элементами,
 причём $ \sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
-Ранг матрицы $ \Sigma $ меньше трёх, если
-$rank \, X =
-  rank \left( \tilde{S} \cdot \tilde{K}^T \right) < 3$.
-Такое возможно, если матрица $X$ имеет нулевой определитель,
-то есть у неё есть столбец, который является линейной комбинацией остальных столбцов.
+Ранг матрицы $ \Sigma $ меньше трёх, если \cite{rankAB}
+\begin{equation*}
+  rank \, X =
+  rank \left( \tilde{S} \cdot \tilde{K}^T \right) \leq
+  \min \left\{ rank \, \tilde{S}, rank \, \tilde{K}^T \right\} < 3.
+\end{equation*}
+Такое возможно, если:
+\begin{itemize}
+  \item матрица $ \tilde{S}$ или матрица $ \tilde{K}^T$
+  имеет меньше трёх линейно независимых векторов;
+  \item $ \det{X} = \det{ \left( \tilde{S} \cdot \tilde{K}^T \right) } = 0$ \cite{faddeev:rank:det}.
+\end{itemize}
 
-Раскроем этот определитель матрицы
+Раскроем этот определитель
 \begin{gather*}
   \det{X} =
   \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i x} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i y} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i z} + \\
@@ -274,11 +281,11 @@ $rank \, X =
 Выпишем отдельно один элемент матрицы $X$
 \begin{gather*}
   \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i x} =
-  \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \left( R \vec{s}_i + \vec{b} + \vec{ \xi }_{s_i} - \frac{ \sum \limits_{j = 1}^n \left( R \cdot \vec{s}_j + \vec{b} + \vec{ \xi }_{s_j} \right) }{n} \right)_x \sim \\
+  \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \left[ R \vec{s}_i + \vec{b} + \vec{ \xi }_{s_i} - \frac{ \sum \limits_{j = 1}^n \left( R \cdot \vec{s}_j + \vec{b} + \vec{ \xi }_{s_j} \right) }{n} \right]_x \sim \\
   \sim N \left(
     \sum \limits_{i = 1}^n
-      \tilde{s}_{ix} \cdot \left( R \cdot \vec{s}_i + \vec{b} -
-      \frac{ \sum \limits_{j = 1}^n \left( R \cdot \vec{s}_j + \vec{b} \right) }{n} \right)_x,
+      \tilde{s}_{ix} \cdot \left[ R \cdot \vec{s}_i + \vec{b} -
+      \frac{ \sum \limits_{j = 1}^n \left( R \cdot \vec{s}_j + \vec{b} \right) }{n} \right]_x,
     \frac{ \sigma^2 \cdot I \cdot \left( n - 1 \right) }{n} \sum \limits_{i = 1}^n \tilde{s}_{ix}^2
   \right).
 \end{gather*}
