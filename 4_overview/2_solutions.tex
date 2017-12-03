@@ -107,8 +107,8 @@ $ \left\{ \vec{k}_s \; \middle| \; \vec{s} \in S \right\} $
 чтобы смещение было равно нулю.
 Пусть
 \begin{equation*}
-  \tilde{k}_s = \vec{s} - \overline{s}, \,
-  \tilde{s} = \vec{k}_s - \overline{k}_s,
+  \tilde{s} = \vec{s} - \overline{s}, \,
+  \tilde{k}_s = \vec{k}_s - \overline{k}_s,
 \end{equation*}
 тогда
 \begin{equation}\label{eq:R}
@@ -181,10 +181,10 @@ $ \tilde{k}_s$~---~$3 \times 1$.
 \begin{gather*}
   \tilde{K}^T \cdot R \cdot \tilde{S} =
   \begin{bmatrix}
-    \tilde{k}_1^T \\
-    \tilde{k}_2^T \\
+    \tilde{k}_{s_1}^T \\
+    \tilde{k}_{s_2}^T \\
     \vdots \\
-    \tilde{k}_n^T
+    \tilde{k}_{s_n}^T
   \end{bmatrix} \cdot R \cdot
   \begin{bmatrix}
     \tilde{s}_1 & \tilde{s}_2 & \dotsc & \tilde{s}_n
@@ -233,7 +233,20 @@ $ \tilde{k}_s$~---~$3 \times 1$.
   tr \left( \tilde{K}^T \cdot \left( R \cdot \tilde{S} \right) \right) =
   tr \left( R \cdot \tilde{S} \cdot \tilde{K}^T \right).
 \end{equation*}
-Обозначим $X = \tilde{S} \cdot \tilde{K}^T$~---~матрица размерности $3 \times 3$.
+Обозначим
+\begin{gather*}
+  X =
+  \tilde{S} \cdot \tilde{K}^T =
+  \sum \limits_{i = 1}^n \tilde{s}_i \cdot \tilde{k}_{s_i}^T =
+  \sum \limits_{i = 1}^n
+    \tilde{s}_i \cdot \left( \vec{k}_{s_i} - \overline{k}_s \right)^T = \\
+  = \begin{bmatrix}
+    \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i x} & \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i y} & \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i z} \\
+    \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i x} & \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i y} & \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i z} \\
+    \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i x} & \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i y} & \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i z}
+  \end{bmatrix}.
+\end{gather*}
+
 Возьмём сингулярное разложение \cite{golub:svd} матрицы $X$
 \begin{equation*}
   X = U \cdot \Sigma \cdot V^T,
@@ -241,7 +254,41 @@ $ \tilde{k}_s$~---~$3 \times 1$.
 где $U \in \mathbb{R}^{3 \times 3}$ и $V \in \mathbb{R}^{3 \times 3}$~---~ортогональные матрицы,
 а $ \Sigma \in \mathbb{R}^{3 \times 3}$~---~диагональная матрица с неотрицательными элементами,
 причём $ \sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
-Подставим разложение в след
+Ранг матрицы $ \Sigma $ меньше трёх, если
+$rank \, X =
+  rank \left( \tilde{S} \cdot \tilde{K}^T \right) < 3$.
+Такое возможно, если матрица $X$ имеет нулевой определитель,
+то есть у неё есть столбец, который является линейной комбинацией остальных столбцов.
+
+Раскроем этот определитель матрицы
+\begin{gather*}
+  \det{X} =
+  \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i x} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i y} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i z} + \\
+  + \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i y} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i z} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i x} + \\
+  + \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i z} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i x} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i y} - \\
+  - \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i x} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i z} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i y} - \\
+  - \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i y} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i x} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i z} - \\
+  - \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i z} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i y} \cdot \sum \limits_{i = 1}^n \tilde{s}_{iz} \cdot \tilde{k}_{s_i x}.
+\end{gather*}
+
+Выпишем отдельно один элемент матрицы $X$
+\begin{gather*}
+  \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i x} =
+  \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \left( R \vec{s}_i + \vec{b} + \vec{ \xi }_{s_i} - \frac{ \sum \limits_{j = 1}^n \left( R \cdot \vec{s}_j + \vec{b} + \vec{ \xi }_{s_j} \right) }{n} \right)_x \sim \\
+  \sim N \left(
+    \sum \limits_{i = 1}^n
+      \tilde{s}_{ix} \cdot \left( R \cdot \vec{s}_i + \vec{b} -
+      \frac{ \sum \limits_{j = 1}^n \left( R \cdot \vec{s}_j + \vec{b} \right) }{n} \right)_x,
+    \frac{ \sigma^2 \cdot I \cdot \left( n - 1 \right) }{n} \sum \limits_{i = 1}^n \tilde{s}_{ix}^2
+  \right).
+\end{gather*}
+Это гауссовская случайная величина, то есть величина, имеющая непрерывное распределение.
+Тогда $ \det{X}$~---~случайная величина с непрерывным распределением, и вероятность того,
+что $ \det{X} = 0$, равна нулю.
+Таким образом, матрица $ \Sigma $ будет иметь ранг 3 с вероятностью 1,
+то есть имеет место неравенство $ \sigma_1 \geq \sigma_2 \geq \sigma_3 > 0$.
+
+Подставим сингулярное разложение в след
 \begin{equation*}
   tr \left( R \cdot X \cdot Y^T \right) =
   tr \left( R \cdot S \right) =
@@ -291,12 +338,6 @@ $ \tilde{k}_s$~---~$3 \times 1$.
   V = R \cdot U \Rightarrow
   R = V \cdot U^T.
 \end{equation*}
-
-Если матрица $ \Sigma $ имеет нулевые элементы на диагонали,
-то это никак не влияет на результат.
-Все элементы матрицы $M$ ограничиваются единицами, поэтому для тех $m_{ii}$,
-где $ \sigma_i = 0$, берём максимальное значение, то есть $m_{ii} = 1$.
-Снова получаем единичную матрицу.
 
 Заметим, что сейчас $R$ --- это ортогональная матрица, но при этом возможны две ситуации:
 когда $ \det{R} = \det{ \left( V \cdot U^T \right) } = 1$,
