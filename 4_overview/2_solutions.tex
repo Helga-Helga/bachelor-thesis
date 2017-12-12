@@ -280,36 +280,61 @@ $ \tilde{k}_s$~---~$3 \times 1$.
     \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i y}^T \cdot
     \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i z}^T -
     \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i y}^T \cdot
-    \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i z}^T \right).
+    \sum \limits_{i = 1}^n \tilde{s}_{iy} \cdot \tilde{k}_{s_i z}^T \right) = \\
+  = \prod \left(
+    \tilde{k}_{s_1 x}^T, \tilde{k}_{s_1 y}^T, \tilde{k}_{s_1 z}^T, \dotsc,
+    \tilde{k}_{s_n x}^T, \tilde{k}_{s_n y}^T, \tilde{k}_{s_n z}^T
+  \right),
 \end{gather*}
-
-Выпишем отдельно один элемент матрицы $X$
+где $ \prod $~---~многочлен.
+Покажем, что вероятность того, что определитель равен нулю, равна нулю.
+Выпишем отдельно одну переменную многочлена $ \prod $
 \begin{gather*}
-  \sum \limits_{i = 1}^n \tilde{s}_{ix} \cdot \tilde{k}_{s_i x}^T =
-  \sum \limits_{i = 1}^n
-    \tilde{s}_{ix} \cdot \left[
-      R \vec{s}_i + \vec{b} + \vec{ \xi }_{s_i} -
-      \frac{1}{n} \sum \limits_{j = 1}^n
-        \left( R \cdot \vec{s}_j + \vec{b} + \vec{ \xi }_{s_j} \right) \right]_x^T = \\
-  = \sum \limits_{i = 1}^n
-    \tilde{s}_{ix} \cdot \left(
-    R \cdot \vec{s}_i + \vec{b} - \frac{1}{n} \sum \limits_{j = 1}^n
-      \left( R \cdot \vec{s}_j + \vec{b} \right) \right)_x^T +
-  \sum \limits_{i = 1}^n
-    \tilde{s}_{ix} \cdot \left(
-      \vec{ \xi }_{s_i} - \frac{1}{n} \sum \limits_{j = 1}^n \vec{ \xi }_{s_j} \right)_x^T \sim \\
+  \tilde{k}_{s_1 x}^T =
+  \left[
+    R \cdot \vec{s}_1 + \vec{b} + \vec{ \xi }_{s_1} -
+    \frac{1}{ \left| S \right| } \sum \limits_{s \in S}
+      \left( R \cdot \vec{s} + \vec{b} + \vec{ \xi }_s \right) \right]_x^T = \\
+  = \left[
+    R \cdot \vec{s}_1 + \vec{b} - \frac{1}{ \left| S \right| } \sum \limits_{s \in S}
+      \left( R \cdot \vec{s} + \vec{b} \right) \right]_x^T +
+  \left[
+    \vec{ \xi }_{s_1} -
+    \frac{1}{ \left| S \right| } \sum \limits_{s \in S} \vec{ \xi }_{s} \right]_x^T \sim \\
   \sim N \left(
-    \sum \limits_{i = 1}^n
-      \tilde{s}_{ix} \cdot \left[ R \cdot \vec{s}_i + \vec{b} -
-      \frac{1}{n} \sum \limits_{j = 1}^n \left( R \cdot \vec{s}_j + \vec{b} \right) \right]_x^T,
-      \frac{n - 1}{n} \cdot \sigma^2 \sum \limits_{i = 1}^n \tilde{s}_{ix}^2
+    \left[ R \cdot \vec{s}_1 + \vec{b} -
+    \frac{1}{ \left| S \right| } \sum \limits_{s \in S} \left(
+      R \cdot \vec{s} + \vec{b}
+    \right) \right]_x^T,
+    \frac{ \left| S \right| - 1}{ \left| S \right| } \cdot \sigma^2
   \right).
 \end{gather*}
 Это гауссовская случайная величина, то есть величина, имеющая непрерывное распределение.
-Тогда $ \det{X}$~---~случайная величина с непрерывным распределением, и вероятность того,
-что $ \det{X} = 0$, равна нулю.
-Таким образом, матрица $ \Sigma $ будет иметь ранг 3 с вероятностью 1,
+Тогда
+\begin{gather*}
+  P \left( \det{X} = 0 \right) =
+  M P \left(
+    \det{X} = 0 \; \middle|
+    \tilde{k}_{s_1 y}^T, \tilde{k}_{s_1 z}^T, \dotsc,
+    \tilde{k}_{s_n x}^T, \tilde{k}_{s_n y}^T, \tilde{k}_{s_n z}^T
+  \right) = \\
+  = M \mathbbm{1} \left\{
+    F_{ \tilde{k}_{s_1 y}^T, \tilde{k}_{s_1 z}^T, \dotsc, \tilde{k}_{s_n x}^T, \tilde{k}_{s_n y}^T, \tilde{k}_{s_n z}}
+    \left( \tilde{k}_{s_1 x} \right) = 0
+  \right\},
+\end{gather*}
+где $F_{a, b, c, \dotsc, d} \left( \cdot \right) $~---~многочлен.
+Фиксируем элементы, которые стоят в его индексе.
+Тогда
+\begin{equation*}
+  P \left\{ F_{a, b, c, \dotsc, d} \left( \tilde{k}_{s_1 x} \right) = 0 \right\} = 0.
+\end{equation*}
+Так как $\tilde{k}_{s_1 x}$~---~случайная величина с непрерывным распределением,
+то она принимает фиксированное значение с нулевой вероятностью.
+Таким образом, $P \left( \det{X} = 0 \right) = M 0 = 0$,
+и матрица $ \Sigma $ будет иметь ранг 3 с вероятностью 1,
 то есть имеет место неравенство $ \sigma_1 \geq \sigma_2 \geq \sigma_3 > 0$.
+Это означает, что сингулярное разложение матрицы будет единственным.
 
 Подставим сингулярное разложение в след
 \begin{equation*}
@@ -431,7 +456,7 @@ $ \left( \pm 1, \pm 1, \pm 1 \right) $, где чётное число коор�
 \end{enumerate}
 пока не будет достигнут минимум в \eqref{eq:least:squares}.
 
-Покажем, что итераивный алгоритм ближайших точек всегда сходится.
+Покажем, что итеративный алгоритм ближайших точек всегда сходится.
 Предположим, что алгоритм никуда не сходится.
 Тогда существует такое конечное множество $S$, матрица поворота $R$,
 вектор смещения $ \vec{b}$ и шум $ \vec{ \xi}_s$,
