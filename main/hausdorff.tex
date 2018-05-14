@@ -1,0 +1,176 @@
+\chapter{Відстань Хаусдорфа}
+\section{Теоретичні основи}
+Метричний простір \cite{DorogovtsevMA}~---~це пара $ \left( S, d \right) $,
+яка складається з множини $S$ і метрики
+$d \; : \; S \times S \rightarrow \mathbb{R}$,
+тобто для будь-яких $x, y, z \in S$ виконується
+\begin{enumerate}
+  \item $d \left( x, y \right) \geq 0$;
+  \item $d \left( x, y \right) = 0 \Longleftrightarrow x = y$~---~аксиома тотожності;
+  \item $d \left( x, y \right) = d \left( y, x \right) $~---~аксиома симетрії;
+  \item $d \left( x, z \right) \leq
+    d \left( x, y \right) + d \left( y, z \right) $~---~нерівність трикутника.
+\end{enumerate}
+
+Метричний простір $ \left( S, d \right) $ називається сепарабельним,
+якщо існує не більше ніж зліченна множина $ \Gamma \subset S$ така, що
+\begin{equation*}
+  \left( \forall x \in S \right) \,
+  \left( \forall \varepsilon > 0 \right) \,
+  \left( \exists y \in \Gamma \right) \, : \qquad
+  d \left( x, y \right) < \varepsilon.
+\end{equation*}
+
+Метричний простір $ \left( S, d \right) $ називається повним,
+якщо в ньому збігається будь-яка фундаментальна послідовність.
+Прикладом повного сепарабельного метричного простору є $ \mathbb{R}^n$
+з евклідовою відстанню.
+
+\section{Відстань Хаусдорфа}
+
+Відстань Хаусдорфа визначається на
+множині всіх непустих замкнених підмножин простору $ \mathbb{R}^n$.
+
+Нехай $S$ і $T$~---~непусті замкнені підмножини $ \mathbb{R}^n$.
+Відстань Хаусдорфа між $S$ і $T$ визначається як
+\begin{equation}\label{eq:hausdorff:distance}
+  H \left( S, T \right) =
+  \inf \left\{
+    \varepsilon \geq 0 \; \middle| \;
+    S \subset T + \varepsilon, \, T \subset S + \varepsilon
+  \right\},
+\end{equation}
+де $S + \varepsilon $~---~об'єднання замкнених шарів
+з радіусом $ \varepsilon $ і центром в точці $x \in S$
+\begin{equation*}\label{eq:set:expansion}
+  S + \varepsilon =
+  \bigcup \limits_{x \in S}
+    \left\{ \overline{B}_{ \varepsilon } \left( x \right) \right\}.
+\end{equation*}
+
+Перевіримо аксіоми метрики для відстані Хаусдорфа $H \left( S, T \right) $,
+яка задана формулою \eqref{eq:hausdorff:distance}.
+
+\begin{enumerate}
+  \item $H \left( S, T \right) \geq 0$.
+  Це випливає з означення \eqref{eq:hausdorff:distance},
+  бо точна нижня межа величини $ \varepsilon \geq 0$ невід'ємна.
+  \item $H \left( S, T \right) = 0$ тоді та тільки тоді, коли $S = T$.
+  Остання рівність рівносильна двом умовам: $S \subset T$ та $T \subset S$.
+  Це можна записати через елементи множин:
+  якщо $x \in S$, то $x \in T$, та якщо $x \in T$, то $x \in S$.
+
+  Нехай $x \in S$ і $ \forall \varepsilon > 0$ виконується
+  $T + \varepsilon \supset S$, тобто $x \in T + \varepsilon $.
+  Використаємо означення \eqref{eq:set:expansion}
+  \begin{equation*}
+    x \in
+    \bigcup \limits_{y \in T} \overline{B}_{ \varepsilon } \left( y \right).
+  \end{equation*}
+  Якщо $x$ належить об'єднанню множин,
+  то $x$ належить хоча б однієї з цих множин.
+  Отже, знайдеться такий $y_{ \varepsilon } \in T$,
+  що $x \in \overline{B}_{ \varepsilon } \left( y_{ \varepsilon } \right) $,
+  тобто $d \left( y_{ \varepsilon }, x \right) \leq \varepsilon $.
+  Це виконується для будь-якого $ \varepsilon \geq 0$, отже,
+  $x$ або лежить в $T$, або є його граничною точкою.
+  Але $T$~---~замкнена множина, звідки випливає, що $x \in T$.
+
+  Друга частина доводиться аналогічно.
+
+  З іншого боку, якщо $S = T$, то $S \subset T$ та $T \subset S$,
+  отже, $ \varepsilon = 0$ та $H \left( S, T \right) = 0$.
+  \item $H \left( S, T \right) = H \left( T, S \right) $
+  випливає з симетричності означення відстані Хаусдорфа.
+  \item $H \left( S, T \right) \leq
+    H \left( S, T \right) + H \left( T, G \right) $
+  для будь-яких замкнених множин $S, T, G$ з $ \mathbb{R}^n$.
+  Треба перевірити, чи виконується наступне
+  \begin{equation*}\label{eq:triangle}
+    \left. \begin{aligned}
+      \varepsilon_{S, G} \geq H \left( S, G \right), \\
+      \varepsilon_{G, T} \geq H \left( G, T \right)
+    \end{aligned} \right \rbrace \overset{?}{\Rightarrow}
+    S \subset T + \varepsilon_{G, T} + \varepsilon_{G, S}.
+  \end{equation*}
+
+  Виконуємо ті ж дії, що й при перевірці другої умови.
+  Для першого рядка системи отримуємо, що з того,
+  що $x \in S$ і $G + \varepsilon_{S, G} \supset S$, випливає, що $x \in G$.
+  Використовуючи умову з другого рядка, отримуємо,
+  що при цьому $T + \varepsilon_{G, T} \supset G$,
+  тобто $x \in T + \varepsilon_{G, T}$, отже,
+  при $ \varepsilon_{S, G} \geq 0$ вконується й
+  $x \in T + \varepsilon_{G, T} + \varepsilon_{S, G}$.
+  Згадуючи, що з самого початку $x$ належав множині $S$, бачимо,
+  що наслідок \eqref{eq:triangle} виконується,
+  тобто нерівність трикутника справедлива.
+\end{enumerate}
+Аксиоми метрики виконуються, отже,
+відстань Хаусдорфа~---~метрика на замкнених множинах з $ \mathbb{R}^n$.
+
+\subsection{Приклад 1}
+
+Знайдемо відстань Хаусдорфа між двома еліпсами
+(рис.~\ref{fig:hausdorff:example}) \cite{crownover}
+\begin{equation*}
+  \begin{gathered}
+    S \, : \, \frac{x^2}{4} + 4y^2 = 1, \, \\
+    T \, : \, 4 \left( x - 2 \right)^2 + \frac{y^2}{4} = 1.
+  \end{gathered}
+\end{equation*}
+
+\begin{figure}[h]
+  \centering
+  \includestandalone[mode=buildnew]{../tikz/ellipsesHausdorff}
+  \caption{Еліпси, між якими шукаємо відстань Хаусдорфа}
+  \label{fig:hausdorff:example}
+\end{figure}
+
+Пунктиром нарисовані еліпси $S + \varepsilon $ і $T + \varepsilon $ такі,
+щобб виконувалось \eqref{eq:hausdorff:distance}.
+У даному випадку $ \varepsilon $~---~це відстань між точками $A$ та $B$,
+яка дорівнює $ \varepsilon = 1.5 - \left( -2 \right) = 3.5$.
+Тому $H \left( S, D \right) = 3.5$.
+
+\subsection{Приклад 2}
+
+Нехай $ \left( X, d \right) $~---~метричний простір і $A \subset X$.
+Нехай $ \varepsilon > 0$ задано.
+Множина $C$~---~$ \varepsilon $-сітка для множини $A$,
+якщо для кожного $x \in A$ знайдеться такий $y \in C$,
+що $d \left( x, y \right) < \varepsilon $ або
+\begin{equation*}
+  \bigcup \limits_{y \in C} B \left( y, \varepsilon \right) \supset A.
+\end{equation*}
+Тоді відстань Хаусдорфа між множиною $A$ й $ \varepsilon $-сіткою $C$ на ній
+$H \left( C, A \right) = \varepsilon $.
+
+Покажемо це.
+Знайдемо відстань Хаусдорфа
+\begin{equation*}
+  H \left( C, A \right) =
+  \inf \left\{
+    \varepsilon \geq 0 \; \middle| \;
+    C + \varepsilon \supset A, \, A + \varepsilon \supset C
+  \right\}.
+\end{equation*}
+За означенням
+\begin{equation*}
+  C + \varepsilon =
+  \bigcup \limits_{y \in C} \overline{B} \left( y, \varepsilon \right) \supset
+  \bigcup \limits_{y \in C} B \left( y, \varepsilon \right) \supset
+  A.
+\end{equation*}
+З іншого боку,
+\begin{equation*}
+  A + \varepsilon =
+  \bigcup \limits_{x \in A} \overline{B} \left( x, \varepsilon \right) \supset
+  A \supset C.
+\end{equation*}
+Отримали, що $C + \varepsilon \supset A$ й $A + \varepsilon \supset C$,
+тобто $H \left( C, A \right) = \varepsilon$.
+
+Таким чином, на неперервній множині можна задавати
+$\varepsilon$-сітку та отримувати точкову множину,
+яка відрізняється від початкової не меньше ніж на $\varepsilon$.

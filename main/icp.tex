@@ -1,0 +1,1054 @@
+\chapter{Ітеративний алгоритм найближчих точок}
+
+Ітеративний алгоритм найближчих точок (Iterative Closest Points, ICP) \cite{icp}
+складається з двох операцій, що чергуються.
+Ініціюється алгоритм одиничною матрицею повороту $R = I$
+та нульовим вектором зсуву $ \pmb{b} = \pmb{0}$.
+Перша ітерація полягає в пошуку такої розмітки $k \, : \, S \to T$, щоб
+\begin{equation*}
+ \sum \limits_{s \in S}
+  \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2 \to
+  \min \limits_{k},
+\end{equation*}
+де $R$ і $ \pmb{b}$ фіксовані,
+$k$~---~сюр'єктивне відображення із $S$ в $T$.
+Тоді можемо шукати такий набір
+$ \left\{ \pmb{k_s} \; \middle| \; \pmb{s} \in S \right\} $, щоб
+\begin{equation*}
+  \sum \limits_{\pmb{s} \in S}
+    \left \Vert R \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2 \to
+  \min \limits_{\pmb{k_s}}.
+\end{equation*}
+Запишемо суму явно (нехай множина $S$ має $n$ точок)
+\begin{equation*}
+  \left \Vert R \cdot \pmb{s_1} + \pmb{b} - \pmb{k_{s_1}} \right \Vert^2 +
+  \left \Vert R \cdot \pmb{s_2} + \pmb{b} - \pmb{k_{s_2}} \right \Vert^2 +
+  \dotsc +
+  \left \Vert
+    R \cdot \pmb{s}_n + \pmb{b} - \pmb{k_{s_n}}
+  \right \Vert^2 \to
+  \min \limits_{\pmb{k_{s_1}}, \pmb{k_{s_2}}, \dotsc, \pmb{k_{s_n}} \in T}.
+\end{equation*}
+Параметри, що входять у кожний доданок, різні, тож
+\begin{align*}
+  \left\{ \begin{array}{ccc}
+    \left \Vert R \cdot \pmb{s_1} + \pmb{b} - \pmb{k}_{s_1} \right \Vert^2
+    \to \min \limits_{\pmb{k_{s_1}} \in T}, \\
+    \left \Vert R \cdot \pmb{s_2} + \pmb{b} - \pmb{k}_{s_2} \right \Vert^2 \to
+    \min \limits_{\pmb{k_{s_2}} \in T}, \\
+    \vdots \\
+    \left \Vert
+      R \cdot \pmb{s_n} + \pmb{b} - \pmb{k}_{s_n}
+    \right \Vert^2 \to
+    \min \limits_{\pmb{k_{s_n}} \in T}.
+  \end{array} \right.
+\end{align*}
+Таким чином, для кожної точки $ \pmb{s} \in S$ знаходимо точку $ \pmb{t} \in T$
+таку, щоб відстані між парами $R \cdot \pmb{s} + \pmb{b}$ та $ \pmb{t}$ для всіх
+$ \pmb{s} \in S$ були найменшими
+\begin{equation*}
+  \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{t} \right \Vert^2 =
+  \min \limits_{\pmb{t_i} \in T}
+    \left \Vert R \pmb{s} + \pmb{b} - \pmb{t_i} \right \Vert^2.
+\end{equation*}
+
+На наступній ітерації виконується пошук повороту $R$ та зсуву $ \pmb{b}$
+за поточною розміткою
+$ \left\{ \pmb{k_s} \; \middle| \; \pmb{s} \in S \right\} $
+\begin{equation}\label{eq:second:iteration}
+ \sum \limits_{\pmb{s} \in S}
+  \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2
+ \to \min \limits_{R, \pmb{b}}.
+\end{equation}
+При цьому матриця $R \in SO \left( 3 \right) $,
+тобто ортогональна матриця розмірності $3 \times 3$ з визначником $+1$,
+яка в якості лінійного перетворення діє як поворот.
+Тому звичайний метод найменших квадратів не підходить.
+
+Обчислимо зсув $ \pmb{b}$.
+Нехай $R$~---~фіксована.
+Мінімізуємо
+\begin{equation*}
+  E \left( \pmb{b} \right) =
+  \sum \limits_{\pmb{s} \in S}
+    \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2.
+\end{equation*}
+Можемо знайти оптимальний зсув,
+взявши похідну від $E$ по $ \pmb{b}$ та прирівнявши її до нуля
+\begin{equation}\label{eq:derivative}
+  0 =
+  \frac{dE}{d \pmb{b}} =
+  \sum \limits_{\pmb{s} \in S}
+    2 \left( R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right) =
+  2 \pmb{b} \cdot \left| S \right| +
+  2 R \sum \limits_{\pmb{s} \in S} \pmb{s} -
+  2 \sum \limits_{\pmb{s} \in S} \pmb{k_s}.
+\end{equation}
+Позначимо
+\begin{equation*}
+  \overline{\pmb{s}} =
+  \frac{ \sum \limits_{\pmb{s} \in S} \pmb{s}}{ \left| S \right| }, \,
+  \overline{\pmb{k}}_{\pmb{s}} =
+  \frac{ \sum \limits_{\pmb{s} \in S} \pmb{k_s}}{ \left| S \right| }.
+\end{equation*}
+Перепишемо \eqref{eq:derivative} в термінах введених позначень
+\begin{equation}\label{eq:translation}
+  \pmb{b} =
+  \overline{\pmb{k}}_{\pmb{s}} - R \cdot \overline{\pmb{s}}.
+\end{equation}
+Знайшли оптимальний вектор $ \pmb{b}$ для будь-якої матриці повороту $R$.
+Підставимо його у вираз \eqref{eq:second:iteration}
+\begin{equation*}
+  \begin{gathered}
+    \sum \limits_{\pmb{s} \in S}
+      \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2 =
+    \sum \limits_{\pmb{s} \in S}
+      \left \Vert
+        R \cdot \pmb{s} + \overline{\pmb{k}}_{\pmb{s}} - R \cdot \overline{\pmb{s}} -
+        \pmb{k_s}
+      \right \Vert^2 = \\
+    = \sum \limits_{\pmb{s} \in S}
+      \left \Vert
+        R \cdot \left( \pmb{s} - \overline{\pmb{s}} \right) -
+        \left( \pmb{k_s} - \overline{\pmb{k}}_{\pmb{s}} \right)
+      \right \Vert^2.
+  \end{gathered}
+\end{equation*}
+Таким чином, шукаємо оптимальний поворот $R$, переформулювавши задачу так,
+щоб зсуб був рівний нулю.
+Нехай
+\begin{equation*}
+  \tilde{\pmb{s}} = \pmb{s} - \overline{\pmb{s}}, \,
+  \tilde{\pmb{k_s}} = \pmb{k_s} - \overline{\pmb{k}}_{\pmb{s}},
+\end{equation*}
+тоді
+\begin{equation}\label{eq:R}
+  R =
+  \arg \min \limits_{R \in SO \left( 3 \right) }
+    \sum \limits_{\pmb{s} \in S}
+      \left \Vert R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right \Vert^2.
+\end{equation}
+Спростимо вираз, який мінімізується в \eqref{eq:R}
+\begin{equation*}
+  \begin{gathered}
+    \left \Vert R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right \Vert^2 =
+    \left( R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right)^T \cdot
+    \left( R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right) =
+    \left( \tilde{\pmb{s}}^T \cdot R^T - \tilde{\pmb{k_s}}^T \right) \cdot
+    \left( R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right) = \\
+    = \tilde{\pmb{s}}^T \cdot R^T \cdot R \cdot \tilde{\pmb{s}} -
+    \tilde{\pmb{k_s}} \cdot \tilde{\pmb{s}}^T \cdot R \cdot \tilde{\pmb{s}} -
+    \tilde{\pmb{s}}^T \cdot R^T \cdot
+    \tilde{\pmb{k_s}} + \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}} = \\
+    = \tilde{\pmb{s}}^T \cdot \tilde{\pmb{s}} -
+    \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} -
+    \tilde{\pmb{s}}^T \cdot R^T \cdot \tilde{\pmb{k_s}} +
+    \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}}.
+  \end{gathered}
+\end{equation*}
+Використали ортогональність матриці $R$: $R^T = R^{-1}$.
+
+Помітимо,
+що $ \tilde{\pmb{s}}^T \cdot R^t \cdot \tilde{\pmb{k_s}} $~---~це скаляр:
+$ \tilde{\pmb{s}}^T$ має розмірність $1 \times 3, \, R^T$ має розмірність
+$3 \times 3$ та $ \tilde{\pmb{k_s}}$~---~$3 \times 1$.
+Для будь-якого скаляру $a = a^T$, тому
+\begin{equation*}
+  \tilde{\pmb{s}}^T \cdot R^T \cdot \tilde{\pmb{k_s}} =
+  \left( \tilde{\pmb{s}}^T \cdot R^T \cdot \tilde{\pmb{k_s}} \right)^T =
+  \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}}.
+\end{equation*}
+Маємо
+\begin{equation*}
+  \left \Vert R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right \Vert^2 =
+  \tilde{\pmb{s}}^T \cdot \tilde{\pmb{s}} -
+  2 \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} +
+  \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}}.
+\end{equation*}
+Підставимо отриманий вираз у \eqref{eq:R}
+\begin{equation*}
+  \begin{gathered}
+    R =
+    \arg \min \limits_{R \in SO \left( 3 \right) }
+      \sum \limits_{\pmb{s} \in S}
+        \left(
+          \tilde{\pmb{s}}^T \cdot \tilde{s} -
+          2 \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} +
+          \tilde{k}_s^T \cdot \tilde{\pmb{k_s}}
+        \right) = \\
+    = \arg \min \limits_{R \in SO \left( 3 \right) }
+      \left(
+        \sum \limits_{\pmb{s} \in S} \tilde{s}^T \cdot \tilde{\pmb{s}} -
+        2 \sum \limits_{\pmb{s} \in S}
+          \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} +
+        \sum \limits_{\pmb{s} \in S} \tilde{\pmb{k_s}} \cdot \tilde{\pmb{k_s}}
+      \right) = \\
+    = \arg \min \limits_{R \in SO \left( 3 \right) } \left(
+      -2 \sum \limits_{\pmb{s} \in S} \tilde{\pmb{k_s}}^T \cdot R \cdot
+      \tilde{\pmb{s}}
+    \right).
+  \end{gathered}
+\end{equation*}
+Відкинемо суми $ \tilde{\pmb{s}}^T \cdot \tilde{\pmb{s}}$ та
+$ \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}}$ по всім $\pmb{s} \in S$,
+бо ці вирази не залежать від $R$ та не впливають на мінімізацію.
+Те саме справедливо для константи, на яку множиться сума, тому
+\begin{equation*}
+   R =
+   \arg \max \limits_{R \in SO \left( 3 \right) }
+    \sum \limits_{\pmb{s} \in S}
+      \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}}.
+\end{equation*}
+Помітимо, що
+\begin{equation*}
+  \sum \limits_{\pmb{s} \in S}
+    \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} =
+  tr \left( \tilde{K}^T \cdot R \cdot \tilde{S} \right),
+\end{equation*}
+де $ \tilde{K}$ і $ \tilde{S}$~---~це матриці розмірності $3 \times n$
+зі стовпцями $ \tilde{\pmb{s}}$ та $ \tilde{\pmb{k_s}}$ відповідно
+\begin{equation*}
+  \begin{gathered}
+    \tilde{K}^T \cdot R \cdot \tilde{S} =
+    \begin{bmatrix}
+      \tilde{\pmb{k_{s_1}}}^T \\
+      \tilde{\pmb{k_{s_2}}}^T \\
+      \vdots \\
+      \tilde{\pmb{k_{s_n}}}^T
+    \end{bmatrix} \cdot R \cdot
+    \begin{bmatrix}
+      \tilde{\pmb{s_1}} & \tilde{\pmb{s_2}} & \dotsc & \tilde{\pmb{s_n}}
+    \end{bmatrix}.
+  \end{gathered}
+\end{equation*}
+Слід квадратної матриці дорівнює сумі її діагональних елементів.
+Шукаємо таку матрицю $R$, яка буде максимізувати вираз
+$tr \left( \tilde{K}^T \cdot R \cdot \tilde{S} \right) $.
+Слід матриці має властивість \cite{trace:fukugana}
+\begin{equation}\label{eq:trace}
+  tr \left( A \cdot B \right) =
+  tr \left( B \cdot A \right)
+\end{equation}
+для будь-яких матриць $A$ та $B$ сумісних розмірностей.
+
+Доведемо цю властивість.
+Нехай матриця $A$ має розмірність $n \times m$, а матриця $B$~---~$m \times n$.
+Тоді матриця $C = A \cdot B$~---~матриця розмірності $n \times n$
+складається з елементів
+\begin{equation*}
+  c_{ij} =
+  \sum \limits_{r = 1}^m a_{ir} \cdot b_{rj}.
+\end{equation*}
+Аналогічно,
+матриця $D = B \cdot A$ має розмірність $m \times m$ і складається з елементів
+\begin{equation*}
+  d_{ij} =
+  \sum \limits_{r = 1}^n b_{ir} \cdot a_{rj}.
+\end{equation*}
+Діагональні елементи матриць $C$ та $D$ мають вигляд
+\begin{equation*}
+  c_{ii} = \sum \limits_{r = 1}^m a_{ir} \cdot b_{ri}, \,
+  d_{ii} = \sum \limits_{r = 1}^n b_{ir} \cdot a_{ri}.
+\end{equation*}
+Запишемо слід для добутків
+\begin{equation*}
+  \begin{gathered}
+    tr \left( A \cdot B \right) = tr \left( C \right) = \sum \limits_{i = 1}^n c_{ii} =
+    \sum \limits_{i = 1}^n \sum \limits_{r = 1}^m a_{ir} \cdot b_{ri}, \\
+    tr \left( B \cdot A \right) = tr \left( D \right) = \sum \limits_{i = 1}^m d_{ii} =
+    \sum \limits_{i = 1}^m \sum \limits_{r = 1}^n b_{ir} \cdot a_{ri}.
+  \end{gathered}
+\end{equation*}
+Дві отримані суми однакові з точністю до перейменування індексів сумування.
+Це означає, що $tr \left( A \cdot B \right) = tr \left( B \cdot A \right) $.
+
+Таким чином,
+\begin{equation*}
+  tr \left( \tilde{K}^T \cdot R \cdot \tilde{S} \right) =
+  tr \left( \tilde{K}^T \cdot \left( R \cdot \tilde{S} \right) \right) =
+  tr \left( R \cdot \tilde{S} \cdot \tilde{K}^T \right).
+\end{equation*}
+Позначимо
+\begin{equation*}
+  \begin{gathered}
+    X =
+    \tilde{S} \cdot \tilde{K}^T =
+    \sum \limits_{i = 1}^n \tilde{\pmb{s_i}} \cdot \tilde{\pmb{k_{s_i}}}^T =
+    \sum \limits_{i = 1}^n
+      \tilde{\pmb{s_i}} \cdot \left( \pmb{k_{s_i}} - \overline{\pmb{k}}_{\pmb{s}} \right)^T = \\
+    = \begin{bmatrix}
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_x^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_z^T \\
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{k}_{s_i x}^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_z^T \\
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{k}_{s_i x}^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_z^T
+    \end{bmatrix}.
+  \end{gathered}
+\end{equation*}
+
+Візьмемо сингулярний розклад \cite{golub:svd} матриці $X$
+\begin{equation}\label{eq:SVD}
+  X = U \cdot \Sigma \cdot V^T,
+\end{equation}
+де $U \in \mathbb{R}^{3 \times 3}$ та
+$V \in \mathbb{R}^{3 \times 3}$~---~ортогональні матриці,
+а $ \Sigma \in \mathbb{R}^{3 \times 3}$~---~діагональна матриця
+з невід'ємними елементами,
+причому $ \sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
+Ранг матриці $ \Sigma $ менше трьох, якщо \cite{rankAB}
+\begin{equation*}
+  rank \, X =
+  rank \left( \tilde{S} \cdot \tilde{K}^T \right) \leq
+  \min \left\{ rank \, \tilde{S}, rank \, \tilde{K}^T \right\} < 3.
+\end{equation*}
+Таке можливо, якщо
+$ \det{X} = \det{ \left( \tilde{S} \cdot \tilde{K}^T \right) } = 0$
+\cite{faddeev:rank:det}.
+
+Розкриємо цей визначник
+\begin{equation*}
+  \begin{gathered}
+    \det{X} = \\
+    = \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_x^T \cdot \left(
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_z^T -
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_z^T \right) - \\
+    - \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_x^T \cdot \left(
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_z^T -
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_z^T \right) + \\
+    + \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_x^T \cdot \left(
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_z^T -
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_z^T \right) = \\
+    = P \left(
+      \tilde{\pmb{k_{s_1}}}_x^T, \tilde{\pmb{k_{s_1}}}_y^T, \tilde{\pmb{k_{s_1}}}_z^T, \dotsc,
+      \tilde{\pmb{k_{s_n}}}_x^T, \tilde{\pmb{k_{s_n}}}_y^T, \tilde{\pmb{k_{s_n}}}_z^T
+    \right),
+  \end{gathered}
+\end{equation*}
+де $P$~---~многочлен.
+Покажемо, що ймовірність того, що визначник дорівнює нулю, дорівнює нулю.
+Випишемо окремо одну змінну многочлену $P$
+\begin{equation}\label{eq:normal}
+  \begin{gathered}
+    \tilde{\pmb{k_{s_1}}}_x^T =
+    \left[
+      R \cdot \pmb{s_1} + \pmb{b} + \pmb{ \xi_{s_1} } -
+      \frac{1}{ \left| S \right| } \sum \limits_{\pmb{s} \in S}
+        \left( R \cdot \pmb{s} + \pmb{b} + \pmb{ \xi_s } \right) \right]_x^T = \\
+    = \left[
+      R \cdot \pmb{s_1} + \pmb{b} - \frac{1}{ \left| S \right| } \sum \limits_{\pmb{s} \in S}
+        \left( R \cdot \pmb{s} + \pmb{b} \right) \right]_x^T +
+    \left[
+      \pmb{ \xi_{s_1} } -
+      \frac{1}{ \left| S \right| } \sum \limits_{\pmb{s} \in S} \pmb{ \xi_{s} } \right]_x^T \sim \\
+    \sim N \left(
+      \left[ R \cdot \pmb{s_1} + \pmb{b} -
+      \frac{1}{ \left| S \right| } \sum \limits_{\pmb{s} \in S} \left(
+        R \cdot \pmb{s} + \pmb{b}
+      \right) \right]_x^T,
+      \frac{ \left| S \right| - 1}{ \left| S \right| } \cdot \sigma^2 \cdot I
+    \right).
+  \end{gathered}
+\end{equation}
+Це гаусова випадкова величина, тобто величина, що має неперервний розподіл.
+Тоді
+\begin{equation*}
+  \begin{gathered}
+    P \left( \det{X} = 0 \right) =
+    M P \left(
+      \det{X} = 0 \; \middle|
+      \tilde{\pmb{k_{s_1}}}_y^T, \tilde{\pmb{k_{s_1}}}_z^T, \dotsc,
+      \tilde{\pmb{k_{s_n}}}_x^T, \tilde{\pmb{k_{s_n}}}_y^T, \tilde{\pmb{k_{s_n}}}_z^T
+    \right) = \\
+    = M \mathbbm{1} \left\{
+      F_{ \tilde{\pmb{k_{s_1}}}_y^T, \tilde{\pmb{k_{s_1}}}_z^T, \dotsc, \tilde{\pmb{k_{s_n}}}_x^T, \tilde{\pmb{k_{s_n}}}_y^T, \tilde{\pmb{k_{s_n}}}_z}
+      \left( \tilde{\pmb{k_{s_1}}}_x \right) = 0
+    \right\},
+  \end{gathered}
+\end{equation*}
+де $F_{a, b, c, \dotsc, d} \left( \cdot \right) $~---~многочлен.
+Фіксуємо елементи, які стоять в його індексі.
+Тоді
+\begin{equation*}
+  P \left\{ F_{a, b, c, \dotsc, d} \left( \tilde{\pmb{k_{s_1}}}_x \right) = 0 \right\} = 0.
+\end{equation*}
+Так як $\tilde{\pmb{k_{s_1}}}_x$~---~випадкова величина з неперервним розподілом,
+то вона приймає фіксоване значення з нульовою йкомірністю.
+Таким чином,
+\begin{equation*}
+  P \left( \det{X} = 0 \right) = M 0 = 0,
+\end{equation*}
+і матриця $ \Sigma $ буде мати ранг 3 з ймовірністю 1,
+тобто має місце нерівність $ \sigma_1 \geq \sigma_2 \geq \sigma_3 > 0$.
+Це означає, що сингулярний розклад матриці буде єдиним.
+
+Підставимо сингулярний розклад в слід
+\begin{equation*}
+  tr \left( R \cdot \tilde{S} \cdot \tilde{K}^T \right) =
+  tr \left( R \cdot X \right) =
+  tr \left( R \cdot U \cdot \Sigma \cdot V^T \right) =
+  tr \left( \Sigma \cdot V^T \cdot R \cdot U \right).
+\end{equation*}
+Помітимо, що $V, \, R$ и $U$~---~ортогональні матриці,
+тому матриця
+\begin{equation*}
+  M =
+  V^T \cdot R \cdot U
+\end{equation*}
+меж ортогональна.
+Це означає, що $ \pmb{m}_i \cdot \pmb{m}_i^T = 1$ для кожного рядка
+$ \pmb{m}_i$ матриці $M$.
+Отже, модулі всіх елементів $m_{ij}$ матриці $M$ не перевищують одиниці
+\begin{equation*}
+  1 =
+  \pmb{m}_i \cdot \pmb{m}_i^T =
+  \sum \limits_{j = 1}^3 m_{ij}^2 \Rightarrow
+  m_{ij}^2 \leq 1 \Rightarrow
+  \left| m_{ij} \right| \leq 1.
+\end{equation*}
+Згадаємо, що $ \Sigma $ ---
+діагональна матриця з невід'ємними елементами
+\begin{equation*}
+  \sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0.
+\end{equation*}
+Тому
+\begin{equation*}
+  tr \left( \Sigma \cdot M \right) =
+  tr \left(
+  \begin{bmatrix}
+    \sigma_1 & 0 & 0 \\
+    0 & \sigma_2 & 0 \\
+    0 & 0 & \sigma_3
+  \end{bmatrix} \cdot
+  \begin{bmatrix}
+    m_{11} & m_{12} & m_{13} \\
+    m_{21} & m_{22} & m_{23} \\
+    m_{31} & m_{32} & m_{33}
+  \end{bmatrix}
+  \right) =
+  \sum \limits_{i = 1}^3 \sigma_i \cdot m_{ii} \leq
+  \sum \limits_{i = 1}^3 \sigma_i.
+\end{equation*}
+Тому слід максимізується при
+$m_{ii} = 1, \, \forall i \in \left\{ 1, 2, 3 \right\} $.
+Так як $M$ --- ортогональна матриця, то вона має бути одиничною
+\begin{equation*}
+  I = M = V^T \cdot R \cdot U \Rightarrow
+  V = R \cdot U \Rightarrow
+  R = V \cdot U^T.
+\end{equation*}
+
+Помітимо, що зараз $R$~---~це ортогональна матриця,
+але при цьому можливі дві ситуації:
+коли $ \det{R} = \det{ \left( V \cdot U^T \right) } = 1$,
+тобто матриця $R$ діє як поворот,
+і $ \det{R} = \det{ \left( V \cdot U^T \right) } = -1$,
+тобто матриця $R$ діє як поворот і дзеркальне відображення.
+Припустимо, що $ \det{ \left( V \cdot U^T \right) } = -1$.
+Це еквівалентно тому, що $ \det{M} = -1$.
+Шукаємо таку матрицю $M$, яка максимізує вираз
+\begin{equation*}
+  tr \left( \Sigma \cdot M \right) =
+  \sigma_1 \cdot m_{11} + \sigma_2 \cdot m_{22} + \sigma_3 \cdot m_{33}.
+\end{equation*}
+Розглядаємо змінні $ \left( m_{11}, m_{22}, m_{33} \right) $.
+Це множина всіх діагоналей ортогональної матриці порядка 3.
+Альфред Хорн довів \cite{horn:diagonal:rotation},
+що вектор $ \left( d_1, \dotsc, d_n \right) $~---~це діагональ матриці повороту
+порядка  $n$ тоді й тільки тоді,
+коли він лежить у випуклій оболонці точок $ \left( \pm 1, \dotsc, \pm 1 \right) $,
+де парне число значень (в тому числі жодне) дорівнює $-1$.
+Для нашого випадку ця теорема приймає такий вигляд:
+$M$~---~матриця повороту тоді й тільки тоді,
+коли її діагональ $ \left( m_{11}, m_{22}, m_{33} \right) $ лежить у випуклій оболонці точок
+$ \left( \pm 1, \pm 1, \pm 1 \right) $, де парна кількість координат
+(в тому числі жодна) дорівнює $-1$.
+Матриця $M$~---~матриця повороту та дзеркального відображення,
+тому для неї оптимальна діагональ має вигляд $ \left( 1, 1, -1 \right) $,
+коли непарна кількість значень дорівнює $-1$, відповідно,
+\begin{equation*}
+  tr \left( \Sigma \cdot M \right) = \sigma_1 + \sigma_2 - \sigma_3.
+\end{equation*}
+Це значення більше будь-якого іншого вектора з
+$ \left( \pm 1, \pm 1, \pm 1 \right) $ за виключенням
+$ \left( 1, 1, 1 \right) $, бо $ \sigma_3$~---~це найменше сингулярне значення.
+
+Таким чином, якщо $ \det{ \left( V \cdot U^T \right) } = -1$, то
+\begin{equation*}
+  M =
+  V^T \cdot R \cdot U =
+  \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & -1
+  \end{bmatrix} \Rightarrow
+  R =
+  V \cdot
+  \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & -1
+  \end{bmatrix} \cdot U^T.
+\end{equation*}
+
+Таким чином, шукана матриця повороту $R$ має вигляд  \cite{svd}
+\begin{equation}\label{eq:estimated:R}
+  R =
+  V \cdot
+  \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & \det{ \left( V \cdot U^T \right) }
+  \end{bmatrix} \cdot U^T,
+\end{equation}
+а оптимальний вектор зсуву обчислюється за формулою \eqref{eq:translation}.
+
+Алгоритм полягає в почерговому виконанні двох кроків:
+\begin{enumerate}
+  \item пошук найкращої розмітки $k$ при фіксованих $R$ і $\pmb{b}$;
+  \item пошук матриці повороту $R$ і вектора зсуву $ \pmb{b}$
+  при фіксованій розмітці $k$,
+\end{enumerate}
+поки не буде досягнений мінімум в \eqref{eq:least:squares}.
+
+\section{Збіжність алгоритму}
+
+Покажемо, що ітеративний алгоритм найближчих точок завжди збігається.
+Припустимо, що алгоритм нікуди не збігається.
+Тоді існує така скінченна множина $S$, матриця повороту $R$,
+вектор зсуву $ \pmb{b}$ та шум $ \pmb{ \xi_s}$,
+що алгоритм буде виконувати нескінченно багато ітерацій і ніколи не зупиниться.
+
+Нехай алгоритм перебрав усі можливі розмітки,
+тобто виконав $ \left| T \right|^{ \left| S \right| }$ ітерацій, і не зупинився.
+В цьому випадку на наступному кроці буде вибрана розмітка,
+яка вже вибиралась на одному з попередніх кроків.
+Тоді вираз \eqref{eq:least:squares} або збільшиться (що неможливо),
+або не зміниться, і алгоритм закінчить свою роботу.
+Це означає, що алгоритм завжди збігається.
+
+\section{Розподіл оцінок}
+
+Теорема.
+Асимптотично матриця $X = \tilde{S} \cdot \tilde{K}^T = U \cdot \Sigma \cdot V^T$
+має нормальний розподіл, причому елементи матриці незалежні.
+
+Те, що елементи матриці $X$ мають нормальний розподіл,
+випливає з \eqref{eq:normal}.
+Доведемо незалежність.
+Для цього знайдемо кореляцію двох довільних елементів матриці $X$
+\begin{equation}\label{eq:cor}
+  cor \left( x_{ij}, x_{kr} \right) =
+  \frac{cov \left( x_{ij}, x_{kr} \right) }{\sqrt{Dx_{ij} \cdot Dx_{kr}}},
+\end{equation}
+де $i, k$~---~індекси рядків матриці $X$,
+$j, r$~---~індекси стовпців матриці $X$.
+Знайдемо окремо коваріацію
+\begin{equation*}
+  cov \left( x_{ij}, x_{kr} \right) =
+  cov \left[
+    \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \left(
+      \xi_{s_t i}^T - \frac{1}{n} \sum \limits_{p=1}^n \xi_{s_p j}^T
+    \right),
+    \sum \limits_{q=1}^n \tilde{s}_{qk} \cdot \left(
+      \xi_{s_q r}^T - \frac{1}{n} \sum \limits_{g=1}^n \xi_{s_g r}^T
+    \right)
+  \right].
+\end{equation*}
+Винесемо суми та константи
+\begin{equation*}
+  cov \left( x_{ij}, x_{kr} \right) =
+  \sum \limits_{t=1}^n
+    \sum \limits_{q=1}^n
+      \tilde{s}_{ti} \cdot \tilde{s}_{qk} \cdot cov \left(
+        \xi_{s_t j}^T - \frac{1}{n} \sum \limits_{p=1}^n \xi_{s_p j}^T,
+        \xi_{s_q r}^T - \frac{1}{n} \sum \limits_{g=1}^n \xi_{s_g r}^T
+      \right).
+\end{equation*}
+Розкриємо дужки
+\begin{equation*}
+  \begin{gathered}
+    cov \left( x_{ij}, x_{kr} \right) =
+    \sum \limits_{t=1}^n
+      \sum \limits_{q=1}^n
+        \tilde{s}_{ti} \cdot \tilde{s}_{qk} \cdot
+        cov \left( \xi_{s_t j}^T, \xi_{s_q r}^T \right) + \\
+    + \sum \limits_{t=1}^n
+      \sum \limits_{q=1}^n
+        \tilde{s}_{ti} \cdot \tilde{s}_{qk} \cdot cov \left(
+          \xi_{s_t j}^T, -\frac{1}{n} \sum \limits_{g=1}^n \xi_{s_g r}^T
+        \right) + \\
+    + \sum \limits_{t=1}^n
+      \sum \limits_{q=1}^n
+        \tilde{s}_{ti} \cdot \tilde{s}_{qk} \cdot cov \left(
+          -\frac{1}{n} \sum \limits_{p=1}^n \xi_{s_p j}^T, \xi_{s_1 r}^T
+        \right) + \\
+    + \sum \limits_{t=1}^n
+      \sum \limits_{q=1}^n
+        \tilde{s}_{ti} \cdot \tilde{s}_{qk} \cdot cov \left(
+          -\frac{1}{n} \sum \limits_{p=1}^n \xi_{s_p j}^T,
+          -\frac{1}{n} \sum \limits_{g=1}^n \xi_{s_g r}^T
+        \right) \equiv
+    A + B + C + D,
+  \end{gathered}
+\end{equation*}
+де за $A, B, C, D$ позначені доданки.
+Обчислимо кожний з них окремо.
+Почнемо з першого доданку
+\begin{equation*}
+  A =
+  \begin{cases}
+    \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{tk} \cdot \sigma^2 =
+    \sigma^2 \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{tk},
+    \qquad j = r, \\
+    0,\ \qquad j \neq r.
+  \end{cases}
+\end{equation*}
+Другий доданок
+\begin{equation*}
+  B =
+  -\frac{1}{n} \sum \limits_{t=1}^n
+    \sum \limits_{q=1}^n
+      \tilde{s}_{ti} \cdot \tilde{s}_{qk} \sum \limits_{g=1}^n
+        cov \left( \xi_{s_t j}^T, \xi_{s_g r}^T \right) =
+  \begin{cases}
+    -\frac{\sigma^2}{n} \sum \limits_{t=1}^n
+      \sum \limits_{q=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{qk}, \qquad j = r, \\
+    0, \qquad j \neq r.
+  \end{cases}
+\end{equation*}
+Третій доданок
+\begin{equation*}
+  C =
+  -\frac{1}{n} \sum \limits_{t=1}^n
+    \sum \limits_{q=1}^n
+      \tilde{s}_{ti} \cdot \tilde{s}_{qk} \sum \limits_{p=1}^n
+        cov \left( \xi_{s_p j}^T, \xi_{s_q r}^T \right) =
+  \begin{cases}
+    -\frac{\sigma^2}{n} \sum \limits_{t=1}^n \sum \limits_{q=1}^n
+      \tilde{s_{ti}} \cdot \tilde{s}_{qk}, \qquad j = r, \\
+    0, \qquad j \neq r.
+  \end{cases}
+\end{equation*}
+Четвертий доданок
+\begin{equation*}
+  \begin{gathered}
+    D =
+    \frac{1}{n^2} \sum \limits_{t=1}^n
+      \sum \limits_{q=1}^n
+        \tilde{s}_{ti} \cdot \tilde{s}_{qk} \sum \limits_{p=1}^n
+          \sum \limits_{g=1}^n cov \left( \xi_{s_p j}^T, \xi_{s_g r}^T \right) = \\
+    = \begin{cases}
+      \frac{\sigma^2}{n^2} \sum \limits_{t=1}^n
+        \sum \limits_{q=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{qk} \cdot n =
+      \frac{\sigma^2}{n} \sum \limits_{t=1}^n
+        \sum \limits_{q=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{qk}, \qquad j = r, \\
+      0, \qquad j \neq r.
+    \end{cases}
+  \end{gathered}
+\end{equation*}
+Бачимо, що другий і третій доданки рівні,
+а четверний співпадає з ними з протилежним знаком.
+Отже, отримуємо
+\begin{equation*}
+  cov \left( x_{ij}, x_{kr} \right) =
+  A + B =
+  \begin{cases}
+    \sigma^2 \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{tk} -
+    \frac{\sigma^2}{n} \sum \limits_{t=1}^n
+      \sum \limits_{q=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{qk}, \qquad j = r, \\
+    0, \qquad j \neq r.
+  \end{cases}
+\end{equation*}
+
+Знайдемо дисперсію
+\begin{equation*}
+  \begin{gathered}
+    Dx_{ij} =
+    D \left[
+      \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \left(
+        \xi_{s_t j}^T - \frac{1}{n} \sum \limits_{p=1}^n \xi_{s_p j}^T
+      \right) \right] = \\
+    = \sum \limits_{t=1}^n \tilde{s}_{ti}^2 \cdot \left[ D \xi_{s_t j}^T + D \left(
+      -\frac{1}{n} \sum \limits_{p=1}^n
+        \xi_{s_p j})^T \right) + 2cov \left( \xi_{s_t j}^T,
+      -\frac{1}{n} \sum \limits_{p=1}^n \xi_{s_p j}^T
+    \right) \right] = \\
+    = \sum \limits_{t=1}^n \tilde{s}_{ti}^2 \cdot \left(
+      \sigma^2 + \frac{\sigma^2}{n} - \frac{2 \sigma^2}{n}
+    \right) =
+    \sigma^2 \sum \limits_{t=1}^n \tilde{s}_{ti}^2 \cdot
+    \left( 1 - \frac{1}{n} \right).
+  \end{gathered}
+\end{equation*}
+Аналогічно,
+\begin{equation*}
+  Dx_{kr} =
+  \sigma^2 \sum \limits_{t=1}^n
+    \tilde{s}_{tk} \cdot \left( 1 - \frac{1}{n} \right).
+\end{equation*}
+
+Підставимо отримані вирази в формулу для кореляції \eqref{eq:cor}
+\begin{equation}\label{eq:corto}
+  \begin{gathered}
+    cor \left( x_{ij}, x_{kr} \right) =
+    \frac{\sigma^2 \left( \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{tk} - \frac{1}{n} \sum \limits_{t=1}^n \sum \limits_{q=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{qk} \right) }{\left[ \sigma^2 \sum \limits_{t=1}^n \tilde{s}_{ti}^2 \cdot \left( 1 - \frac{1}{n}\right) \cdot \sigma^2 \sum \limits_{q=1}^n \tilde{s}_{qk}^2 \cdot \left( 1 - \frac{1}{n} \right)\right]^{\frac{1}{2}}} \leq \\
+    \leq \frac{\left| \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{tk} - \frac{1}{n} \sum \limits_{t=1}^n \sum \limits_{q=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{qk} \right|}{ \frac{n-1}{n} \cdot \left( \sum \limits_{t=1}^n \tilde{s}_{ti}^2 \sum \limits_{q=1}^n \tilde{s}_{qk}^2\right)^{\frac{1}{2}}} \leq
+    \frac{\left| \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{tk}\right|+ \frac{1}{n}\left| \sum \limits_{t=1}^n \sum \limits_{q=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{qk}\right|}{\frac{n-1}{n} \left(\sum \limits_{t=1}^n \tilde{s}_{ti}^2 \sum \limits_{q=1}^n \tilde{s}_{qk}^2\right)^{\frac{1}{2}}}.
+  \end{gathered}
+\end{equation}
+Поділимо почленно чисельник на знаменник та розглянемо окремо перший доданок.
+Використовуємо нерівність Коші-Буняковського
+\begin{equation*}
+  \frac{\left| \sum \limits_{t=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{tk}\right|}{\frac{n-1}{n}\sqrt{\sum \limits_{t=1}^n \tilde{s}_{ti}^2 \sum \limits_{q=1}^n \tilde{s}_{qk}^2}} \leq
+  \frac{\sqrt{\sum \limits_{t=1}^n \tilde{s}_{ti}^2 + \sum \limits_{t=1}^n \tilde{s}_{tk}^2}}{\frac{n-1}{n}\sqrt{\sum \limits_{t=1}^n \tilde{s}_{ti}^2 \sum \limits_{q=1}^n \tilde{s}_{qk}^2}}\leq
+  \frac{\sqrt{\sum \limits_{t=1}^n \left( \tilde{s}_{ti} + \tilde{s}_{tk} \right)^2}}{\frac{n-1}{n}\sqrt{\sum \limits_{t=1}^n \tilde{s}_{ti}^2 \sum \limits_{q=1}^n \tilde{s}_{qk}^2}}.
+\end{equation*}
+Використаємо частковий випадок нерівності Мінковського.
+Отримаємо, що цей вираз не перевищує
+\begin{equation*}
+  \frac{\sqrt{\sum \limits_{t=1}^n \tilde{s}_{ti}^2} + \sqrt{\sum \limits_{t=1}^n \tilde{s}_{tk}^2}}{\frac{n-1}{n}\sqrt{\sum \limits_{t=1}^n \tilde{s}_{ti}^2 \sum \limits_{q=1}^n \tilde{s}_{qk}^2}} =
+  \frac{1}{\left( 1 - \frac{1}{n}\right)\sqrt{\sum \limits_{t=1}^n \tilde{s}_{tk}^2}} + \frac{1}{\left( 1 - \frac{1}{n} \right) \sqrt{\sum \limits_{t=1}^n \tilde{s}_{ti}^2}}.
+\end{equation*}
+З ростом $n$ сума квадратів координат точок множини $\tilde{S}$
+буде тільки збільшуватись.
+Отже, цей вираз прямує до нуля при $n \to \infty $.
+
+Розглянемо другий доданок у виразі \eqref{eq:corto}
+\begin{equation*}
+  \frac{\left| \sum \limits_{t=1}^n \sum \limits_{q=1}^n \tilde{s}_{ti} \cdot \tilde{s}_{qk} \right|}{\left(n-1\right)\sqrt{\sum \limits_{t=1}^n \tilde{s}_{ti}^2 \sum \limits_{q=1}^n \tilde{s}_{qk}^2}} \leq
+  \frac{1}{n-1}\cdot \frac{\frac{1}{n}\sum \limits_{t=1}^n \left|\tilde{s}_{ti} \right| \cdot \frac{1}{n} \sum \limits_{q=1}^n \left| \tilde{s}_{qk} \right| \cdot n^2}{\left(n-1 \right)\sqrt{\frac{1}{n}\sum \limits_{t=1}^n \tilde{s}_{ti}^2 \cdot \frac{1}{n}\sum \limits_{q=1}^n \tilde{s}_{qk}^2} \cdot n^4}.
+\end{equation*}
+Використаємо нерівність між середнім квадратичним та середнім арифметичним.
+Тоді наступний вираз не менше попереднього
+\begin{equation*}
+  \frac{1}{n - 1} \cdot \frac{\frac{1}{n} \sum \limits_{t=1}^n \left| \tilde{s}_{ti} \right| \cdot \frac{1}{n} \sum \limits_{q=1}^n \left| \tilde{s}_{qk} \right|}{\frac{1}{n} \sum \limits_{t=1}^n \left| \tilde{s}_{ti} \right| \cdot \frac{1}{n} \sum \limits_{q=1}^n \left| \tilde{s}_{qk} \right| \cdot n^2} =
+  \frac{1}{n^2 \cdot \left( n-1 \right)} \to
+  0, \, n \to \infty.
+\end{equation*}
+Таким чином, доведення теореми завершено.
+Отже, в асимптотиці елементи матриці $X$ незалежні.
+
+Далі нам треба знайти розподіл матриць $U$ та $V$
+в сингулярному розкладі матриці $X$.
+В розподілі ймовірностей елементів матриці $X$ зробимо заміну
+\begin{equation*}
+  \prod \limits_{i=1}^9 \frac{1}{\sqrt{2 \pi}} \cdot e^{x_i^2} dx_i =
+  \frac{1}{\left( \sqrt{2 \pi} \right)^9} \cdot
+  e^{-\frac{1}{2} \sum \limits_{i=1}^9 x_i^2} dx_1 \cdot \dotsc \cdot dx_9 =
+  \frac{1}{\left( \sqrt{2 \pi} \right)^9} \cdot
+  e^{-\frac{1}{2} \cdot tr \left( X \cdot X^T \right)} dX.
+\end{equation*}
+Зробимо заміну $X = U \cdot \Sigma \cdot V^T$
+та скористаємось властивістю сліду \eqref{eq:trace}
+\begin{equation*}
+  \frac{1}{ \left( \sqrt{2 \pi}\right)^9} \cdot
+  e^{-\frac{1}{2} \cdot tr \left( U \cdot \Sigma \cdot V^T \cdot V \cdot \Sigma^T \cdot U^T \right) } dX =
+  \frac{1}{\left( \sqrt{2 \pi} \right)^9} \cdot
+  e^{-\frac{1}{2} \cdot tr \left( \Sigma^T \cdot \Sigma \right)} dX.
+\end{equation*}
+Диференціали $dX$ та $dU d \Sigma dV$ пов'язані співвіднощенням \cite{jacobians}
+\begin{equation*}
+  dX =
+  \prod \limits_{1 \leq i < j \leq 3} \left( \sigma_i^2 - \sigma_j^2 \right)
+  d \Sigma dU dV.
+\end{equation*}
+Таким чином, розподіл ймовірностей елементів матриці $X$ має вигляд
+\begin{equation*}
+  \frac{1}{\left( \sqrt{2 \pi}\right)^9} \cdot
+  e^{-\frac{1}{2} \cdot tr \left( \Sigma^T \cdot \Sigma \right) }
+  \prod \limits_{1 \leq i < j \leq 3} \left( \sigma_i - \sigma_j \right)
+  d \Sigma dU dV.
+\end{equation*}
+Останній вираз~---~це добуток трьох розподілів ймовірностей:
+\begin{equation*}
+  e^{-\frac{1}{2} \cdot tr \left( \Sigma^T \cdot \Sigma \right) }
+  \prod \limits_{1 \leq i < j \leq 3} \left( \sigma_i - \sigma_j \right)
+  d \Sigma
+\end{equation*}
+для $\Sigma$, $dU$ для $U$ та $dV$ для $V$ з точністю до константи.
+Отже, елементи матриць $U$ та $V$ незалежні та мають рівномірний розподіл.
+
+Шукаємо розподіл елементів матриці $R = V \cdot U^T$, де
+\begin{equation*}
+  r_{ij} =
+  \sum \limits_{s = 1}^3 v_{is} \cdot u_{sj}^T =
+  \sum \limits_{s = 1}^3 r_s.
+\end{equation*}
+Щільність розподілу випадкових величин
+\begin{equation*}
+  p_{v_{is}} \left( x \right) =
+  p_{u_{sj}^T} \left( x \right) =
+  \frac{1}{2} \cdot \mathbbm{1} \left\{ x \in \left[ -1, 1 \right] \right\}.
+\end{equation*}
+При цьому модулі випадкових величин $v_{is}$ та $u_{sj}^T$
+мають стандартний рівномірний розподіл, тобто
+$ p_{\left| v_{is} \right|} \left( x \right) =
+  p_{\left| u_{sj}^T \right|} \left( x \right) =
+  \mathbbm{1} \left\{ x \in \left[ 0, 1 \right] \right\}$.
+Знайдемо розподіл величини
+$ \left| r_s \right| = \left| v_{is} \right| \cdot \left| u_{sj}^T \right|$.
+Візьмемо логарифм від правої і лівої частин останньої рівності
+\begin{equation*}
+  \ln \left| r_s \right| = \ln \left| v_{is} \right| + \ln \left| u_{sj}^T \right|.
+\end{equation*}
+Так як $v_{is}$ і $u_{sj}^T$~---~незалежні, то $\ln \left| v_{is} \right|$ і
+$\ln \left| u_{sj}^T \right|$~---~теж незалежні.
+Виразимо функції розподілу логарифмів модулів випадкових величин
+\begin{equation*}
+  F_{ln \left| v_{is} \right|} \left( x \right) =
+  P \left( \ln \left| v_{is} \right| \leq x \right) =
+  P \left( \left| v_{is} \right| \leq e^x \right) =
+  F_{\left| v_{is} \right|} \left( e^x \right).
+\end{equation*}
+Тоді щільність розподілу
+\begin{equation*}
+  p_{\ln \left| v_{is} \right|} \left( x \right) =
+  \left[ F_{\ln \left| v_{is} \right|} \left( x \right) \right]' =
+  e^x \cdot p_{\left| v_{is} \right|} \left( e^x \right) =
+  e^x \cdot \mathbbm{1} \left\{ e^x \in \left[ 0, 1 \right] \right\} =
+  e^x \cdot \mathbbm{1} \left\{ x \leq 0 \right\}.
+\end{equation*}
+Аналогічно,
+$p_{\ln \left| u_{sj}^T \right|} \left( x \right) =
+  e^x \cdot \mathbbm{1} \left\{ x \leq 0 \right\}$.
+Отримуємо щільність розподілу суми незалежних випадкових величин
+\begin{equation*}
+  \begin{gathered}
+    p_{\ln \left| r_s \right|} \left( x \right) =
+    \int \limits_{-\infty }^{+\infty }
+      p_{\ln \left| v_{is} \right|}\left( x - y \right) \cdot
+      p_{\ln \left| u_{sj}^T\right|}
+    dy = \\
+    = \int \limits_{-\infty}^{+\infty}
+      e^{x-y} \cdot \mathbbm{1} \left\{ x - y \leq 0 \right\} \cdot
+      e^y \cdot \mathbbm{1} \left\{ y \leq 0 \right\}
+    dy =
+    e^x \int \limits_{\min \left( x, 0 \right)}^0 dy =
+    -e^x \cdot \min \left( x, 0 \right).
+  \end{gathered}
+\end{equation*}
+Перейдемо від розподілу логарифму випадкової величини $ \ln \left| r_s \right|$
+до розподілу самої випадкової величини $\left| r_s \right|$
+\begin{equation*}
+  p_{\left| r_s \right|} \left( x \right) =
+  \frac{1}{x} \cdot p_{\ln \left| r_s \right|} \left( \ln \, x \right) =
+  -\frac{1}{x} \cdot e^{\ln \, x} \cdot \min \left( \ln\, x, 0 \right) =
+  -\ln \, x, \, 0 \leq x \leq 1.
+\end{equation*}
+Замінюємо $x$ на $\left| x \right| $ в останньому виразі та ділимо його на $2$,
+щоб отримати щільність розподілу випадкової величини $r_s$.
+Маємо
+\begin{equation*}
+  p_{r_s} \left( x \right) =
+  -\frac{1}{2} \cdot
+  \ln \left| x \right| \cdot \mathbbm{1} \left\{ x \in \left[ -1, 1 \right] \right\}.
+\end{equation*}
+
+Знайдемо математичне сподівання цієї випадкової величини
+\begin{equation*}
+  Mr_s =
+  \int \limits_{-\infty}^{+\infty} x \cdot p \left( x \right) dx =
+  -\frac{1}{2} \int \limits_{-1}^1 x \cdot \ln \left| x \right| dx =
+  -\frac{1}{2} \cdot
+  \left. \ln \left| x \right| \cdot \frac{x^2}{2} \right|_{-1}^1 +
+  \frac{1}{2} \int \limits_{-1}^1 \frac{x^2}{2} \cdot \frac{1}{x} dx =
+  0.
+\end{equation*}
+
+Тоді математичне сподівання елементу знайденої матриці повороту дорівнює
+$Mr_{ij} =
+  M \left( r_1 + r_2 + r_3 \right) =
+  0$.
+
+\section{Аналіз алгоритму}
+
+Алгоритм має обмежене застосування та добре працює тільки в тому випадку,
+якщо шум,
+а також початковий поворот та зсув множини $S$ відносно множини $T$ малі.
+На рисунку \ref{fig:triangles} зображено приклад двох множин,
+для яких алгоритм не дає очікуваного результату.
+
+\begin{figure}[h]
+  \centering
+  \includestandalone[mode=buildnew]{../tikz/triangles}
+  \caption{Два трикутника, при співставленні яких ICP не дає очікуваного результату}
+  \label{fig:triangles}
+\end{figure}
+
+Множини представляють собою два ідентичних прямокутник трикутника з катетами,
+які дорівнюють одиниці, що відрізняються кутом повороту $ \pi $ та зсувом
+\begin{equation*}
+  \pmb{b} =
+  \begin{bmatrix}
+    \frac{ \sqrt{2}}{2} \\
+    \frac{ \sqrt{2}}{2}
+  \end{bmatrix}
+\end{equation*}
+Множину $T$ зображено пунктиром.
+Це трикутник з вершинами
+$ \left( 0, 0 \right), \left( 0, 1 \right) $ і $ \left( 1, 0 \right) $.
+Множину $S = R \cdot \pmb{t} + \pmb{b}$~---~суцільною лінією,
+де $ \pmb{t}$~---~точки множини $T$,
+а матриця повороту
+\begin{equation*}
+  R =
+  \begin{bmatrix}
+    \cos \theta & -\sin \theta \\
+    \sin \theta & \cos \theta
+  \end{bmatrix} =
+  \begin{bmatrix}
+    -1 & 0 \\
+    0 & -1
+  \end{bmatrix}.
+\end{equation*}
+Таким чином, множини $T$ і $S$ мають вигляд
+\begin{equation*}
+  T =
+  \begin{bmatrix}
+    0 & 0 & 1 \\
+    0 & 1 & 0
+  \end{bmatrix}, \,
+  S =
+  \begin{bmatrix}
+    \frac{ \sqrt{2}}{2} & \frac{ \sqrt{2}}{2} & \frac{ \sqrt{2}}{2} - 1 \\
+    \frac{ \sqrt{2}}{2} & \frac{ \sqrt{2}}{2} - 1 & \frac{ \sqrt{2}}{2}
+  \end{bmatrix}.
+\end{equation*}
+
+Рахуємо відстані від кожної точки з множини $S$ до кожної точки з множини $T$
+\begin{equation*}
+  \begin{gathered}
+    d \left( \pmb{s_1}, \pmb{t_1} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 0 \right)^2} = 1, \\
+    d \left( \pmb{s_1}, \pmb{t_2} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 \right)^2} \approx 0.77, \\
+    d \left( \pmb{s_1}, \pmb{t_3} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 0 \right)^2} \approx 0.77, \\
+    d \left( \pmb{s_2}, \pmb{t_1} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 - 0 \right)^2} \approx 0.77, \\
+    d \left( \pmb{s_2}, \pmb{t_2} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 - 1 \right)^2} \approx 1.47, \\
+    d \left( \pmb{s_2}, \pmb{t_3} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 - 0 \right)^2} \approx 0.41, \\
+    d \left( \pmb{s_3}, \pmb{t_1} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 0 \right)^2} \approx 0.77, \\
+    d \left( \pmb{s_3}, \pmb{t_2} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 - 0 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 1 \right)^2} \approx 0.41, \\
+    d \left( \pmb{s_3}, \pmb{t_3} \right) = \sqrt{ \left( \frac{ \sqrt{2}}{2} - 1 - 1 \right)^2 + \left( \frac{ \sqrt{2}}{2} - 0 \right)^2} \approx 1.47.
+  \end{gathered}
+\end{equation*}
+
+Вибираємо мінімальну відстань для кожної точки $ \pmb{s} \in S$.
+Таким образом, разметка имеет вид
+\begin{equation*}
+  \pmb{k_{s_1}} = \pmb{t_2}, \,
+  \pmb{k_{s_2}} = \pmb{t_3}, \,
+  \pmb{k_{s_3}} = \pmb{t_2}.
+\end{equation*}
+
+Знаходимо
+\begin{equation*}
+  \begin{gathered}
+    \overline{\pmb{s}} = \frac{1}{3}
+    \begin{bmatrix}
+      \frac{ \sqrt{2}}{2} + \frac{ \sqrt{2}}{2} + \frac{ \sqrt{2}}{2} - 1 \\
+      \frac{ \sqrt{2}}{2} + \frac{ \sqrt{2}}{2} - 1 + \frac{ \sqrt{2}}{2}
+    \end{bmatrix} =
+    \begin{bmatrix}
+      0.37 \\
+      0.37
+    \end{bmatrix}, \\
+    \overline{\pmb{k}}_{\pmb{s}} = \frac{1}{3}
+    \begin{bmatrix}
+      0 + 1 + 0 \\
+      1 + 0 + 1
+    \end{bmatrix} =
+    \begin{bmatrix}
+      0.33 \\
+      0.67
+    \end{bmatrix}.
+  \end{gathered}
+\end{equation*}
+Знаходимо матриці
+\begin{equation*}
+  \begin{gathered}
+    \tilde{S} =
+    \begin{bmatrix}
+      \frac{ \sqrt{2}}{2} - \frac{ \sqrt{2}{2}} + \frac{1}{3} & \frac{ \sqrt{2}}{2} - \frac{ \sqrt{2}}{2} + \frac{1}{3} & \frac{ \sqrt{2}}{2} - 1 - \frac{ \sqrt{2}}{2} + \frac{1}{3} \\
+      \frac{ \sqrt{2}}{2} - \frac{ \sqrt{2}}{2} + \frac{1}{3} & \frac{ \sqrt{2}}{2} - 1 - \frac{ \sqrt{2}}{2} + \frac{1}{3} & \frac{ \sqrt{2}}{2} - \frac{ \sqrt{2}}{2} + \frac{1}{3}
+    \end{bmatrix} \approx \\
+    \approx \begin{bmatrix}
+      0.33 & 0.33 & -0.67 \\
+      0.33 & -0.67 & 0.33
+    \end{bmatrix}, \\
+    \tilde{K}_s =
+    \begin{bmatrix}
+      0 - \frac{1}{3} & 1 - \frac{1}{3} & 0 - \frac{1}{3} \\
+      1 - \frac{2}{3} & 0 - \frac{2}{3} & 1 - \frac{2}{3}
+    \end{bmatrix} \approx
+    \begin{bmatrix}
+      -0.33 & 0.67 & -0.33 \\
+      0.33 & -0.67 & 0.33
+    \end{bmatrix}.
+  \end{gathered}
+\end{equation*}
+Обчислюємо матрицю $X$ і беремо від неї сингулярний розклад
+\begin{equation*}
+  \begin{gathered}
+    X = \tilde{S} \cdot \tilde{K}_s^T =
+    \begin{bmatrix}
+      0.33 & -0.33 \\
+      -0.67 & 0.67
+    \end{bmatrix} = \\
+    = \begin{bmatrix}
+      -0.4472136 & 0.89442719 \\
+      0.89442719 & 0.4472136
+    \end{bmatrix} \cdot
+    \begin{bmatrix}
+      1.05409255 & 0 \\
+      0 & 0
+    \end{bmatrix} \times \\
+    \times \begin{bmatrix}
+      -0.70710678 & -0.70710678 \\
+      -0.70710678 & -0.70710678
+    \end{bmatrix} =
+    U \cdot \Sigma \cdot V^T.
+  \end{gathered}
+\end{equation*}
+Обчислюємо матрицю повороту
+\begin{equation*}
+  R = V \cdot U^T =
+  \begin{bmatrix}
+    0.9486833 & -0.31622777 \\
+    0.31622777 & 0.9486833
+  \end{bmatrix}.
+\end{equation*}
+Визначник цієї матриці дорівнює одиниці, тому $R$~---~матриця повороту.
+Знаходимо зсув
+\begin{equation*}
+  \pmb{b} =
+  \overline{\pmb{k}}_{\pmb{s}} - R \cdot \overline{\pmb{s}} =
+  \begin{bmatrix}
+    0.09693825 \\
+    0.1938765
+  \end{bmatrix}.
+\end{equation*}
+Знаходимо нову множину $S$
+\begin{equation*}
+  S =
+  \begin{bmatrix}
+    0.54 & 0.86 & -0.4 \\
+    1.09 & 0.14 & 0.77
+  \end{bmatrix}.
+\end{equation*}
+Нова розмітка співпадає зі старою, отже, можемо закінчити обчислення.
+Отримані взаємні розміщення множин зображені на рисунку
+\ref{fig:triangles_result}.
+
+\begin{figure}[h]
+  \centering
+  \includestandalone[mode=buildnew]{../tikz/triangles_result}
+  \caption{Результат ICP для трикутників}
+  \label{fig:triangles_result}
+\end{figure}
+
+Правильним результатом були б такі поворот і зсув,
+коли всі відповідні точки двох трикутників мали б однакові положення.
+Через те, що найближчі точки не є відповідними,
+глобальний мінімум не досягається.

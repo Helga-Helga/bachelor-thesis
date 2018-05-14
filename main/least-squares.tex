@@ -1,0 +1,475 @@
+\chapter{Метод найменших квадратів}
+
+В тому випадку, коли $S$ і $T$ скінченні,
+можна скористатися звичайним методом найменших квадратів
+\cite{hudson:least-squares}.
+Виконаємо оцінку невідомих параметрів у виразі \eqref{eq:problem}.
+Для цього вимагаємо, щоб сума квадратів похибок досягала мінімуму.
+Іншими словами, знайдемо мінімум величини
+\begin{equation}\label{eq:least:squares}
+ E \left( k, R, \pmb{b} \right) =
+ \sum \limits_{\pmb{s} \in S} \left \Vert \pmb{\xi_s} \right \Vert^2 =
+ \sum \limits_{\pmb{s} \in S}
+  \left \Vert \pmb{k_s} - R \cdot \pmb{s} - \pmb{b} \right \Vert^2 \to
+ \min \limits_{k, R, \pmb{b}}.
+\end{equation}
+
+Сума квадратів відхилень між векторами~---~це те ж саме,
+що і сума квадратів відхилень між проекціями по кожній координаті
+\begin{equation*}
+  E \left( k, R, \pmb{b} \right) =
+    E_x \left( k, R, \pmb{b} \right) + E_y \left( k, R, \pmb{b} \right) +
+    E_z \left( k, R, \pmb{b} \right) \to
+    \min \limits_{k, R, \pmb{b}}.
+\end{equation*}
+
+Знайдемо, чому дорівнює добуток матриці $R$ та вектора $\pmb{s}$
+\begin{equation*}
+  R \cdot \pmb{s} =
+  \begin{bmatrix}
+    r_{xx} & r_{xy} & r_{xz} \\
+    r_{yx} & r_{yy} & r_{yz} \\
+    r_{zx} & r_{zy} & r_{zz}
+  \end{bmatrix} \cdot
+  \begin{bmatrix}
+    s_x \\
+    s_y \\
+    s_z
+  \end{bmatrix} =
+  \begin{bmatrix}
+    r_{xx} \cdot s_x + r_{xy} \cdot s_y + r_{xz} \cdot s_z \\
+    r_{yx} \cdot s_x + r_{yy} \cdot s_y + r_{yz} \cdot s_z \\
+    r_{zx} \cdot s_x + r_{zy} \cdot s_y + r_{zz} \cdot s_z
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \pmb{r}_x \cdot \pmb{s} \\
+    \pmb{r}_y \cdot \pmb{s} \\
+    \pmb{r}_z \cdot \pmb{s}
+  \end{bmatrix}.
+\end{equation*}
+
+Розпишему суму квадратів відхилень через проекції
+\begin{gather*}
+  E \left( k, R, \pmb{b} \right) =
+  \sum \limits_{\pmb{s} \in S} \left(
+    \pmb{r}_x \cdot \pmb{s} + \pmb{r}_y \cdot \pmb{s} +
+    \pmb{r}_z \cdot \pmb{s} + b_x + b_y + b_z - k_{s_x} - k_{s_y} - k_{s_z}
+  \right)^2 = \\
+  = \sum \limits_{\pmb{s} \in S} \left[
+    \left( \pmb{r}_x \cdot \pmb{s} + b_x - k_{s_x} \right) +
+    \left( \pmb{r}_y \cdot \pmb{s} + b_y - k_{s_y} \right) +
+    \left( \pmb{r}_z \cdot \pmb{s} + b_z - k_{s_z} \right) \right]^2 = \\
+  = \sum \limits_{\pmb{s} \in S}
+      \left( \pmb{r}_x \cdot \pmb{s} + b_x - k_{s_x} \right)^2 +
+    \sum \limits_{\pmb{s} \in S}
+      \left( \pmb{r}_y \cdot \pmb{s} + b_y - k_{s_y} \right)^2 +
+    \sum \limits_{\pmb{s} \in S}
+      \left( \pmb{r}_z \cdot \pmb{s} + b_z - k_{s_z} \right)^2.
+\end{gather*}
+Множини параметрів, які входять в кожну з трьох сум, різні,
+тому можемо мінімізувати суми квадратів проекцій відхилень на
+кожну координату окремо
+\begin{align*}
+  \begin{cases}
+    E_x =
+    \sum \limits_{\pmb{s} \in S}
+      \left( \pmb{r}_x \cdot \pmb{s} + b_x - k_{s_x} \right)^2 &\to
+    \min \limits_{\pmb{r}_x, b_x}, \\
+    E_y =
+    \sum \limits_{\pmb{s} \in S}
+      \left( \pmb{r}_y \cdot \pmb{s} + b_y - k_{s_y} \right)^2 &\to
+    \min \limits_{\pmb{r}_y, b_y}, \\
+    E_z =
+    \sum \limits_{\pmb{s} \in S}
+    \left( \pmb{r}_z \cdot \pmb{s} + b_z - k_{s_z} \right)^2 &\to
+    \min \limits_{\pmb{r}_z, b_z}.
+  \end{cases}
+\end{align*}
+
+Маємо лінійні функції точок вихідної множини, які підносяться до квадрату.
+Це випуклі функції.
+Отже, можна взяти часткові похідні по $\pmb{r}_i$ та $b_i$ для всіх
+$i \in \left\{ x, y, z \right\} $ та прирівняти їх до нуля.
+Отримаємо по чотири рівняння для кожної координати.
+Без втрати загальності запишемо ці рівняння для $E_x$.
+Таким чином, экстремальне значення $E_x$
+отримаємо в результаті розв'язку системи лінійних алгебраїчних рівнянь
+\begin{gather*}
+  \begin{cases}
+    \frac{ \partial E_x}{ \partial b_x} =
+    \sum \limits_{s \in S}
+      2 \left( \pmb{r}_x \cdot \pmb{s} + b_x - k_{s_x} \right ) = 0, \\
+    \frac{ \partial E_x}{ \partial r_{xx}} =
+    \sum \limits_{s \in S}
+      2 \left( \pmb{r}_x \cdot \pmb{s} + b_x - k_{s_x} \right ) \cdot s_x = 0, \\
+    \frac{ \partial E_x}{ \partial r_{xy}} =
+    \sum \limits_{s \in S}
+      2 \left( \pmb{r}_x \cdot \pmb{s} + b_x - k_{s_x} \right ) \cdot s_y = 0, \\
+    \frac{ \partial E_x}{ \partial r_{xz}} =
+    \sum \limits_{s \in S}
+      2 \left( \pmb{r}_x \cdot \pmb{s} + b_x - k_{s_x} \right ) \cdot s_z = 0.
+  \end{cases}
+\end{gather*}
+
+Розв'язуємо перше рівняння відносно $b_x$
+\begin{equation*}
+  \sum \limits_{\pmb{s} \in S} b_x =
+  \sum \limits_{\pmb{s} \in S} \left(k_{s_x} - \pmb{r}_x \cdot \pmb{s} \right ).
+\end{equation*}
+$b_x$ не залежить від $\pmb{b}$
+\begin{equation*}
+  \left| S \right| \cdot b_x + \pmb{r}_x \sum \limits_{\pmb{s} \in S} \pmb{s} =
+  \sum \limits_{\pmb{s} \in S} k_{s_x}.
+\end{equation*}
+Розпишемо скалярний добуток
+\begin{equation*}
+  \left| S \right| \cdot b_x + \sum \limits_{\pmb{s} \in S} r_{xx} \cdot s_x +
+  \sum \limits_{\pmb{s} \in S} r_{xy} \cdot s_y +
+  \sum \limits_{\pmb{s} \in S} r_{xz} \cdot s_z  =
+  \sum \limits_{\pmb{s} \in S} k_{s_x}.
+\end{equation*}
+
+Розв'язуємо інші рівняння відносно $r_{xi}$ для
+$i \in \left\{ x, y, z \right\} $.
+Без втрати загальності знаходимо розв'язок тольки для $r_{xx}$
+\begin{equation*}
+  \pmb{r}_x \sum \limits_{\pmb{s} \in S} \pmb{s} \cdot s_x =
+  \sum \limits_{\pmb{s} \in S} \left( k_{s_x} - b_x \right) \cdot s_x.
+\end{equation*}
+Розпишемо скалярний добуток
+\begin{equation*}
+  \sum \limits_{\pmb{s} \in S} r_{xx} \cdot s_x^2 +
+  \sum \limits_{\pmb{s} \in S} r_{xy} \cdot s_x \cdot s_y +
+  \sum \limits_{\pmb{s} \in S} r_{xz} \cdot s_x \cdot s_z +
+  \sum \limits_{\pmb{s} \in S} b_x \cdot s_x =
+  \sum \limits_{\pmb{s} \in S} k_{s_x} \cdot s_x.
+\end{equation*}
+Маємо систему рівнянь
+\begin{equation*}
+  \begin{cases}
+    \left| S \right| \cdot b_x + \sum \limits_{\pmb{s} \in S} r_{xx} \cdot s_x +
+    \sum \limits_{\pmb{s} \in S} r_{xy} \cdot s_y +
+    \sum \limits_{\pmb{s} \in S} r_{xz} \cdot s_z  =
+    \sum \limits_{\pmb{s} \in S} k_{s_x}, \\
+    \sum \limits_{\pmb{s} \in S} r_{xx} \cdot s_x^2 +
+    \sum \limits_{\pmb{s} \in S} r_{xy} \cdot s_x \cdot s_y +
+    \sum \limits_{\pmb{s} \in S} r_{xz} \cdot s_x \cdot s_z +
+    \sum \limits_{\pmb{s} \in S} b_x \cdot s_x =
+    \sum \limits_{\pmb{s} \in S} k_{s_x} \cdot s_x, \\
+    \sum \limits_{\pmb{s} \in S} r_{xx} \cdot s_x \cdot s_y +
+    \sum \limits_{\pmb{s} \in S} r_{xy} \cdot s_y^2 +
+    \sum \limits_{\pmb{s} \in S} r_{xz} \cdot s_y \cdot s_z +
+    \sum \limits_{\pmb{s} \in S} b_x \cdot s_y =
+    \sum \limits_{\pmb{s} \in S} k_{s_x} \cdot s_y, \\
+    \sum \limits_{\pmb{s} \in S} r_{xx} \cdot s_x \cdot s_z +
+    \sum \limits_{\pmb{s} \in S} r_{xy} \cdot s_y \cdot s_z +
+    \sum \limits_{\pmb{s} \in S} r_{xz} \cdot s_z^2 +
+    \sum \limits_{s \in S} b_x \cdot s_z =
+    \sum \limits_{\pmb{s} \in S} k_{s_x} \cdot s_z.
+  \end{cases}
+\end{equation*}
+Запишемо її в матричному вигляді
+\begin{equation*}
+  \begin{bmatrix}
+    \left| S \right| & \sum \limits_{\pmb{s} \in S} s_x & \sum \limits_{\pmb{s} \in S} s_y & \sum \limits_{\pmb{s} \in S} s_z \\
+    \sum \limits_{\pmb{s} \in S} s_x & \sum \limits_{\pmb{s} \in S} s_x^2 & \sum \limits_{\pmb{s} \in S} s_x \cdot s_y & \sum \limits_{\pmb{s} \in S} s_x \cdot s_z \\
+    \sum \limits_{\pmb{s} \in S} s_y & \sum \limits_{\pmb{s} \in S} s_x \cdot s_y & \sum \limits_{\pmb{s} \in S} s_y^2 & \sum \limits_{\pmb{s} \in S} s_y \cdot s_z \\
+    \sum \limits_{\pmb{s} \in S} s_z & \sum \limits_{\pmb{s} \in S} s_x \cdot s_z & \sum \limits_{\pmb{s} \in S} s_y \cdot s_z & \sum \limits_{\pmb{s} \in S} s_z^2
+  \end{bmatrix}
+  \begin{bmatrix}
+    b_x \\
+    r_{xx} \\
+    r_{xy} \\
+    r_{xz}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \sum \limits_{\pmb{s} \in S} k_{s_x} \\
+    \sum \limits_{\pmb{s} \in S} k_{s_x} \cdot s_x \\
+    \sum \limits_{\pmb{s} \in S} k_{s_x} \cdot s_y \\
+    \sum \limits_{\pmb{s} \in S} k_{s_x} \cdot s_z
+  \end{bmatrix}.
+\end{equation*}
+Введемо позначення
+\begin{gather*}
+  \sum \limits_{\pmb{s} \in S} s_i = S_i, \qquad i \in \left\{x, y, z \right\}, \\
+  \sum \limits_{\pmb{s} \in S} s_i s_j = S_{ij}, \qquad i, j \in \left\{ x, y, z \right\}, \\
+  \sum \limits_{\pmb{s} \in S} k_{s_x} = K, \\
+  \sum \limits_{\pmb{s} \in S} k_{s_x} \cdot s_i = k_i, \qquad i \in \left\{ x, y, z \right\}.
+\end{gather*}
+Рівняння прийняло наступний вигляд
+\begin{equation*}
+  \begin{bmatrix}
+    \left| S \right| & S_x & S_y & S_z \\
+    S_x & S_{xx} & S_{xy} & S_{xz} \\
+    S_y & S_{xy} & S_{yy} & S_{yz} \\
+    S_z & S_{xz} & S_{yz} & S_{zz}
+  \end{bmatrix}
+  \begin{bmatrix}
+    b_x \\
+    r_{xx} \\
+    r_{xy} \\
+    r_{xz}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    k \\
+    k_x \\
+    k_y \\
+    k_z
+  \end{bmatrix}.
+\end{equation*}
+Використовуємо метод Крамера для розв'язання системи лінійних рівнянь.
+Визначник $ \Delta $
+\begin{gather*}
+  \Delta =
+  \left| S \right| \cdot S_{xx} \cdot S_{yy} \cdot S_{zz} -
+  \sum \limits_{i \in \left\{ x, y, z \right\} } L_i +
+  2 \cdot \left| S \right| \cdot S_{xy} \cdot S_{xz} \cdot S_{yz} - \\
+  - \sum \limits_{i, j, k \in \left\{ x, y, z \right\} } L_{ijk} +
+  2 \sum \limits_{i, j \in \left\{ x, y, z \right\} } L_{ij},
+\end{gather*}
+де введені позначення при
+$i, j, k \in \left\{ x, y, z \right\}, \, i \neq j \neq k$
+\begin{gather*}
+  L_i = S_{jk} \cdot \left( \left| S \right| \cdot S_{ii} - S_i^2 \right), \\
+  L_{ij} = S_i \cdot S_j \cdot \left( S_{ij} \cdot S_k - S_{ik} \cdot S_{jk} \right), \\
+  L_{ijk} = S_i^2 \cdot S_{jj} \cdot S_{kk}.
+\end{gather*}
+Визначник $ \Delta_{b}$
+\begin{gather*}
+  \Delta_b =
+  k \cdot S_{xx} \cdot S_{yy} \cdot S_{zz} - \sum \limits_{i \in \left\{ x, y, z \right\} } L_i^b +
+  2 \cdot S_{xy} \cdot S_{xz} \cdot S_{yz} -
+  \sum \limits_{i, j, k \in \left\{ x, y, z \right\} } L_{ijk}^b + \\
+  + \sum \limits_{i, j \in \left\{ x, y, z \right\} } L_{ij}^b +
+  \sum \limits_{i, j \in \left\{ x, y, z \right\} } \left( L_{ij}^b \right)',
+\end{gather*}
+де введені позначення
+\begin{gather*}
+  L_{ij}^b = S_{ij}^2 \cdot S_{k} \cdot k_k, \\
+  L_{ijk}^b = S_i \cdot S_{jj} \cdot S_{kk}, \\
+  \left( L_{ij}^b \right)' = \left(
+  S_i \cdot k_j + S_k \cdot k_i \right) \cdot \left( S_{ij} \cdot S_{kk} -
+  S_{jk} \cdot S_{ik} \right)
+\end{gather*}
+при $i, j, k \in \left\{ x, y, z \right\}, \, i \neq j \neq k$.
+Визначник $ \Delta_{xx}$
+\begin{gather*}
+  \Delta_{xx} =
+  -K \cdot S_x \cdot S_{yy} \cdot S_{zz} + K \cdot S_x \cdot S_{yz}^2 +
+  K \cdot S_y \cdot S_{xy} \cdot S_{zz} - K \cdot S_y \cdot_{xz} \cdot S_{yz} - \\
+  - K \cdot S_z \cdot S_{xy} \cdot S_{yz} + K \cdot S_{z} \cdot S_{xz} \cdot S_{yy} +
+  k_x \cdot \left| S \right| \cdot S_{yy} \cdot S_{zz} -
+  k_x \cdot \left| S \right| \cdot S_{yz}^2 - \\
+  - k_x \cdot S_y^2 \cdot S_{zz} + 2 \cdot k_x \cdot S_y \cdot S_z \cdot S_{yz} -
+  k_x \cdot S_z^2 \cdot S_{yy} - k_y \cdot \left| S \right| \cdot S_{yz} \cdot S_{zz} + \\
+  + k_y \cdot \left| S \right| \cdot S_{xz} \cdot S_{yz} + k_y \cdot S_x \cdot S_y \cdot S_{zz} -
+  k_y \cdot S_x \cdot S_y \cdot S_{yz} - k_y \cdot S_y \cdot S_z \cdot S_{xz} + \\
+  + k_y \cdot S_z^2 \cdot S_{xy} + k_z \cdot \left| S \right| \cdot S_{xy} \cdot S_{yz} -
+  k_z \cdot \left| S \right| \cdot S_{xz} \cdot S_{yy} - k_z \cdot S_x \cdot S_y \cdot S_{yz} + \\
+  + k_z \cdot S_x \cdot S_z \cdot S_{yy} + k_z \cdot S_y^2 \cdot S_{xz} -
+  k_z \cdot S_y \cdot S_z \cdot S_{xy}.
+\end{gather*}
+Визначник $ \Delta_{xy}$
+\begin{gather*}
+  \Delta_{xy} =
+  K \cdot S_x \cdot S_{xy} \cdot S_{zz} - K \cdot S_x \cdot S_{xz} \cdot S_{yz} -
+  K \cdot S_y \cdot S_{xx} \cdot S_{zz} + K \cdot S_y \cdot S_{xz}^2 + \\
+  + K \cdot S_z \cdot S_{xx} \cdot S_{yz} - K \cdot S_z \cdot S_{xy} \cdot S_{xz} -
+  k_x \cdot \left| S \right| \cdot S_{xy} \cdot S_{zz} +
+  k_x \cdot \left| S \right| \cdot S_{xz} \cdot S_{yz} + \\
+  + k_x \cdot S_x \cdot S_y \cdot S_{zz} - k_x \cdot S_x \cdot S_z \cdot S_{yz} -
+  k_x \cdot S_y \cdot S_z \cdot S_{xz} + k_x \cdot S_z^2 \cdot S_{xy} + \\
+  + k_y \cdot \left| S \right| \cdot S_{xx} \cdot S_{zz} -
+  k_y \cdot \left| S \right| \cdot S_{xz}^2 - k_y \cdot S_x^2 \cdot S_{zz} +
+  2 \cdot k_y \cdot S_x \cdot S_z \cdot S_{xz} - \\
+  - k_y \cdot S_x \cdot S_z \cdot S_{xz} - k_y \cdot S_z^2 \cdot S_{xx} -
+  k_z \cdot \left| S \right| \cdot S_{xx} \cdot S_{yz} +
+  k_z \cdot \left| S \right| \cdot S_{xy} \cdot S_{xz} + \\
+  + k_z \cdot S_x^2 \cdot S_{yz} - k_z \cdot S_x \cdot S_y \cdot S_{xz} -
+  k_z \cdot S_x \cdot S_z \cdot S_{xy} + k_z \cdot S_y \cdot S_z \cdot S_{xx}.
+\end{gather*}
+Визначник $ \Delta_{xz}$
+\begin{gather*}
+  \Delta_{xz} =
+  -K \cdot S_x \cdot S_{xy} \cdot S_{yz} + K \cdot S_x \cdot S_{xz} \cdot S_{yy} +
+  K \cdot S_y \cdot S_{xx} \cdot S_{yz} - \\
+  - K \cdot S_y \cdot S_{xy} \cdot S_{xz} - K \cdot S_z \cdot S_{xx} \cdot S_{yy} +
+  K \cdot S_z \cdot S_{xy}^2 + S_x \cdot \left| S \right| \cdot S_{xy} \cdot S_{yz} - \\
+  - k_x \cdot \left| S \right| \cdot S_{xz} \cdot S_{yy} - k_x \cdot S_x \cdot S_y \cdot S_{yz} +
+  k_x \cdot S_x \cdot S_y \cdot S_{yy} + k_x \cdot S_y^2 \cdot S_{xz} - \\
+  - k_x \cdot S_y \cdot S_z \cdot S_{xy} - k_y \cdot \left| S \right| \cdot S_{xx} \cdot S_{yz} +
+  k_y \cdot \left| S \right| \cdot S_{xy} \cdot S_{xz} + k_y \cdot S_x^2 \cdot S_{yz} - \\
+  - k_y \cdot S_x \cdot S_y \cdot S_{xz} - k_y \cdot S_x \cdot S_z \cdot S_{xy} +
+  k_y \cdot S_y \cdot S_z \cdot S_{xx} +
+  k_z \cdot \left| S \right| \cdot S_{xx} \cdot S_{yy} - \\
+  - k_z \cdot \left| S \right| \cdot S_{xy}^2 - k_z \cdot S_x^2 \cdot S_{yy} +
+  2 \cdot k_z \cdot S_x \cdot S_y \cdot S_{xy} - k_z \cdot S_y^2 \cdot S_{xx}.
+\end{gather*}
+Відомо, що розв'язком є наступні вирази \cite{voyevodin}
+\begin{equation*}
+  b_x = \frac{ \Delta_b}{ \Delta }, \,
+  r_{xx} = \frac{ \Delta_{xx}}{ \Delta }, \,
+  r_{xy} = \frac{ \Delta_{xy}}{ \Delta }, \,
+  r_{xz} = \frac{ \Delta_{xz}}{ \Delta }.
+\end{equation*}
+
+Інші проекції знаходимо аналогічним чином, прирівнюючи часткові похідні від
+$E_x$ та $E_y$ до нуля.
+
+Нехай $ \left| S \right| = n$.
+Якщо ввести конструкційну матрицю
+\begin{equation*}
+  A =
+  \begin{bmatrix}
+    1      & s_{1x} & s_{1y} & s_{1z} \\
+    1      & s_{2x} & s_{2y} & s_{2z} \\
+    \dotsc & \dotsc & \dotsc & \dotsc \\
+    1      & s_{nx} & s_{ny} & s_{nx}
+  \end{bmatrix}
+\end{equation*}
+та позначити невідомий вектор через
+\begin{equation*}
+   \pmb{\theta}^T =
+   \begin{bmatrix}
+     b_x, r_{xx}, r_{xy}, r_{xz}
+   \end{bmatrix},
+\end{equation*}
+то розв'язок можна записати у більш компактному вигляді.
+Перепишемо функцію, яку мінімізуємо, через введені позначення
+\begin{equation}\label{eq:energy_x}
+  E_x =
+  \left( \pmb{k}_x - A \cdot \pmb{\theta} \right)^T \cdot
+  \left( \pmb{k}_x - A \cdot \pmb{\theta} \right) =
+  \pmb{k}_x^T \cdot \pmb{k}_x - 2 \pmb{\theta}^T \cdot A^T \cdot \pmb{k}_x +
+  \pmb{\theta}^T \cdot A^T \cdot A \cdot \pmb{\theta},
+\end{equation}
+де $\pmb{k}_x = \left( k_{s_1 x}, k_{s_2 x}, \dotsc, k_{s_n x} \right)^T $.
+Якщо продиференціювати останній вираз по кожному $\theta_i$,
+то отримаємо систему рівнянь у матричному вигляді
+\begin{equation*}
+  -2A^T \cdot \pmb{k}_x + 2A^T \cdot A \cdot \pmb{\theta} = 0,
+\end{equation*}
+яку перепишемо
+\begin{equation}\label{eq:equation_theta}
+  \left( A^T \cdot A \right) \cdot \pmb{\theta} = A^T \cdot \pmb{k}_x.
+\end{equation}
+Звідки маємо оцінку
+\begin{equation}\label{eq:solution}
+  \hat{\pmb{\theta}} =
+  \left( A^T \cdot A \right)^{-1} \cdot A^T \cdot \pmb{k}_x.
+\end{equation}
+
+Таким чином,
+\begin{equation*}
+  \min \limits_{\pmb{\theta}} E_x \left( \pmb{\theta} \right) =
+  E_x \left( \hat{\pmb{\theta}} \right).
+\end{equation*}
+Якщо $A^T \cdot A$ є матрицею з ненульовим визначником,
+то оцінка найменших квадратів $\hat{\pmb{\theta}}$ єдина.
+Щоб довести це, припустимо, що $\pmb{\theta}^*$~---~довільне фіксоване значення
+$\pmb{\theta}$.
+Тоді з \eqref{eq:energy_x} маємо
+\begin{gather*}
+  E_x \left( \hat{\pmb{\theta}} \right) =
+  \left[
+    \pmb{k}_x - A \cdot \pmb{\theta}^* +
+    A \left( \pmb{\theta}^* - \pmb{\theta} \right)
+  \right]^T \cdot
+  \left[
+    \pmb{k}_x - A \cdot \pmb{\theta}^* +
+    A \left( \pmb{\theta}^* - \pmb{\theta} \right)
+  \right] = \\
+  = E_x \left( \pmb{\theta}^* \right) +
+  2 \left( \pmb{\theta}^* - \pmb{\theta} \right)^T \cdot
+  \left( A^T \cdot \pmb{k}_x - A^T \cdot A \cdot \pmb{\theta}^* \right) +
+  \left( \pmb{\theta}^* - \pmb{\theta} \right)^T \cdot A^T \cdot A \cdot
+  \left( \pmb{\theta}^* - \pmb{\theta} \right).
+\end{gather*}
+Якщо $\pmb{\theta}^* = \hat{\pmb{\theta}}$, то
+\begin{equation*}
+  E_x \left( \pmb{\theta} \right) =
+  E_x \left( \hat{\pmb{\theta}} \right) +
+  \left( \hat{\pmb{\theta}} - \pmb{\theta} \right)^T \cdot A^T \cdot A \cdot
+  \left( \hat{\pmb{\theta}} - \pmb{\theta} \right) \geq
+  E_x \left( \hat{\pmb{\theta}} \right),
+\end{equation*}
+оскільки матриця $A^T \cdot A$ невід'ємно визначена.
+Таким чином, мінімум $E_x \left( \pmb{\theta} \right)$ дорівнює
+$E_x \left( \hat{\pmb{\theta}} \right) $,
+він досягається при $\pmb{\theta} = \hat{\pmb{\theta}}$.
+
+Для невиродженої матриці $A^T \cdot A$ рівняння \eqref{eq:equation_theta}
+однозначно розв'язується, отже,
+в цьому випадку оцінка найменших квадратів єдина та має вигляд
+\eqref{eq:solution}.
+
+\section{Властивості оцінки найменших квадратів}
+
+Оцінка $\hat{\pmb{\theta}}$ є незміщеною оцінкою параметра $\pmb{\theta}$.
+З постановки методу відомо, що $M\pmb{k}_x = A \cdot \pmb{\theta}$.
+Отже,
+$M \hat{\pmb{\theta}} =
+  \left( A^T \cdot A \right)^{-1} \cdot A^T \cdot M\pmb{k}_x =
+  \left( A^T \cdot A \right) \cdot A^T \cdot A \cdot \pmb{\theta}$,
+тобто $M\hat{\pmb{\theta}} = \pmb{\theta}$.
+
+Серед класу оцінок $\pmb{\theta}^*$ величини $\pmb{\theta}$, які
+\begin{enumerate}
+  \item є незміщеними оцінками,
+  \item представляють собою лінійні комбінації вихідних даних $\pmb{k}_x$,
+\end{enumerate}
+за допомогою критерія найменших
+квадратів можна знайти таку оцінку невідомого параметра $\pmb{\theta}$,
+що $D\hat{\pmb{\theta}}_j \leq D\pmb{\theta}_j^*$ для будь-якого $j$.
+Іншими словами,
+$\hat{\pmb{\theta}}$ є найбільш точною (або оптимальною)
+оцінкою $\pmb{\theta}$ з усіх можливих, що належать даному класу.
+
+Щоб довести це, насамперед треба знайти вираз для $D\pmb{\theta}_j$.
+З постановки задачі відомо, що $D\pmb{k}_x = \sigma^2 \cdot I$.
+З \eqref{eq:solution} отримуємо
+\begin{equation*}
+  D\hat{\pmb{\theta}} =
+  \left( A^T \cdot A \right)^{-1} \cdot A^T \cdot D\pmb{k}_x \cdot A \cdot
+  \left( A^T \cdot A \right)^{-1} =
+  \sigma^2 \cdot \left( A^T \cdot A \right)^{-1}.
+\end{equation*}
+Нехай $\pmb{\theta}^*$~---~якась інша оцінка $\pmb{\theta}$,
+яка є лінійною комбінацією вихідних даних,
+тобто $\pmb{\theta}^* = U \cdot \pmb{k}_x$.
+Вимагаємо, щоб вона була незміщеною:
+\begin{equation*}
+  M\pmb{\theta}^* =
+  U \cdot M\pmb{k}_x =
+  U \cdot A \cdot \pmb{\theta} =
+  \pmb{\theta}.
+\end{equation*}
+Остання рівність виконується для всіх $\pmb{\theta}$, отже, можемо стверджувати,
+що
+\begin{equation*}
+  U \cdot A = I.
+\end{equation*}
+Знайдемо коваріаційну матрицю
+$D\pmb{\theta}^* =
+  U \cdot D\pmb{k}_x \cdot U^T =
+  \sigma^2 \cdot U \cdot U^T$.
+Порівняємо $U \cdot U^T$ з $ \left( A^T \cdot A \right)^{-1}$.
+Нехай $K = \left( A^T \cdot A \right)^{-1}$.
+Тоді можемо записати
+\begin{equation*}
+  U \cdot U^T =
+  K + \left( U - K \cdot A^T \right) \cdot \left( U - K \cdot A^T \right)^T.
+\end{equation*}
+Ця рівність справедлива завдяки тому, що $U \cdot A = I$.
+Таким чином,
+\begin{equation*}
+  D\pmb{\theta}^* =
+  D\hat{\pmb{\theta}} +
+  \sigma^2 \left( U - K \cdot A^T \right) \cdot
+  \left( U - K \cdot A^T \right)^T.
+\end{equation*}
+Для $\hat{\pmb{\theta}}$ маємо $U = K \cdot A^T$,
+тому другий доданок обертається в нуль.
+Для будь-якої іншої оцінки цей доданок невід'ємний, отже,
+кожен діагональний елемент матриці $D\pmb{\theta}^*$
+не менше відповідного діагонального елемента матриці $D\hat{\pmb{\theta}}$.

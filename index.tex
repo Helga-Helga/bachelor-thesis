@@ -1,49 +1,35 @@
-\input{../common/head_ru.tex}
-
-\usetikzlibrary{shapes.arrows,chains}
-\usepackage{xassoccnt}
-\usepackage{lastpage}
-\usepackage{hhline}
-\NewTotalDocumentCounter{totalfigures}
-\NewTotalDocumentCounter{totaltables}
-\NewTotalDocumentCounter{appendixchapters}
-\NewTotalDocumentCounter{totalbibitems}
-\DeclareAssociatedCounters{figure}{totalfigures}
-\DeclareAssociatedCounters{table}{totaltables}
-\DeclareAssociatedCounters{bibcite}{totalbibitems}
-
-\usepackage{totcount}
-\newtotcounter{citenum}
-\def\oldcite{}
-\let\oldcite=\bibcite
-\def\bibcite{\stepcounter{citenum}\oldcite}
+\input{../common/head_ua.tex}
 
 \begin{document}
 
+\import{1_title/}{title.tex}
 
 \clearpage
-
-\pagenumbering{gobble}
-
-%\pagestyle{empty}
-%\thispagestyle{empty}
-\tableofcontents
-
-\clearpage
-\pagenumbering{arabic}
-\pagestyle{fancy}
 \setcounter{page}{2}
 
+%\pagestyle{empty}
+\tableofcontents  
+\thispagestyle{empty}
+
+\clearpage
+\pagestyle{fancy}
+
 \clearpage
 
-\import{3_preface/}{preface.tex}
-\import{4_overview/}{main.tex}
-\import{5_main/}{main.tex}
+\import{preface/}{preface.tex}
+\import{main/}{problem.tex}
+\import{main/}{least-squares.tex}
+\import{main/}{icp.tex}
+\import{main/}{hausdorff.tex}
+
+\import{conclusion/}{conclusion.tex}
 
 \clearpage
 \phantomsection
-\addcontentsline{toc}{chapter}{Список литературы}
-\renewcommand\bibname{Список литературы}
+\addcontentsline{toc}{chapter}{Перелік посилань}
+\renewcommand\bibname{Перелік посилань}
 \bibliography{bibliography.bib}
+
+\import{appendices/}{main.tex}
 
 \end{document}
