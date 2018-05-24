@@ -20,8 +20,8 @@ xi = normal(0, .001, target.shape)
 # Transform set T into set S
 source = array((R.dot(data.T)).T  + b.T + xi)
 
-# Function for plotting sets
 def visualize(source, result):
+    """Plotting sets"""
     fig = pyplot.figure(figsize=(10,10))
     ax = Axes3D(fig)
     ax.xaxis.pane.fill = False
@@ -31,13 +31,13 @@ def visualize(source, result):
     ax.scatter(-result[:,0], -result[:,2], result[:,1], c='r', s=20, marker='^')
     pyplot.show()
 
-# Function for finding labeling
 tree = cKDTree(target)
 def find_labeling(target, source):
+    """Finding labeling"""
     return target[tree.query(source)[1]]
 
-# Function for finding transformation
 def find_transformation(nearest_neighbours, source):
+    """Finding transformation"""
     centroid_target = mean(nearest_neighbours, axis=0)
     centroid_source = mean(source, axis=0)
     H = ((source - centroid_source).T).dot(nearest_neighbours - centroid_target)
@@ -46,18 +46,18 @@ def find_transformation(nearest_neighbours, source):
     t = centroid_target - R.dot(centroid_source.T).T
     return R.dot(source.T).T + t
 
-# Function with ICP algorithms
 def icp(target, source, max_iterations=1000):
+    """ICP algorithm"""
     labelings = []
     transformations = []
     labelings.append(find_labeling(target, source))
     transformations.append(find_transformation(labelings[0], source))
     i = 1
-    print "Iteration ", i
+    print "Iteration", i
     visualize(data, transformations[-1])
     while (len(labelings) < 2 or not allclose(labelings[-1], labelings[-2])) and i < max_iterations:
         i += 1
-        print "Iteration ", i
+        print "Iteration", i
         labelings.append(find_labeling(target, transformations[-1]))
         transformations.append(find_transformation(labelings[-1], source))
         visualize(data, transformations[-1])
