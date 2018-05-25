@@ -463,11 +463,31 @@ $m_{ii} = 1, \, \forall i \in \left\{ 1, 2, 3 \right\} $.
   \item коли $ \det{R} = \det{ \left( V \cdot U^T \right) } = 1$,
   тобто матриця $R$ діє як поворот;
   \item коли $ \det{R} = \det{ \left( V \cdot U^T \right) } = -1$,
-  тобто матриця $R$ діє як поворот і дзеркальне відображення відносно площини
-  екрану.
+  тобто матриця $R$ діє як поворот і дзеркальне відображення.
 \end{enumerate}
+Приклади дзеркальних відображеннь наведені на рисунку
+\ref{fig:mirror:reflection}.
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{images/mirror_reflection_h}
+      \caption{Дзеркальне відображення по горизонталі}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{images/mirror_reflection_v}
+      \caption{Дзеркальне відображення по вертикалі}
+  \end{subfigure}
+  \caption{Приклади дзеркальних відображень}
+  \label{fig:mirror:reflection}
+\end{figure}
+
 Припустимо, що $ \det{ \left( V \cdot U^T \right) } = -1$.
-Це еквівалентно тому, що $ \det{M} = -1$.
+Це еквівалентно тому, що
+\begin{equation*}
+  \det{M} =
+  -1.
+\end{equation*}
 Шукаємо таку матрицю $M$, яка максимізує вираз
 \begin{equation*}
   tr \left( \Sigma \cdot M \right) =
