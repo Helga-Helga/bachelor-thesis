@@ -365,14 +365,18 @@ $E_y$ та $E_z$ до нуля.
   \left( A^T \cdot A \right)^{-1} \cdot A^T \cdot \boldsymbol{k}_x.
 \end{equation}
 
-Таким чином,
+\textbf{Теорема.}
+Оцінка найменших квадратів $\hat{\boldsymbol{\theta}}$
+\eqref{eq:solution} забезпечує мінімум функції $E$ \eqref{eq:least:squares}
+за фіксованої розмітки $k$
 \begin{equation*}
   \min \limits_{\boldsymbol{\theta}} E_x \left( \boldsymbol{\theta} \right) =
   E_x \left( \hat{\boldsymbol{\theta}} \right).
 \end{equation*}
 Якщо $A^T \cdot A$ є матрицею з ненульовим визначником,
 то оцінка найменших квадратів $\hat{\boldsymbol{\theta}}$ єдина.
-Щоб довести це, припустимо, що $\boldsymbol{\theta}^*$~---~довільне фіксоване значення
+
+Щоб довести цю теорему, припустимо, що $\boldsymbol{\theta}^*$~---~довільне фіксоване значення
 $\boldsymbol{\theta}$.
 Тоді з \eqref{eq:energy_x} маємо
 \begin{gather*}
@@ -406,10 +410,13 @@ $E_x \left( \hat{\boldsymbol{\theta}} \right) $,
 однозначно розв'язується, тому
 в цьому випадку оцінка найменших квадратів єдина та має вигляд
 \eqref{eq:solution}.
+Теорему доведено.
 
 \section{Статистичні властивості оцінки найменших квадратів}
 
+\textbf{Теорема.}
 Оцінка $\hat{\boldsymbol{\theta}}$ є незміщеною оцінкою параметра $\boldsymbol{\theta}$.
+
 Відомо, що $M\boldsymbol{k}_x = A \cdot \boldsymbol{\theta}$.
 Отже,
 $M \hat{\boldsymbol{\theta}} =
@@ -417,6 +424,7 @@ $M \hat{\boldsymbol{\theta}} =
   \left( A^T \cdot A \right) \cdot A^T \cdot A \cdot \boldsymbol{\theta}$,
 тобто $M\hat{\boldsymbol{\theta}} = \boldsymbol{\theta}$.
 
+\textbf{Теорема.}
 В класі оцінок $\boldsymbol{\theta}^*$ величини $\boldsymbol{\theta}$, які
 \begin{enumerate}
   \item є незміщеними оцінками,
@@ -428,7 +436,8 @@ $M \hat{\boldsymbol{\theta}} =
 Іншими словами,
 $\hat{\boldsymbol{\theta}}$ є оптимальною оцінкою $\boldsymbol{\theta}$ з усіх можливих,
 що належать даному класу \cite{hudson:least-squares}.
-Щоб довести це, насамперед треба знайти вираз для $D \theta_j$.
+
+Щоб довести цю теорему, насамперед треба знайти вираз для $D \theta_j$.
 З постановки задачі відомо, що $D\boldsymbol{k}_x = \sigma^2 \cdot I$.
 З \eqref{eq:solution} отримуємо
 \begin{equation*}
@@ -475,6 +484,7 @@ $D\boldsymbol{\theta}^* =
 Для будь-якої іншої оцінки цей доданок невід'ємний, тому
 кожен діагональний елемент матриці $D\boldsymbol{\theta}^*$
 не менше відповідного діагонального елемента матриці $D\hat{\boldsymbol{\theta}}$.
+Теорему доведено.
 
 \section*{Висновки до розділу 2}
 \addcontentsline{toc}{section}{Висновки до розділу 2}
