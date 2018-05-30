@@ -12,21 +12,21 @@
 Ітеративний алгоритм найближчих точок (Iterative Closest Points, ICP) \cite{icp}
 складається з двох кроків, що чергуються.
 Ініціюється алгоритм одиничною матрицею повороту $R = I$
-та нульовим вектором зсуву $ \pmb{b} = \pmb{0}$.
+та нульовим вектором зсуву $ \boldsymbol{b} = \boldsymbol{0}$.
 Перший крок полягає в пошуку такої розмітки $k \, : \, S \to T$, щоб
 \begin{equation}\label{eq:labeling}
- \sum \limits_{\pmb{s} \in S}
-  \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2 \to
+ \sum \limits_{\boldsymbol{s} \in S}
+  \left \Vert R \cdot \boldsymbol{s} + \boldsymbol{b} - \boldsymbol{k_s} \right \Vert^2 \to
   \min \limits_{k},
 \end{equation}
-де $R$ і $ \pmb{b}$ фіксовані,
+де $R$ і $ \boldsymbol{b}$ фіксовані,
 $k$~---~сюр'єктивне відображення із $S$ в $T$.
-На наступному кроці виконується пошук повороту $R$ та зсуву $ \pmb{b}$
+На наступному кроці виконується пошук повороту $R$ та зсуву $ \boldsymbol{b}$
 за поточною розміткою $k$
 \begin{equation}\label{eq:second:iteration}
- \sum \limits_{\pmb{s} \in S}
-  \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2
- \to \min \limits_{R, \pmb{b}}.
+ \sum \limits_{\boldsymbol{s} \in S}
+  \left \Vert R \cdot \boldsymbol{s} + \boldsymbol{b} - \boldsymbol{k_s} \right \Vert^2
+ \to \min \limits_{R, \boldsymbol{b}}.
 \end{equation}
 При цьому матриця $R \in SO \left( 3 \right) $,
 тобто ортогональна матриця розмірності $3 \times 3$ з визначником $+1$.
@@ -35,51 +35,51 @@ $k$~---~сюр'єктивне відображення із $S$ в $T$.
 
 Розв'язання оптимізаційної задачі \eqref{eq:labeling}
 зводиться до пошуку такого набору
-$ \left\{ \pmb{k_s} \; \middle| \; \pmb{s} \in S \right\} $, щоб
+$ \left\{ \boldsymbol{k_s} \; \middle| \; \boldsymbol{s} \in S \right\} $, щоб
 \begin{equation*}
-  \sum \limits_{\pmb{s} \in S}
-    \left \Vert R \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2 \to
-  \min \limits_{\pmb{k_s}}.
+  \sum \limits_{\boldsymbol{s} \in S}
+    \left \Vert R \boldsymbol{s} + \boldsymbol{b} - \boldsymbol{k_s} \right \Vert^2 \to
+  \min \limits_{\boldsymbol{k_s}}.
 \end{equation*}
 Запишемо суму явно (нехай множина $S$ має $n$ точок)
 \begin{equation*}
-  \left \Vert R \cdot \pmb{s_1} + \pmb{b} - \pmb{k_{s_1}} \right \Vert^2 +
+  \left \Vert R \cdot \boldsymbol{s_1} + \boldsymbol{b} - \boldsymbol{k_{s_1}} \right \Vert^2 +
   \dotsc +
   \left \Vert
-    R \cdot \pmb{s}_n + \pmb{b} - \pmb{k_{s_n}}
+    R \cdot \boldsymbol{s}_n + \boldsymbol{b} - \boldsymbol{k_{s_n}}
   \right \Vert^2 \to
-  \min \limits_{\pmb{k_{s_1}}, \pmb{k_{s_2}}, \dotsc, \pmb{k_{s_n}} \in T}.
+  \min \limits_{\boldsymbol{k_{s_1}}, \boldsymbol{k_{s_2}}, \dotsc, \boldsymbol{k_{s_n}} \in T}.
 \end{equation*}
 Параметри, що входять у кожний доданок, різні,
 тож мінімізація всієї суми еквівалентна мінімізації кожного доданку окремо
 \begin{align*}
   \left\{ \begin{array}{ccc}
-    \left \Vert R \cdot \pmb{s_1} + \pmb{b} - \pmb{k}_{s_1} \right \Vert^2
-    \to \min \limits_{\pmb{k_{s_1}} \in T}, \\
-    \left \Vert R \cdot \pmb{s_2} + \pmb{b} - \pmb{k}_{s_2} \right \Vert^2 \to
-    \min \limits_{\pmb{k_{s_2}} \in T}, \\
+    \left \Vert R \cdot \boldsymbol{s_1} + \boldsymbol{b} - \boldsymbol{k}_{s_1} \right \Vert^2
+    \to \min \limits_{\boldsymbol{k_{s_1}} \in T}, \\
+    \left \Vert R \cdot \boldsymbol{s_2} + \boldsymbol{b} - \boldsymbol{k}_{s_2} \right \Vert^2 \to
+    \min \limits_{\boldsymbol{k_{s_2}} \in T}, \\
     \vdots \\
     \left \Vert
-      R \cdot \pmb{s_n} + \pmb{b} - \pmb{k}_{s_n}
+      R \cdot \boldsymbol{s_n} + \boldsymbol{b} - \boldsymbol{k}_{s_n}
     \right \Vert^2 \to
-    \min \limits_{\pmb{k_{s_n}} \in T}.
+    \min \limits_{\boldsymbol{k_{s_n}} \in T}.
   \end{array} \right.
 \end{align*}
-Таким чином, для кожної точки $ \pmb{s} \in S$ знаходимо точку
-$ \pmb{t}^* \in T$ таку,
-щоб відстані між парами $R \cdot \pmb{s} + \pmb{b}$ та $ \pmb{t}^*$ для всіх
-$ \pmb{s} \in S$ були найменшими
+Таким чином, для кожної точки $ \boldsymbol{s} \in S$ знаходимо точку
+$ \boldsymbol{t}^* \in T$ таку,
+щоб відстані між парами $R \cdot \boldsymbol{s} + \boldsymbol{b}$ та $ \boldsymbol{t}^*$ для всіх
+$ \boldsymbol{s} \in S$ були найменшими
 \begin{equation*}
-  \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{t}^* \right \Vert^2 =
-  \min \limits_{\pmb{t} \in T}
-    \left \Vert R \pmb{s} + \pmb{b} - \pmb{t} \right \Vert^2.
+  \left \Vert R \cdot \boldsymbol{s} + \boldsymbol{b} - \boldsymbol{t}^* \right \Vert^2 =
+  \min \limits_{\boldsymbol{t} \in T}
+    \left \Vert R \boldsymbol{s} + \boldsymbol{b} - \boldsymbol{t} \right \Vert^2.
 \end{equation*}
-Якщо для якоїсь точки $\pmb{s}$ знайдено декілька таких точок $\pmb{t}^*$,
+Якщо для якоїсь точки $\boldsymbol{s}$ знайдено декілька таких точок $\boldsymbol{t}^*$,
 то вибираємо будь-яку.
 
 \subsection{Пошук перетворення за допомогою методу найменших квадратів}
 
-За поточною розміткою $k$ шукаємо поворот $R$ та зсув $ \pmb{b}$
+За поточною розміткою $k$ шукаємо поворот $R$ та зсув $ \boldsymbol{b}$
 \eqref{eq:second:iteration}.
 При цьому матриця $R \in SO \left( 3 \right) $,
 тобто ортогональна матриця розмірності $3 \times 3$ з визначником $+1$.
@@ -128,7 +128,7 @@ $S$ відповідає точка $\left( 0, 0 \right)$ множини $T$.
 Всі визначники, окрім $\Delta = 1$, дорівнюють нулю,
 тому маємо такі оцінки шуканих параметрів
 \begin{equation*}
-  \pmb{b} =
+  \boldsymbol{b} =
   \begin{bmatrix}
     0 \\
     0
@@ -149,129 +149,129 @@ $S$ відповідає точка $\left( 0, 0 \right)$ множини $T$.
 
 
 
-Обчислимо зсув $ \pmb{b}$.
+Обчислимо зсув $ \boldsymbol{b}$.
 Нехай $R$~---~відома.
 Мінімізуємо
 \begin{equation*}
-  E \left( \pmb{b} \right) =
-  \sum \limits_{\pmb{s} \in S}
-    \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2.
+  E \left( \boldsymbol{b} \right) =
+  \sum \limits_{\boldsymbol{s} \in S}
+    \left \Vert R \cdot \boldsymbol{s} + \boldsymbol{b} - \boldsymbol{k_s} \right \Vert^2.
 \end{equation*}
 Можемо знайти оптимальний зсув,
-взявши градієнт від $E$ по $ \pmb{b}$ та прирівнявши його до нуля
+взявши градієнт від $E$ по $ \boldsymbol{b}$ та прирівнявши його до нуля
 \begin{equation}\label{eq:derivative}
   0 =
-  \nabla E \left( \pmb{b} \right) =
-  \sum \limits_{\pmb{s} \in S}
-    2 \left( R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right) =
-  2 \pmb{b} \cdot \left| S \right| +
-  2 R \sum \limits_{\pmb{s} \in S} \pmb{s} -
-  2 \sum \limits_{\pmb{s} \in S} \pmb{k_s}.
+  \nabla E \left( \boldsymbol{b} \right) =
+  \sum \limits_{\boldsymbol{s} \in S}
+    2 \left( R \cdot \boldsymbol{s} + \boldsymbol{b} - \boldsymbol{k_s} \right) =
+  2 \boldsymbol{b} \cdot \left| S \right| +
+  2 R \sum \limits_{\boldsymbol{s} \in S} \boldsymbol{s} -
+  2 \sum \limits_{\boldsymbol{s} \in S} \boldsymbol{k_s}.
 \end{equation}
 Позначимо
 \begin{equation*}
-  \overline{\pmb{s}} =
-  \frac{ \sum \limits_{\pmb{s} \in S} \pmb{s}}{ \left| S \right| }, \,
-  \overline{\pmb{k}}_{\pmb{s}} =
-  \frac{ \sum \limits_{\pmb{s} \in S} \pmb{k_s}}{ \left| S \right| }.
+  \overline{\boldsymbol{s}} =
+  \frac{ \sum \limits_{\boldsymbol{s} \in S} \boldsymbol{s}}{ \left| S \right| }, \,
+  \overline{\boldsymbol{k}}_{\boldsymbol{s}} =
+  \frac{ \sum \limits_{\boldsymbol{s} \in S} \boldsymbol{k_s}}{ \left| S \right| }.
 \end{equation*}
 Перепишемо рівняння \eqref{eq:derivative} в термінах введених позначень
 \begin{equation}\label{eq:translation}
-  \pmb{b} =
-  \overline{\pmb{k}}_{\pmb{s}} - R \cdot \overline{\pmb{s}}.
+  \boldsymbol{b} =
+  \overline{\boldsymbol{k}}_{\boldsymbol{s}} - R \cdot \overline{\boldsymbol{s}}.
 \end{equation}
-Знайшли оптимальний вектор $ \pmb{b}$,
+Знайшли оптимальний вектор $ \boldsymbol{b}$,
 який однозначно обчислюється за матрицею повороту $R$.
 Підставимо його у вираз \eqref{eq:second:iteration}
 \begin{equation*}
   \begin{gathered}
-    \sum \limits_{\pmb{s} \in S}
-      \left \Vert R \cdot \pmb{s} + \pmb{b} - \pmb{k_s} \right \Vert^2 =
-    \sum \limits_{\pmb{s} \in S}
+    \sum \limits_{\boldsymbol{s} \in S}
+      \left \Vert R \cdot \boldsymbol{s} + \boldsymbol{b} - \boldsymbol{k_s} \right \Vert^2 =
+    \sum \limits_{\boldsymbol{s} \in S}
       \left \Vert
-        R \cdot \pmb{s} + \left(
-          \overline{\pmb{k}}_{\pmb{s}} - R \cdot \overline{\pmb{s}}
-        \right) - \pmb{k_s}
+        R \cdot \boldsymbol{s} + \left(
+          \overline{\boldsymbol{k}}_{\boldsymbol{s}} - R \cdot \overline{\boldsymbol{s}}
+        \right) - \boldsymbol{k_s}
       \right \Vert^2 = \\
-    = \sum \limits_{\pmb{s} \in S}
+    = \sum \limits_{\boldsymbol{s} \in S}
       \left \Vert
-        R \cdot \left( \pmb{s} - \overline{\pmb{s}} \right) -
-        \left( \pmb{k_s} - \overline{\pmb{k}}_{\pmb{s}} \right)
+        R \cdot \left( \boldsymbol{s} - \overline{\boldsymbol{s}} \right) -
+        \left( \boldsymbol{k_s} - \overline{\boldsymbol{k}}_{\boldsymbol{s}} \right)
       \right \Vert^2.
   \end{gathered}
 \end{equation*}
-Таким чином, в задачі мінімізації позбулися невідомого вектора $\pmb{b}$,
+Таким чином, в задачі мінімізації позбулися невідомого вектора $\boldsymbol{b}$,
 тому залишилось знайти лише матрицю $R$.
-Нехай $\tilde{\pmb{s}} = \pmb{s} - \overline{\pmb{s}}, \,
-  \tilde{\pmb{k_s}} = \pmb{k_s} - \overline{\pmb{k}}_{\pmb{s}}$,
+Нехай $\tilde{\boldsymbol{s}} = \boldsymbol{s} - \overline{\boldsymbol{s}}, \,
+  \tilde{\boldsymbol{k_s}} = \boldsymbol{k_s} - \overline{\boldsymbol{k}}_{\boldsymbol{s}}$,
 тоді
 \begin{equation}\label{eq:R}
   R =
   \arg \min \limits_{R \in SO \left( 3 \right) }
-    \sum \limits_{\pmb{s} \in S}
-      \left \Vert R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right \Vert^2.
+    \sum \limits_{\boldsymbol{s} \in S}
+      \left \Vert R \cdot \tilde{\boldsymbol{s}} - \tilde{\boldsymbol{k_s}} \right \Vert^2.
 \end{equation}
 Спростимо вираз, який мінімізується в \eqref{eq:R},
 використавши ортогональність матриці $R$: $R^T = R^{-1}$
 \begin{equation*}
   \begin{gathered}
-    \left \Vert R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right \Vert^2 =
-    \left( R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right)^T \cdot
-    \left( R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right) = \\
-    = \left( \tilde{\pmb{s}}^T \cdot R^T - \tilde{\pmb{k_s}}^T \right) \cdot
-    \left( R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right) = \\
-    = \tilde{\pmb{s}}^T \cdot R^T \cdot R \cdot \tilde{\pmb{s}} -
-    \tilde{\pmb{k_s}} \cdot \tilde{\pmb{s}}^T \cdot R \cdot \tilde{\pmb{s}} -
-    \tilde{\pmb{s}}^T \cdot R^T \cdot
-    \tilde{\pmb{k_s}} + \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}} = \\
-    = \tilde{\pmb{s}}^T \cdot \tilde{\pmb{s}} -
-    \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} -
-    \tilde{\pmb{s}}^T \cdot R^T \cdot \tilde{\pmb{k_s}} +
-    \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}}.
+    \left \Vert R \cdot \tilde{\boldsymbol{s}} - \tilde{\boldsymbol{k_s}} \right \Vert^2 =
+    \left( R \cdot \tilde{\boldsymbol{s}} - \tilde{\boldsymbol{k_s}} \right)^T \cdot
+    \left( R \cdot \tilde{\boldsymbol{s}} - \tilde{\boldsymbol{k_s}} \right) = \\
+    = \left( \tilde{\boldsymbol{s}}^T \cdot R^T - \tilde{\boldsymbol{k_s}}^T \right) \cdot
+    \left( R \cdot \tilde{\boldsymbol{s}} - \tilde{\boldsymbol{k_s}} \right) = \\
+    = \tilde{\boldsymbol{s}}^T \cdot R^T \cdot R \cdot \tilde{\boldsymbol{s}} -
+    \tilde{\boldsymbol{k_s}} \cdot \tilde{\boldsymbol{s}}^T \cdot R \cdot \tilde{\boldsymbol{s}} -
+    \tilde{\boldsymbol{s}}^T \cdot R^T \cdot
+    \tilde{\boldsymbol{k_s}} + \tilde{\boldsymbol{k_s}}^T \cdot \tilde{\boldsymbol{k_s}} = \\
+    = \tilde{\boldsymbol{s}}^T \cdot \tilde{\boldsymbol{s}} -
+    \tilde{\boldsymbol{k_s}}^T \cdot R \cdot \tilde{\boldsymbol{s}} -
+    \tilde{\boldsymbol{s}}^T \cdot R^T \cdot \tilde{\boldsymbol{k_s}} +
+    \tilde{\boldsymbol{k_s}}^T \cdot \tilde{\boldsymbol{k_s}}.
   \end{gathered}
 \end{equation*}
 
 Помітимо,
-що $ \tilde{\pmb{s}}^T \cdot R^T \cdot \tilde{\pmb{k_s}} $~---~це скаляр:
-$ \tilde{\pmb{s}}^T$ має розмірність $1 \times 3, \, R^T$ має розмірність
-$3 \times 3$, а $ \tilde{\pmb{k_s}}$ має розмірність $3 \times 1$.
+що $ \tilde{\boldsymbol{s}}^T \cdot R^T \cdot \tilde{\boldsymbol{k_s}} $~---~це скаляр:
+$ \tilde{\boldsymbol{s}}^T$ має розмірність $1 \times 3, \, R^T$ має розмірність
+$3 \times 3$, а $ \tilde{\boldsymbol{k_s}}$ має розмірність $3 \times 1$.
 Для будь-якого скаляру $a = a^T$, тому
 \begin{equation*}
-  \tilde{\pmb{s}}^T \cdot R^T \cdot \tilde{\pmb{k_s}} =
-  \left( \tilde{\pmb{s}}^T \cdot R^T \cdot \tilde{\pmb{k_s}} \right)^T =
-  \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}}.
+  \tilde{\boldsymbol{s}}^T \cdot R^T \cdot \tilde{\boldsymbol{k_s}} =
+  \left( \tilde{\boldsymbol{s}}^T \cdot R^T \cdot \tilde{\boldsymbol{k_s}} \right)^T =
+  \tilde{\boldsymbol{k_s}}^T \cdot R \cdot \tilde{\boldsymbol{s}}.
 \end{equation*}
 Маємо
 \begin{equation*}
-  \left \Vert R \cdot \tilde{\pmb{s}} - \tilde{\pmb{k_s}} \right \Vert^2 =
-  \tilde{\pmb{s}}^T \cdot \tilde{\pmb{s}} -
-  2 \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} +
-  \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}}.
+  \left \Vert R \cdot \tilde{\boldsymbol{s}} - \tilde{\boldsymbol{k_s}} \right \Vert^2 =
+  \tilde{\boldsymbol{s}}^T \cdot \tilde{\boldsymbol{s}} -
+  2 \tilde{\boldsymbol{k_s}}^T \cdot R \cdot \tilde{\boldsymbol{s}} +
+  \tilde{\boldsymbol{k_s}}^T \cdot \tilde{\boldsymbol{k_s}}.
 \end{equation*}
 Підставимо отриманий вираз у \eqref{eq:R},
-відкинувши суми $ \tilde{\pmb{s}}^T \cdot \tilde{\pmb{s}}$ та
-$ \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}}$ по всім $\pmb{s} \in S$,
+відкинувши суми $ \tilde{\boldsymbol{s}}^T \cdot \tilde{\boldsymbol{s}}$ та
+$ \tilde{\boldsymbol{k_s}}^T \cdot \tilde{\boldsymbol{k_s}}$ по всім $\boldsymbol{s} \in S$,
 бо ці вирази не залежать від $R$ та не впливають на мінімізацію
 \begin{equation*}
   \begin{gathered}
     R =
     \arg \min \limits_{R \in SO \left( 3 \right) }
-      \sum \limits_{\pmb{s} \in S}
+      \sum \limits_{\boldsymbol{s} \in S}
         \left(
-          \tilde{\pmb{s}}^T \cdot \tilde{s} -
-          2 \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} +
-          \tilde{k}_s^T \cdot \tilde{\pmb{k_s}}
+          \tilde{\boldsymbol{s}}^T \cdot \tilde{s} -
+          2 \tilde{\boldsymbol{k_s}}^T \cdot R \cdot \tilde{\boldsymbol{s}} +
+          \tilde{k}_s^T \cdot \tilde{\boldsymbol{k_s}}
         \right) = \\
     = \arg \min \limits_{R \in SO \left( 3 \right) }
       \left(
-        \sum \limits_{\pmb{s} \in S} \tilde{s}^T \cdot \tilde{\pmb{s}} -
-        2 \sum \limits_{\pmb{s} \in S}
-          \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} +
-        \sum \limits_{\pmb{s} \in S} \tilde{\pmb{k_s}} \cdot \tilde{\pmb{k_s}}
+        \sum \limits_{\boldsymbol{s} \in S} \tilde{s}^T \cdot \tilde{\boldsymbol{s}} -
+        2 \sum \limits_{\boldsymbol{s} \in S}
+          \tilde{\boldsymbol{k_s}}^T \cdot R \cdot \tilde{\boldsymbol{s}} +
+        \sum \limits_{\boldsymbol{s} \in S} \tilde{\boldsymbol{k_s}} \cdot \tilde{\boldsymbol{k_s}}
       \right) = \\
     = \arg \min \limits_{R \in SO \left( 3 \right) } \left(
-      -2 \sum \limits_{\pmb{s} \in S} \tilde{\pmb{k_s}}^T \cdot R \cdot
-      \tilde{\pmb{s}}
+      -2 \sum \limits_{\boldsymbol{s} \in S} \tilde{\boldsymbol{k_s}}^T \cdot R \cdot
+      \tilde{\boldsymbol{s}}
     \right).
   \end{gathered}
 \end{equation*}
@@ -281,28 +281,28 @@ $ \tilde{\pmb{k_s}}^T \cdot \tilde{\pmb{k_s}}$ по всім $\pmb{s} \in S$,
 \begin{equation*}
    R =
    \arg \max \limits_{R \in SO \left( 3 \right) }
-    \sum \limits_{\pmb{s} \in S}
-      \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}}.
+    \sum \limits_{\boldsymbol{s} \in S}
+      \tilde{\boldsymbol{k_s}}^T \cdot R \cdot \tilde{\boldsymbol{s}}.
 \end{equation*}
 Помітимо, що
 \begin{equation*}
-  \sum \limits_{\pmb{s} \in S}
-    \tilde{\pmb{k_s}}^T \cdot R \cdot \tilde{\pmb{s}} =
+  \sum \limits_{\boldsymbol{s} \in S}
+    \tilde{\boldsymbol{k_s}}^T \cdot R \cdot \tilde{\boldsymbol{s}} =
   tr \left( \tilde{K}^T \cdot R \cdot \tilde{S} \right),
 \end{equation*}
 де $ \tilde{K}$ і $ \tilde{S}$~---~це матриці розмірності $3 \times n$
-зі стовпцями $ \tilde{\pmb{s}}$ та $ \tilde{\pmb{k_s}}$ відповідно
+зі стовпцями $ \tilde{\boldsymbol{s}}$ та $ \tilde{\boldsymbol{k_s}}$ відповідно
 \begin{equation*}
   \begin{gathered}
     \tilde{K}^T \cdot R \cdot \tilde{S} =
     \begin{bmatrix}
-      \tilde{\pmb{k_{s_1}}}^T \\
-      \tilde{\pmb{k_{s_2}}}^T \\
+      \tilde{\boldsymbol{k_{s_1}}}^T \\
+      \tilde{\boldsymbol{k_{s_2}}}^T \\
       \vdots \\
-      \tilde{\pmb{k_{s_n}}}^T
+      \tilde{\boldsymbol{k_{s_n}}}^T
     \end{bmatrix} \cdot R \cdot
     \begin{bmatrix}
-      \tilde{\pmb{s_1}} & \tilde{\pmb{s_2}} & \dotsc & \tilde{\pmb{s_n}}
+      \tilde{\boldsymbol{s_1}} & \tilde{\boldsymbol{s_2}} & \dotsc & \tilde{\boldsymbol{s_n}}
     \end{bmatrix}.
   \end{gathered}
 \end{equation*}
@@ -360,13 +360,13 @@ $tr \left( \tilde{K}^T \cdot R \cdot \tilde{S} \right) $.
   \begin{gathered}
     X =
     \tilde{S} \cdot \tilde{K}^T =
-    \sum \limits_{i = 1}^n \tilde{\pmb{s_i}} \cdot \tilde{\pmb{k_{s_i}}}^T =
+    \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}} \cdot \tilde{\boldsymbol{k_{s_i}}}^T =
     \sum \limits_{i = 1}^n
-      \tilde{\pmb{s_i}} \cdot \left( \pmb{k_{s_i}} - \overline{\pmb{k}}_{\pmb{s}} \right)^T = \\
+      \tilde{\boldsymbol{s_i}} \cdot \left( \boldsymbol{k_{s_i}} - \overline{\boldsymbol{k}}_{\boldsymbol{s}} \right)^T = \\
     = \begin{bmatrix}
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_x^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_z^T \\
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{k}_{s_i x}^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_z^T \\
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{k}_{s_i x}^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_z^T
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_x^T & \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T \\
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_y \cdot \tilde{k}_{s_i x}^T & \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_y \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_y \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T \\
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_z \cdot \tilde{k}_{s_i x}^T & \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_z \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T & \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_z \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T
     \end{bmatrix}.
   \end{gathered}
 \end{equation*}
@@ -394,24 +394,24 @@ $ \det{X} = \det{ \left( \tilde{S} \cdot \tilde{K}^T \right) } = 0$
 \begin{equation*}
   \begin{gathered}
     \det{X} = \\
-    = \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_x^T \cdot \left(
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_z^T -
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_z^T \right) - \\
-    - \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_x^T \cdot \left(
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_z^T -
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_z^T \right) + \\
-    + \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_z \cdot \tilde{\pmb{k_{s_i}}}_x^T \cdot \left(
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_z^T -
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_x \cdot \tilde{\pmb{k_{s_i}}}_y^T \cdot
-      \sum \limits_{i = 1}^n \tilde{\pmb{s_i}}_y \cdot \tilde{\pmb{k_{s_i}}}_z^T \right) = \\
+    = \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_x^T \cdot \left(
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_y \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_z \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T -
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_z \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_y \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T \right) - \\
+    - \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_y \cdot \tilde{\boldsymbol{k_{s_i}}}_x^T \cdot \left(
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_z \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T -
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_z \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T \right) + \\
+    + \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_z \cdot \tilde{\boldsymbol{k_{s_i}}}_x^T \cdot \left(
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T -
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_x \cdot \tilde{\boldsymbol{k_{s_i}}}_y^T \cdot
+      \sum \limits_{i = 1}^n \tilde{\boldsymbol{s_i}}_y \cdot \tilde{\boldsymbol{k_{s_i}}}_z^T \right) = \\
     = P \left(
-      \tilde{\pmb{k_{s_1}}}_x^T, \tilde{\pmb{k_{s_1}}}_y^T, \tilde{\pmb{k_{s_1}}}_z^T, \dotsc,
-      \tilde{\pmb{k_{s_n}}}_x^T, \tilde{\pmb{k_{s_n}}}_y^T, \tilde{\pmb{k_{s_n}}}_z^T
+      \tilde{\boldsymbol{k_{s_1}}}_x^T, \tilde{\boldsymbol{k_{s_1}}}_y^T, \tilde{\boldsymbol{k_{s_1}}}_z^T, \dotsc,
+      \tilde{\boldsymbol{k_{s_n}}}_x^T, \tilde{\boldsymbol{k_{s_n}}}_y^T, \tilde{\boldsymbol{k_{s_n}}}_z^T
     \right),
   \end{gathered}
 \end{equation*}
@@ -421,21 +421,21 @@ $ \det{X} = \det{ \left( \tilde{S} \cdot \tilde{K}^T \right) } = 0$
 Випишемо окремо одну змінну многочлену $P$
 \begin{equation}\label{eq:normal}
   \begin{gathered}
-    \tilde{\pmb{k_{s_1}}}_x^T =
+    \tilde{\boldsymbol{k_{s_1}}}_x^T =
     \left[
-      R \cdot \pmb{s_1} + \pmb{b} + \pmb{ \xi_{s_1} } -
-      \frac{1}{ \left| S \right| } \sum \limits_{\pmb{s} \in S}
-        \left( R \cdot \pmb{s} + \pmb{b} + \pmb{ \xi_s } \right) \right]_x^T = \\
+      R \cdot \boldsymbol{s_1} + \boldsymbol{b} + \boldsymbol{ \xi_{s_1} } -
+      \frac{1}{ \left| S \right| } \sum \limits_{\boldsymbol{s} \in S}
+        \left( R \cdot \boldsymbol{s} + \boldsymbol{b} + \boldsymbol{ \xi_s } \right) \right]_x^T = \\
     = \left[
-      R \cdot \pmb{s_1} + \pmb{b} - \frac{1}{ \left| S \right| } \sum \limits_{\pmb{s} \in S}
-        \left( R \cdot \pmb{s} + \pmb{b} \right) \right]_x^T +
+      R \cdot \boldsymbol{s_1} + \boldsymbol{b} - \frac{1}{ \left| S \right| } \sum \limits_{\boldsymbol{s} \in S}
+        \left( R \cdot \boldsymbol{s} + \boldsymbol{b} \right) \right]_x^T +
     \left[
-      \pmb{ \xi_{s_1} } -
-      \frac{1}{ \left| S \right| } \sum \limits_{\pmb{s} \in S} \pmb{ \xi_{s} } \right]_x^T \sim \\
+      \boldsymbol{ \xi_{s_1} } -
+      \frac{1}{ \left| S \right| } \sum \limits_{\boldsymbol{s} \in S} \boldsymbol{ \xi_{s} } \right]_x^T \sim \\
     \sim N \left(
-      \left[ R \cdot \pmb{s_1} + \pmb{b} -
-      \frac{1}{ \left| S \right| } \sum \limits_{\pmb{s} \in S} \left(
-        R \cdot \pmb{s} + \pmb{b}
+      \left[ R \cdot \boldsymbol{s_1} + \boldsymbol{b} -
+      \frac{1}{ \left| S \right| } \sum \limits_{\boldsymbol{s} \in S} \left(
+        R \cdot \boldsymbol{s} + \boldsymbol{b}
       \right) \right]_x^T,
       \frac{ \left| S \right| - 1}{ \left| S \right| } \cdot \sigma^2 \cdot I
     \right).
@@ -448,12 +448,12 @@ $ \det{X} = \det{ \left( \tilde{S} \cdot \tilde{K}^T \right) } = 0$
     P \left( \det{X} = 0 \right) =
     M P \left(
       \det{X} = 0 \; \middle|
-      \tilde{\pmb{k_{s_1}}}_y^T, \tilde{\pmb{k_{s_1}}}_z^T, \dotsc,
-      \tilde{\pmb{k_{s_n}}}_x^T, \tilde{\pmb{k_{s_n}}}_y^T, \tilde{\pmb{k_{s_n}}}_z^T
+      \tilde{\boldsymbol{k_{s_1}}}_y^T, \tilde{\boldsymbol{k_{s_1}}}_z^T, \dotsc,
+      \tilde{\boldsymbol{k_{s_n}}}_x^T, \tilde{\boldsymbol{k_{s_n}}}_y^T, \tilde{\boldsymbol{k_{s_n}}}_z^T
     \right) = \\
     = M \mathbbm{1} \left\{
-      F_{ \tilde{\pmb{k_{s_1}}}_y^T, \tilde{\pmb{k_{s_1}}}_z^T, \dotsc, \tilde{\pmb{k_{s_n}}}_x^T, \tilde{\pmb{k_{s_n}}}_y^T, \tilde{\pmb{k_{s_n}}}_z}
-      \left( \tilde{\pmb{k_{s_1}}}_x \right) = 0
+      F_{ \tilde{\boldsymbol{k_{s_1}}}_y^T, \tilde{\boldsymbol{k_{s_1}}}_z^T, \dotsc, \tilde{\boldsymbol{k_{s_n}}}_x^T, \tilde{\boldsymbol{k_{s_n}}}_y^T, \tilde{\boldsymbol{k_{s_n}}}_z}
+      \left( \tilde{\boldsymbol{k_{s_1}}}_x \right) = 0
     \right\},
   \end{gathered}
 \end{equation*}
@@ -461,9 +461,9 @@ $ \det{X} = \det{ \left( \tilde{S} \cdot \tilde{K}^T \right) } = 0$
 Фіксуємо елементи, які стоять в його індексі.
 Тоді
 \begin{equation*}
-  P \left\{ F_{a, b, c, \dotsc, d} \left( \tilde{\pmb{k_{s_1}}}_x \right) = 0 \right\} = 0.
+  P \left\{ F_{a, b, c, \dotsc, d} \left( \tilde{\boldsymbol{k_{s_1}}}_x \right) = 0 \right\} = 0.
 \end{equation*}
-Так як $\tilde{\pmb{k_{s_1}}}_x$~---~випадкова величина з неперервним розподілом,
+Так як $\tilde{\boldsymbol{k_{s_1}}}_x$~---~випадкова величина з неперервним розподілом,
 то вона приймає фіксоване значення з нульовою ймовірністю.
 Таким чином,
 \begin{equation*}
@@ -493,12 +493,12 @@ $ \det{X} = \det{ \left( \tilde{S} \cdot \tilde{K}^T \right) } = 0$
   V^T \cdot R \cdot U
 \end{equation*}
 теж ортогональна.
-Це означає, що $ \pmb{m}_i \cdot \pmb{m}_i^T = 1$ для кожного рядка
-$ \pmb{m}_i$ матриці $M$.
+Це означає, що $ \boldsymbol{m}_i \cdot \boldsymbol{m}_i^T = 1$ для кожного рядка
+$ \boldsymbol{m}_i$ матриці $M$.
 Отже, модулі всіх елементів $m_{ij}$ матриці $M$ не перевищують одиниці
 \begin{equation*}
   1 =
-  \pmb{m}_i \cdot \pmb{m}_i^T =
+  \boldsymbol{m}_i \cdot \boldsymbol{m}_i^T =
   \sum \limits_{j = 1}^3 m_{ij}^2 \Rightarrow
   m_{ij}^2 \leq 1 \Rightarrow
   \left| m_{ij} \right| \leq 1.
@@ -625,8 +625,8 @@ $ \left( 1, 1, 1 \right) $, бо $ \sigma_3$~---~це найменше синг�
 Отже, ітеративний алгоритм найближчих точок полягає в почерговому виконанні
 двох кроків:
 \begin{enumerate}
-  \item пошук найкращої розмітки $k$ при фіксованих $R$ і $\pmb{b}$;
-  \item пошук матриці повороту $R$ і вектора зсуву $ \pmb{b}$
+  \item пошук найкращої розмітки $k$ при фіксованих $R$ і $\boldsymbol{b}$;
+  \item пошук матриці повороту $R$ і вектора зсуву $ \boldsymbol{b}$
   при фіксованій розмітці $k$,
   \item перші два кроки повторюються один за одним,
   поки не буде досягнений мінімум в \eqref{eq:least:squares}.
@@ -637,7 +637,7 @@ $ \left( 1, 1, 1 \right) $, бо $ \sigma_3$~---~це найменше синг�
 Покажемо, що ітеративний алгоритм найближчих точок завжди збігається.
 Припустимо, що алгоритм нікуди не збігається.
 Тоді існує така скінченна множина $S$, матриця повороту $R$,
-вектор зсуву $ \pmb{b}$ та шум $ \pmb{ \xi_s}$,
+вектор зсуву $ \boldsymbol{b}$ та шум $ \boldsymbol{ \xi_s}$,
 що алгоритм буде виконувати нескінченно багато ітерацій і ніколи не зупиниться.
 
 Нехай алгоритм перебрав усі можливі розмітки,
@@ -835,7 +835,7 @@ $ \left( 1, 1, 1 \right) $, бо $ \sigma_3$~---~це найменше синг�
 \end{equation*}
 
 У вихідній задачі треба знайти функцію перетворення множини точок
-$\tilde{\pmb{s}}$.
+$\tilde{\boldsymbol{s}}$.
 Її прообраз~---~точкова множина $\tilde{S}$.
 Тому чим більше точок міститься в прообразі функції перетворення,
 тим точніше можна відновити цю функцію.
@@ -1025,7 +1025,7 @@ $Mr_{ij} =
 Множини представляють собою два ідентичних прямокутник трикутника з катетами,
 які дорівнюють одиниці, що відрізняються кутом повороту $\theta = \pi$ та зсувом
 \begin{equation*}
-  \pmb{b} =
+  \boldsymbol{b} =
   \begin{bmatrix}
     \frac{ \sqrt{2}}{2} \\
     \frac{ \sqrt{2}}{2}
@@ -1038,8 +1038,8 @@ $Mr_{ij} =
 Множину $S$ зображено пунктиром.
 Це трикутник з вершинами
 $ \left( 0, 0 \right), \left( 0, 1 \right) $ і $ \left( 1, 0 \right) $.
-Множину $T$, яка складається з точок $\pmb{t} = R \cdot \pmb{s} + \pmb{b}$,
-зображено суцільною лінією, де $\pmb{s}$~---~точки множини $S$,
+Множину $T$, яка складається з точок $\boldsymbol{t} = R \cdot \boldsymbol{s} + \boldsymbol{b}$,
+зображено суцільною лінією, де $\boldsymbol{s}$~---~точки множини $S$,
 а $R$~---~матриця повороту
 \begin{equation*}
   R =
@@ -1086,7 +1086,7 @@ $ \left( 0, 0 \right), \left( 0, 1 \right) $ і $ \left( 1, 0 \right) $.
     0.9487  & 0.3162 \\
     -0.3162 & 0.9487
   \end{bmatrix}, \,
-  \hat{\pmb{b}} =
+  \hat{\boldsymbol{b}} =
   \begin{bmatrix}
     0.0969 \\
     0.1939
@@ -1122,7 +1122,7 @@ $ \left( 0, 0 \right), \left( 0, 1 \right) $ і $ \left( 1, 0 \right) $.
     0.6428 & 0.766   & 0 \\
     0      & 0       & 1
   \end{bmatrix}, \,
-  \pmb{b} =
+  \boldsymbol{b} =
   \begin{bmatrix}
     0 \\
     0 \\
@@ -1199,7 +1199,7 @@ $ \left( 0, 0 \right), \left( 0, 1 \right) $ і $ \left( 1, 0 \right) $.
     0.643   & 0.7659  & 0.0008 \\
     -0.0006 & -0.0006 & 1
   \end{bmatrix}, \,
-  \hat{\pmb{b}} =
+  \hat{\boldsymbol{b}} =
   \begin{bmatrix}
     -0.0001 \\
     0 \\

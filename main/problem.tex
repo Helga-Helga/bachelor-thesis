@@ -47,7 +47,7 @@
 Запишемо постановку задачі, яка досліджується у згадуваних статтях.
 Є дві множини:
 вихідна $S \subset \mathbb{R}^3$ та цільова $T \subset \mathbb{R}^3$.
-Точки вихідної множини $ \pmb{s} \in S$ повернули за допомогою матриці
+Точки вихідної множини $ \boldsymbol{s} \in S$ повернули за допомогою матриці
 \begin{equation*}
   \begin{cases}
     R \in \mathbb{R}^{3 \times 3}, \\
@@ -55,19 +55,19 @@
     \det{R} = 1
   \end{cases}
 \end{equation*}
-та зсунули за допомогою вектора $ \pmb{b} \in \mathbb{R}^3$.
+та зсунули за допомогою вектора $ \boldsymbol{b} \in \mathbb{R}^3$.
 Також в процесі сканування
 з'явився адитивний ґаусів шум з незалежними компонентами на невідомою дисперсією
 \begin{equation}\label{eq:problem}
-  \pmb{k_s} = R \cdot \pmb{s} + \pmb{b} + \pmb{ \xi_s}, \qquad
-  \pmb{ \xi_s } \sim N \left( \pmb{0}, \sigma^2 \cdot I \right),
+  \boldsymbol{k_s} = R \cdot \boldsymbol{s} + \boldsymbol{b} + \boldsymbol{ \xi_s}, \qquad
+  \boldsymbol{ \xi_s } \sim N \left( \boldsymbol{0}, \sigma^2 \cdot I \right),
 \end{equation}
 де $k \, : \, S \to T$~---~розмітка, тобто сюр'єктивне відображення,
 яке співставляє кожну точку вихідної множини з точкою з цільової множини.
 
-Задача полягає в такому виборі матриці $R$ та вектора $ \pmb{b}$,
-за яких евклідова відстань між $ \pmb{k_s}$ та $R \cdot \pmb{s} + \pmb{b}$ для
-всіх $ \pmb{s} \in S$ була б найменшою.
+Задача полягає в такому виборі матриці $R$ та вектора $ \boldsymbol{b}$,
+за яких евклідова відстань між $ \boldsymbol{k_s}$ та $R \cdot \boldsymbol{s} + \boldsymbol{b}$ для
+всіх $ \boldsymbol{s} \in S$ була б найменшою.
 
 \section{Модифікації}
 
